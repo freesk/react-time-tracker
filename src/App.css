@@ -1,0 +1,43 @@
+.App {
+	padding: 10px;
+	margin: 10px;
+}
+
+.TaskProjectRow {
+	border: 1px solid blue;
+	margin-top: 9px;
+}
+
+.TaskRow {
+	border: 1px solid red;
+	padding: 3px 0;
+	margin: 3px 0;
+}
+
+.TaskRow .activity {
+
+}
+
+.TaskRow .details {
+	color: rgb(200, 200, 200);
+	font-size: 12px;
+}
+
+.TaskRow .col-1,
+.TaskRow .col-2,
+.TaskRow .col-3 {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.TaskRow .col-1 {
+	width: 60%;
+}
+
+.TaskRow .col-2 {
+	width: 20%;
+}
+
+.TaskRow .col-3 {
+	width: 20%;
+}
