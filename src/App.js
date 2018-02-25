@@ -1,61 +1,15 @@
+// react
 import React, { Component } from 'react';
+
+// style
 import './App.css';
 
-const TASKS = [
-  {
-    project: "React Application",
-    activity: "Setting up the environment",
-    details: "Downloadibg npm packages",
-    time: "0.25"
-  },
-  {
-    project: "React Application",
-    activity: "Creating front end",
-    details: "Writing static React representation",
-    time: "0.75"
-  },
-  {
-    project: "React Tutorials",
-    activity: "Studying basics of the framework",
-    details: "https://reactjs.org/docs",
-    time: "2.0"
-  }
-];
+// my components
+import TaskTable from './TaskTable';
 
-class TaskProjectRow extends Component {
-  render() {
-    return (
-      <h2 className="TaskProjectRow">{this.props.project}</h2>
-    );
-  }
-}
-
-class ToggleButton extends Component {
-  render() {
-    return (
-      <button type="button">Run</button>
-    );
-  }
-}
-
-class TaskRow extends Component {
-  render() {
-    return (
-      <div className={'TaskRow'}>
-        <div className={'col-1'}>
-          <div className={'activity'}>{this.props.activity}</div>
-          <div className={'details'}>{this.props.details}</div>
-        </div>
-        <div className={'col-2'}>
-          {this.props.time}
-        </div>
-        <div className={'col-3'}>
-          <ToggleButton />
-        </div>
-      </div>
-    );
-  }
-}
+// function getRandomInt(a, b) {
+//   Math.floor(Math.random() * b) + a;
+// }
 
 class SearchBar extends Component {
 
@@ -111,56 +65,134 @@ class FilterableTaskTable extends Component {
   }
 }
 
-class TaskTable extends Component {
-
-  render() {
-    const filterText = this.props.filterText;
-
-    const rows = [];
-    let lastProject = null;
-
-    this.props.tasks.forEach((task) => {
-      if (
-        task.activity.indexOf(filterText) === -1 &&
-        task.project.indexOf(filterText) === -1 &&
-        task.details.indexOf(filterText) === -1
-      ) return;
-
-      if (task.project !== lastProject) {
-        rows.push(
-          <TaskProjectRow
-            project={task.project}
-            key={task.project} />
-        );
-      }
-
-      rows.push(
-        <TaskRow
-          activity={task.activity}
-          time={task.time}
-          details={task.details}
-          key={task.activity} />
-      );
-
-      lastProject = task.project;
-
-    });
-
-    return (
-      <div>{rows}</div>
-    );
-
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      tasks: [
+        {
+          project: "React Application",
+          activity: "Setting up the environment",
+          details: "Downloadibg npm packages",
+          seconds: 3600
+        },
+        {
+          project: "React Application",
+          activity: "Creating front end",
+          details: "Writing static React representation",
+          seconds: 3600
+        },
+        {
+          project: "React Tutorials",
+          activity: "Studying basics of the framework",
+          details: "https://reactjs.org/docs",
+          seconds: 3600
+        }
+      ]
+    };
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-}
+  handleSubmit(task) {
+    var tasks = this.state.tasks.slice();
+    tasks.push(task);
+    this.setState({ tasks: tasks });
+  }
 
-class App extends Component {
   render() {
     return (
       <div>
         <h1>Time Tracker V1.0</h1>
-        <FilterableTaskTable tasks={TASKS} />
+        <FilterableTaskTable tasks={this.state.tasks} />
+        <NewTaskForm
+          onHandleSubmit={this.handleSubmit} />
       </div>
+    );
+  }
+}
+
+class TextInput extends Component {
+  constructor(props) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleChange(event) {
+    this.props.onHandleChange(event.target.value);
+  }
+
+  render() {
+    const value = this.props.value;
+    return (
+      <label>
+        {this.props.label}
+        <input
+          value={value}
+          onChange={this.handleChange} />
+      </label>
+    );
+  }
+}
+
+class NewTaskForm extends Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      project: "",
+      activity: "",
+      details: ""
+    }
+
+    this.handleProjectChange = this.handleProjectChange.bind(this);
+    this.handleActivityChange = this.handleActivityChange.bind(this);
+    this.handleDetailsChange = this.handleDetailsChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+    // alert("submit")
+    const task = {
+      project: this.state.project,
+      activity: this.state.activity,
+      details: this.state.details,
+      seconds: 0
+    }
+
+    this.props.onHandleSubmit(task);
+  }
+
+  handleProjectChange(project) {
+    this.setState({ project: project });
+  }
+
+  handleActivityChange(activity) {
+    this.setState({ activity: activity });
+  }
+
+  handleDetailsChange(details) {
+    this.setState({ details: details });
+  }
+
+  render() {
+    return (
+      <form>
+        <TextInput
+          label={"Project: "}
+          onHandleChange={this.handleProjectChange}
+          value={this.state.project} />
+        <TextInput
+          label={"Activity: "}
+          onHandleChange={this.handleActivityChange}
+          value={this.state.activity} />
+        <TextInput
+          label={"Details: "}
+          onHandleChange={this.handleDetailsChange}
+          value={this.state.details} />
+        <button onClick={this.handleSubmit}>SUBMIT</button>
+      </form>
     );
   }
 }
