@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 
 // style
 import './App.css';
+import 'bootstrap/dist/css/bootstrap.css';
 
 // my components
 import TaskTable from './TaskTable';
@@ -54,7 +55,7 @@ class FilterableTaskTable extends Component {
 
   render() {
     return (
-      <div className={'FilterableTaskTable'} >
+      <div>
         <SearchBar
           filterText={this.state.filterText}
           onFilterTextChange={this.handleFilterTextChange} />
@@ -83,21 +84,24 @@ class App extends Component {
           project: "React Application",
           activity: "Setting up the environment",
           details: "Downloadibg npm packages",
-          seconds: 3600
+          seconds: 3600,
+          timestamp: 1519586396874
         },
         {
           id: getRandomInt(1000000),
           project: "React Application",
           activity: "Creating front end",
           details: "Writing static React representation",
-          seconds: 3600
+          seconds: 3600,
+          timestamp: 1519586396874
         },
         {
           id: getRandomInt(1000000),
           project: "React Tutorials",
           activity: "Studying basics of the framework",
           details: "https://reactjs.org/docs",
-          seconds: 3600
+          seconds: 3600,
+          timestamp: 1519586396874
         }
       ]
     };
@@ -129,13 +133,25 @@ class App extends Component {
 
   render() {
     return (
-      <div>
-        <h1>Time Tracker V1.0</h1>
-        <FilterableTaskTable
-          tasks={this.state.tasks}
-          onHandleTimeUpdate={this.handleTimeUpdate} />
-        <NewTaskForm
-          onHandleSubmit={this.handleSubmit} />
+      <div className="container">
+        <div className="row">
+          <div className="col">
+            <h1>Time Tracker</h1>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col">
+            <FilterableTaskTable
+              tasks={this.state.tasks}
+              onHandleTimeUpdate={this.handleTimeUpdate} />
+          </div>
+        </div>
+        <div className="row">
+          <div className="col">
+          <NewTaskForm
+            onHandleSubmit={this.handleSubmit} />
+          </div>
+        </div>
       </div>
     );
   }
@@ -169,7 +185,8 @@ class NewTaskForm extends Component {
       project: this.state.project,
       activity: this.state.activity,
       details: this.state.details,
-      seconds: 0
+      seconds: 0,
+      timestamp: Math.floor(Date.now())
     }
     // pass it to the parent
     this.props.onHandleSubmit(task);
@@ -189,20 +206,29 @@ class NewTaskForm extends Component {
 
   render() {
     return (
-      <form>
-        <TextInput
-          label={"Project: "}
-          onHandleChange={this.handleProjectChange}
-          value={this.state.project} />
-        <TextInput
-          label={"Activity: "}
-          onHandleChange={this.handleActivityChange}
-          value={this.state.activity} />
-        <TextInput
-          label={"Details: "}
-          onHandleChange={this.handleDetailsChange}
-          value={this.state.details} />
-        <button onClick={this.handleSubmit}>SUBMIT</button>
+      <form className="NewTaskForm">
+
+        <div className="input-group">
+          <TextInput
+            className="form-control"
+            placeholder={"Project"}
+            onHandleChange={this.handleProjectChange}
+            value={this.state.project} />
+          <TextInput
+            className="form-control"
+            placeholder={"Activity"}
+            onHandleChange={this.handleActivityChange}
+            value={this.state.activity} />
+          <TextInput
+            className="form-control"
+            placeholder={"Details"}
+            onHandleChange={this.handleDetailsChange}
+            value={this.state.details} />
+          <div className="input-group-append">
+            <button className="btn btn-outline-secondary" type="button"  onClick={this.handleSubmit}>Submit</button>
+          </div>
+        </div>
+
       </form>
     );
   }

@@ -23,19 +23,24 @@ class TimeFieldNormal extends Component {
 		const ss = formatedTime.ss;
 
 		return (
-			<form className="TimeField normal">
-				<TextInput
-					onHandleChange={function(){}}
-					value={hh} />
-				<span>:</span>
-				<TextInput
-					onHandleChange={function(){}}
-					value={mm} />
-				<span>:</span>
-				<TextInput
-					onHandleChange={function(){}}
-					value={ss} />
-				<button onClick={this.handleClick}>EDIT</button>
+			<form>
+				<div className="input-group">
+						<TextInput
+							className="form-control"
+							onHandleChange={function(){}}
+							value={hh} />
+						<TextInput
+							className="form-control"
+							onHandleChange={function(){}}
+							value={mm} />
+						<TextInput
+							className="form-control"
+							onHandleChange={function(){}}
+							value={ss} />
+						<div className="input-group-append">
+							<button className="btn btn-outline-secondary" type="button"  onClick={this.handleClick}>Edit</button>
+						</div>
+				</div>
 			</form>
 		);
 	}

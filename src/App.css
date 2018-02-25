@@ -1,56 +1,18 @@
-.App {
-	padding: 10px;
-	margin: 10px;
+legend {
+	padding: 0px 10px !important;
+	width: auto !important;
+}
+
+fieldset {
+	padding: 15px !important;
+	border: 1px solid rgba(21, 202, 219, 0.5) !important;
+	border-radius: 3px;
 }
 
 .TaskProjectRow {
-	border: 1px solid blue;
-	margin-top: 9px;
+	margin-top: 10px;
 }
 
-.TaskRow {
-	border: 1px solid red;
-	padding: 3px 0;
-	margin: 3px 0;
-}
-
-.TaskRow .activity {
-
-}
-
-.TaskRow .details {
-	color: rgb(200, 200, 200);
-	font-size: 12px;
-}
-
-.TaskRow .col-1,
-.TaskRow .col-2,
-.TaskRow .col-3 {
-	display: inline-block;
-	vertical-align: middle;
-}
-
-.TaskRow .col-1 {
-	width: 50%;
-}
-
-.TaskRow .col-2 {
-	width: 30%;
-}
-
-.TaskRow .col-3 {
-	width: 20%;
-}
-
-.hidden {
-	display:none;
-}
-
-.TimeField input {
-	width: 40px;
-}
-
-.TimeField.normal input {
-	user-select: none;
-	pointer-events: none;
+.NewTaskForm {
+	margin-top: 20px;
 }

@@ -14,13 +14,11 @@ class TextInput extends Component {
   render() {
     const value = this.props.value;
     return (
-      <label>
-        {this.props.label}
-        <input
-          value={value}
-          placeholder={this.props.placeholder}
-          onChange={this.handleChange} />
-      </label>
+      <input
+        className={this.props.className}
+        value={value}
+        placeholder={this.props.placeholder}
+        onChange={this.handleChange} />
     );
   }
 }

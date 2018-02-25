@@ -72,16 +72,17 @@ class TaskRow extends Component {
     }
 
     return (
-      <div className={'TaskRow'}>
-        <div className={'col-1'}>
-          <div className={'activity'}>{this.props.activity}</div>
-          <div className={'details'}>{this.props.details}</div>
+      <div className="row">
+        <div className="col">
+          <div>{this.props.activity}</div>
+          <div>{this.props.details}</div>
         </div>
-        <div className={'col-2'}>
+        <div className="col">
           {timeField}
         </div>
-        <div className={'col-3'}>
+        <div className="col">
           <Button
+            className="btn btn-secondary"
             text={this.props.isToggleOn ? "STOP" : "RUN"}
             onHandleClick={this.handleClick} />
         </div>

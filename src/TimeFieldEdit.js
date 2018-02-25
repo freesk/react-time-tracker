@@ -56,19 +56,24 @@ class TimeFieldEditor extends Component {
 		const ss = this.state.ss;
 
 		return (
-			<form className="TimeField" onSubmit={this.handleTimeEdit}>
-				<TextInput
-					onHandleChange={this.handleHoursChange}
-					value={hh} />
-				<span>:</span>
-				<TextInput
-					onHandleChange={this.handleMinutesChange}
-					value={mm} />
-				<span>:</span>
-				<TextInput
-					onHandleChange={this.handleSecondsChange}
-					value={ss} />
-				<button>SUBMIT</button>
+			<form onSubmit={this.handleTimeEdit}>
+				<div className="input-group">
+					<TextInput
+						className="form-control"
+						onHandleChange={this.handleHoursChange}
+						value={hh} />
+					<TextInput
+						className="form-control"
+						onHandleChange={this.handleMinutesChange}
+						value={mm} />
+					<TextInput
+						className="form-control"
+						onHandleChange={this.handleSecondsChange}
+						value={ss} />
+					<div className="input-group-append">
+						<button className="btn btn-outline-secondary" type="button" onClick={this.handleTimeEdit}>Save</button>
+					</div>
+				</div>
 			</form>
 		);
 	}

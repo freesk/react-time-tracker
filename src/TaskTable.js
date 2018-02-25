@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import collectjs from '../node_modules/collect.js';
+
 // my components
 import TaskRow from './TaskRow';
 
@@ -26,54 +28,69 @@ class TaskTable extends Component {
 
   render() {
     const filterText = this.props.filterText;
+    const collection = collectjs(this.props.tasks);
+    const grouped = collection.groupBy('project');
+    const projects = grouped.all();
 
-    const rows = [];
-    let lastProject = null;
+    let projectRows = [];
 
-    this.props.tasks.forEach((task) => {
-      if (
-        task.activity.indexOf(filterText) === -1 &&
-        task.project.indexOf(filterText) === -1 &&
-        task.details.indexOf(filterText) === -1
-      ) return;
+    for (var project in projects) {
+      if (projects.hasOwnProperty(project)) {
 
-      if (task.project !== lastProject) {
-        rows.push(
+        let taskRows = [];
+
+        // console.log(project);
+        // console.log(projects[project].items);
+
+        const tasks = projects[project].items;
+
+        for (var i = 0; i < tasks.length; i++) {
+          const task = tasks[i];
+
+          if (
+            task.activity.indexOf(filterText) === -1 &&
+            task.project.indexOf(filterText) === -1 &&
+            task.details.indexOf(filterText) === -1
+          ) continue;
+
+        	// turned off by default
+        	let isToggleOn = false;
+
+        	// if the task id is in the currentId run it
+        	if(task.id === this.state.currentId)
+        		isToggleOn = true;
+
+        	// if the task id is in the currentId and in the this.newId turn it off
+        	if(this.state.currentId === this.newId)
+        		isToggleOn = false;
+
+          taskRows.push(
+            <TaskRow
+        			id={task.id}
+        			isToggleOn={isToggleOn}
+              onHandleIdChange={this.handleIdChnage}
+              onHandleTimeUpdate={this.handleTimeUpdate}
+              activity={task.activity}
+              seconds={task.seconds}
+              details={task.details}
+              key={task.id} />
+          );
+
+        }
+
+        projectRows.push(
           <TaskProjectRow
-            project={task.project}
-            key={task.project} />
+            key={project}
+            project={project}>
+            {taskRows}
+          </TaskProjectRow>
         );
+
       }
-
-			// turned off by default
-			let isToggleOn = false;
-
-			// if the task id is in the currentId run it
-			if(task.id === this.state.currentId)
-				isToggleOn = true;
-
-			// if the task id is in the currentId and in the this.newId turn it off
-			if(this.state.currentId === this.newId)
-				isToggleOn = false;
-
-      rows.push(
-        <TaskRow
-					id={task.id}
-					isToggleOn={isToggleOn}
-          onHandleIdChange={this.handleIdChnage}
-          onHandleTimeUpdate={this.handleTimeUpdate}
-          activity={task.activity}
-          seconds={task.seconds}
-          details={task.details}
-          key={task.id} />
-      );
-
-      lastProject = task.project;
-
-    });
+    }
 
     return (
-      <div>{rows}</div>
+      <div>{projectRows}</div>
     );
 
   }
@@ -83,7 +100,12 @@ class TaskTable extends Component {
 class TaskProjectRow extends Component {
   render() {
     return (
-      <h2 className="TaskProjectRow">{this.props.project}</h2>
+      <div className="TaskProjectRow">
+        <fieldset>
+          <legend>{this.props.project}</legend>
+          {this.props.children}
+        </fieldset>
+      </div>
     );
   }
 }
