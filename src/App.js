@@ -6,10 +6,7 @@ import './App.css';
 
 // my components
 import TaskTable from './TaskTable';
-
-// function getRandomInt(a, b) {
-//   Math.floor(Math.random() * b) + a;
-// }
+import TextInput from './TextInput';
 
 class SearchBar extends Component {
 
@@ -18,8 +15,8 @@ class SearchBar extends Component {
     this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
   }
 
-  handleFilterTextChange(e) {
-    this.props.onFilterTextChange(e.target.value);
+  handleFilterTextChange(filterText) {
+    this.props.onFilterTextChange(filterText);
   }
 
   render() {
@@ -28,11 +25,10 @@ class SearchBar extends Component {
 
     return (
       <form>
-        <input
-          type="text"
-          placeholder="Search..."
-          value={filterText}
-          onChange={this.handleFilterTextChange} />
+      <TextInput
+        placeholder="Search..."
+        value={filterText}
+        onHandleChange={this.handleFilterTextChange} />
       </form>
     );
   }
@@ -43,12 +39,17 @@ class FilterableTaskTable extends Component {
     super(props);
     this.state = { filterText: '' };
     this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
+    this.handleTimeUpdate = this.handleTimeUpdate.bind(this);
   }
 
   handleFilterTextChange(filterText) {
     this.setState({
       filterText: filterText
     });
+  }
+
+  handleTimeUpdate(obj) {
+    this.props.onHandleTimeUpdate(obj);
   }
 
   render() {
@@ -58,6 +59,7 @@ class FilterableTaskTable extends Component {
           filterText={this.state.filterText}
           onFilterTextChange={this.handleFilterTextChange} />
         <TaskTable
+          onHandleTimeUpdate={this.handleTimeUpdate}
           tasks={this.props.tasks}
           filterText={this.state.filterText} />
       </div>
@@ -65,24 +67,33 @@ class FilterableTaskTable extends Component {
   }
 }
 
+// temporal solution for unique id
+function getRandomInt(max) {
+  return Math.floor(Math.random() * Math.floor(max));
+}
+
 class App extends Component {
   constructor(props) {
     super(props);
+    // keep all this data as a state
     this.state = {
       tasks: [
         {
+          id: getRandomInt(1000000),
           project: "React Application",
           activity: "Setting up the environment",
           details: "Downloadibg npm packages",
           seconds: 3600
         },
         {
+          id: getRandomInt(1000000),
           project: "React Application",
           activity: "Creating front end",
           details: "Writing static React representation",
           seconds: 3600
         },
         {
+          id: getRandomInt(1000000),
           project: "React Tutorials",
           activity: "Studying basics of the framework",
           details: "https://reactjs.org/docs",
@@ -91,10 +102,22 @@ class App extends Component {
       ]
     };
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleTimeUpdate = this.handleTimeUpdate.bind(this);
+  }
+
+  handleTimeUpdate(obj) {
+    let tasks = this.state.tasks.slice();
+
+    const found = tasks.find(task => task.id === obj.id);
+    const index = tasks.indexOf(found);
+
+    tasks[index].seconds = obj.seconds;
+    
+    this.setState({ tasks: tasks });
   }
 
   handleSubmit(task) {
-    var tasks = this.state.tasks.slice();
+    let tasks = this.state.tasks.slice();
     tasks.push(task);
     this.setState({ tasks: tasks });
   }
@@ -103,33 +126,12 @@ class App extends Component {
     return (
       <div>
         <h1>Time Tracker V1.0</h1>
-        <FilterableTaskTable tasks={this.state.tasks} />
+        <FilterableTaskTable
+          tasks={this.state.tasks}
+          onHandleTimeUpdate={this.handleTimeUpdate} />
         <NewTaskForm
           onHandleSubmit={this.handleSubmit} />
       </div>
-    );
-  }
-}
-
-class TextInput extends Component {
-  constructor(props) {
-    super(props);
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  handleChange(event) {
-    this.props.onHandleChange(event.target.value);
-  }
-
-  render() {
-    const value = this.props.value;
-    return (
-      <label>
-        {this.props.label}
-        <input
-          value={value}
-          onChange={this.handleChange} />
-      </label>
     );
   }
 }
@@ -139,12 +141,14 @@ class NewTaskForm extends Component {
   constructor(props) {
     super(props);
 
+    // initial state
     this.state = {
       project: "",
       activity: "",
       details: ""
     }
 
+    // handlers
     this.handleProjectChange = this.handleProjectChange.bind(this);
     this.handleActivityChange = this.handleActivityChange.bind(this);
     this.handleDetailsChange = this.handleDetailsChange.bind(this);
@@ -152,15 +156,17 @@ class NewTaskForm extends Component {
   }
 
   handleSubmit(event) {
+    // to stop actual submit action
     event.preventDefault();
-    // alert("submit")
+    // wrap up a new piece of data
     const task = {
+      id: getRandomInt(1000000),
       project: this.state.project,
       activity: this.state.activity,
       details: this.state.details,
       seconds: 0
     }
-
+    // pass it to the parent
     this.props.onHandleSubmit(task);
   }
 

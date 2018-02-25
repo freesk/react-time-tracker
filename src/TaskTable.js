@@ -12,6 +12,11 @@ class TaskTable extends Component {
     }
 		this.newID = null;
 		this.handleIdChnage = this.handleIdChnage.bind(this);
+    this.handleTimeUpdate = this.handleTimeUpdate.bind(this);
+  }
+
+  handleTimeUpdate(obj) {
+    this.props.onHandleTimeUpdate(obj);
   }
 
 	handleIdChnage(newId) {
@@ -44,7 +49,7 @@ class TaskTable extends Component {
 			let isToggleOn = false;
 
 			// if the task id is in the currentId run it
-			if(task.activity === this.state.currentId)
+			if(task.id === this.state.currentId)
 				isToggleOn = true;
 
 			// if the task id is in the currentId and in the this.newId turn it off
@@ -53,13 +58,14 @@ class TaskTable extends Component {
 
       rows.push(
         <TaskRow
-					id={task.activity}
+					id={task.id}
 					isToggleOn={isToggleOn}
           onHandleIdChange={this.handleIdChnage}
+          onHandleTimeUpdate={this.handleTimeUpdate}
           activity={task.activity}
           seconds={task.seconds}
           details={task.details}
-          key={task.activity} />
+          key={task.id} />
       );
 
       lastProject = task.project;
@@ -78,18 +84,12 @@ class TaskRow extends Component {
 
   constructor(props) {
     super(props);
-
-		this.state = {
-      seconds: this.props.seconds
-    };
-
 		this.handleClick = this.handleClick.bind(this);
   }
 
   handleClick() {
     if(this.props.isToggleOn) {
 			this.props.onHandleIdChange(null);
-			// this.stopTimer();
     } else {
 			this.props.onHandleIdChange(this.props.id);
 			this.startTimer();
@@ -97,7 +97,10 @@ class TaskRow extends Component {
   }
 
   tick() {
-    this.setState({ seconds: this.state.seconds + 1 });
+    this.props.onHandleTimeUpdate({
+      id: this.props.id,
+      seconds: this.props.seconds + 1
+    });
   }
 
   startTimer() {
@@ -128,7 +131,7 @@ class TaskRow extends Component {
           <div className={'details'}>{this.props.details}</div>
         </div>
         <div className={'col-2'}>
-          {this.formatTime(this.state.seconds)}
+          {this.formatTime(this.props.seconds)}
         </div>
         <div className={'col-3'}>
           <Button
