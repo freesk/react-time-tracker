@@ -31,13 +31,21 @@
 }
 
 .TaskRow .col-1 {
-	width: 60%;
+	width: 50%;
 }
 
 .TaskRow .col-2 {
-	width: 20%;
+	width: 30%;
 }
 
 .TaskRow .col-3 {
 	width: 20%;
+}
+
+.hidden {
+	display:none;
+}
+
+.TimeField input {
+	width: 40px;
 }

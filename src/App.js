@@ -112,13 +112,18 @@ class App extends Component {
     const index = tasks.indexOf(found);
 
     tasks[index].seconds = obj.seconds;
-    
+
+    console.log(tasks);
+
     this.setState({ tasks: tasks });
   }
 
   handleSubmit(task) {
     let tasks = this.state.tasks.slice();
     tasks.push(task);
+
+    console.log(tasks);
+
     this.setState({ tasks: tasks });
   }
 

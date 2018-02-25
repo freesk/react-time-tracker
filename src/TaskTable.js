@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 // my components
-import Button from './Button';
+import TaskRow from './TaskRow';
 
 class TaskTable extends Component {
 
@@ -78,69 +78,6 @@ class TaskTable extends Component {
 
   }
 
-}
-
-class TaskRow extends Component {
-
-  constructor(props) {
-    super(props);
-		this.handleClick = this.handleClick.bind(this);
-  }
-
-  handleClick() {
-    if(this.props.isToggleOn) {
-			this.props.onHandleIdChange(null);
-    } else {
-			this.props.onHandleIdChange(this.props.id);
-			this.startTimer();
-    }
-  }
-
-  tick() {
-    this.props.onHandleTimeUpdate({
-      id: this.props.id,
-      seconds: this.props.seconds + 1
-    });
-  }
-
-  startTimer() {
-    this.timerID = setInterval(() => this.tick(),
-      1000
-    );
-  }
-
-  stopTimer() {
-    clearInterval(this.timerID);
-  }
-
-	formatTime(seconds) {
-		var time = new Date(null);
-		time.setSeconds(seconds);
-		return time.toISOString().substr(11, 8);
-	}
-
-  render() {
-		// make sure it is not running on each render
-		if(!this.props.isToggleOn)
-			this.stopTimer();
-
-    return (
-      <div className={'TaskRow'}>
-        <div className={'col-1'}>
-          <div className={'activity'}>{this.props.activity}</div>
-          <div className={'details'}>{this.props.details}</div>
-        </div>
-        <div className={'col-2'}>
-          {this.formatTime(this.props.seconds)}
-        </div>
-        <div className={'col-3'}>
-          <Button
-            text={this.props.isToggleOn ? "STOP" : "RUN"}
-            onHandleClick={this.handleClick} />
-        </div>
-      </div>
-    );
-  }
 }
 
 class TaskProjectRow extends Component {
