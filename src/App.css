@@ -49,3 +49,8 @@
 .TimeField input {
 	width: 40px;
 }
+
+.TimeField.normal input {
+	user-select: none;
+	pointer-events: none;
+}
