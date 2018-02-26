@@ -1,3 +1,8 @@
+.title {
+	text-align: center;
+	margin-top: 20px;
+}
+
 legend {
 	padding: 0px 10px !important;
 	width: auto !important;
@@ -41,3 +46,8 @@ fieldset > div:nth-child(2) {
 	margin-top: 10px;
 	margin-bottom: 20px;
 }
+
+/* .Slider .prev,
+.Slider .next {
+	height: 100%;
+} */

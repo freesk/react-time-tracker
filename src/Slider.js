@@ -100,15 +100,17 @@ class Slider extends Component {
 
 		return (
 			<div className="Slider">
-				<div className="control btn-toolbar justify-content-center">
-					<div className="btn-group mr-2">
-						<button className="btn btn-sm btn-outline-secondary" onClick={this.onClickPrev}>{"<"}</button>
+				<div className="control row align-items-center no-gutters">
+					<div className="col-1">
+						<button className="btn btn-sm btn-block btn-outline-secondary prev" onClick={this.onClickPrev}>{"<"}</button>
 					</div>
-					<div className="btn-group mr-2">
+					<div className="col-10">
+					<div className="row no-gutters">
 						{controls}
 					</div>
-					<div className="btn-group">
-						<button className="btn btn-sm btn-outline-secondary" onClick={this.onClickNext}>{">"}</button>
+					</div>
+					<div className="col-1">
+						<button className="btn btn-sm btn-block btn-outline-secondary next" onClick={this.onClickNext}>{">"}</button>
 					</div>
 				</div>
 				<div>
@@ -134,7 +136,9 @@ class Control extends Component {
 
 	render() {
 		return (
-			<button className={"btn btn-sm btn-outline-secondary" + (this.props.isOn ? "active" : "")} onClick={this.handleControlClick}>{this.props.date}</button>
+			<div className="col">
+				<button className={"btn btn-sm btn-block btn-outline-secondary " + (this.props.isOn ? "active" : "")} onClick={this.handleControlClick}>{this.props.date}</button>
+			</div>
 		);
 	}
 }

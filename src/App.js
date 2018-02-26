@@ -99,7 +99,7 @@ class App extends Component {
       <div className="container">
         <div className="row">
           <div className="col">
-            <h1>Time Tracker</h1>
+            <h1 className="title">React Time Tracker</h1>
           </div>
         </div>
         <div className="row">
