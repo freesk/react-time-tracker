@@ -10,6 +10,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 // my components
 import TaskTable from './TaskTable';
 import TextInput from './TextInput';
+import Slider from './Slider';
 
 class SearchBar extends Component {
 
@@ -136,9 +137,6 @@ class App extends Component {
   handleSubmit(task) {
     let tasks = this.state.tasks.slice();
     tasks.push(task);
-
-    console.log(tasks);
-
     this.setState({ tasks: tasks });
   }
 
@@ -148,26 +146,35 @@ class App extends Component {
 
     let formated = tasks.map(task => {
       const t = new Date(task.timestamp);
-      task.date = t.getMonth() + "-" + t.getDate() + "-" + t.getYear();
+      task.date = (t.getMonth() + 1) + "-" + t.getDate() + "-" + t.getFullYear();
       return task;
     });
 
     const collection = collectjs(formated);
     const grouped = collection.groupBy('date').all();
 
-    // console.log(grouped.all());
+    let slides = [];
 
-    let tables = [];
+    for (let key in grouped) {
+      if (grouped.hasOwnProperty(key)) {
+        const date = key;
+        const tasks = grouped[key].items;
 
-    for (let table in grouped) {
-      if (grouped.hasOwnProperty(table)) {
-        const tasks = grouped[table].items;
-        tables.push(
-          <FilterableTaskTable
-            key={table}
-            tasks={tasks}
-            onHandleTimeUpdate={this.handleTimeUpdate} />
-        );
+        // console.log(date);
+        // console.log(tasks);
+
+        let table = <FilterableTaskTable
+          key={table}
+          tasks={tasks}
+          onHandleTimeUpdate={this.handleTimeUpdate} />;
+
+        const slide = {
+          date: date,
+          table: table
+        }
+
+        slides.push(slide);
+
       }
     }
 
@@ -175,17 +182,13 @@ class App extends Component {
       <div className="container">
         <div className="row">
           <div className="col">
-
-          </div>
-        </div>
-        <div className="row">
-          <div className="col">
             <h1>Time Tracker</h1>
           </div>
         </div>
         <div className="row">
           <div className="col">
-            {tables}
+            <Slider
+              slides={slides} />
           </div>
         </div>
         <div className="row">

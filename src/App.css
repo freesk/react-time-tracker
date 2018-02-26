@@ -31,3 +31,12 @@ fieldset > div:nth-child(2) {
 		margin-top: 10px;
 	}
 }
+
+.Slider .hidden {
+	display: none;
+}
+
+.Slider .control {
+	margin-top: 10px;
+	margin-bottom: 20px;
+}

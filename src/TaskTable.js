@@ -39,9 +39,6 @@ class TaskTable extends Component {
 
         let taskRows = [];
 
-        // console.log(project);
-        // console.log(projects[project].items);
-
         const tasks = projects[project].items;
 
         for (var i = 0; i < tasks.length; i++) {
@@ -78,13 +75,14 @@ class TaskTable extends Component {
 
         }
 
-        projectRows.push(
-          <TaskProjectRow
-            key={project}
-            project={project}>
-            {taskRows}
-          </TaskProjectRow>
-        );
+        if(taskRows.length)
+          projectRows.push(
+            <TaskProjectRow
+              key={project}
+              project={project}>
+              {taskRows}
+            </TaskProjectRow>
+          );
 
       }
     }
