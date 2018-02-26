@@ -3,40 +3,37 @@ import React, { Component } from 'react';
 class Slider extends Component {
 	constructor(props) {
 		super(props);
-		this.state = {
-			currentIndex: this.props.index
-		};
 		this.handleClick = this.handleClick.bind(this);
 	}
 
 	handleClick(id) {
-		this.setState({ currentIndex: id });
+		this.props.onHandleDateChnage(this.props.slides[id].date);
 	}
 
 	render() {
 
-		let slides = [];
+		let slide;
 		let controls = [];
 
 		this.props.slides.forEach((obj, index) => {
 
 			const date = obj.date;
 			const table = obj.table;
-			
+
 			let isHidden;
 
-			if(this.state.currentIndex !== index)
+			if(this.props.todaysDate !== date)
 				isHidden = true;
 			else
 				isHidden = false;
 
-			slides.push(
-				<div
+			if(!isHidden) {
+				slide = <div
 					className={isHidden ? "hidden" : ""}
 					key={date}>
 					{table}
 				</div>
-			);
+			}
 
 			controls.push(
 				<Control
@@ -63,7 +60,7 @@ class Slider extends Component {
 					</div>
 				</div>
 				<div>
-					{slides}
+					{slide}
 				</div>
 			</div>
 		);

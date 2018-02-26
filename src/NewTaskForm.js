@@ -12,11 +12,20 @@ class NewTaskForm extends Component {
   constructor(props) {
     super(props);
 
+    const todaysDate = this.props.todaysDate;
+    const todaysDateSplit = todaysDate.split("-");
+
+    let t = new Date();
+    t.setMonth(parseInt(todaysDateSplit[0]) - 1);
+    t.setDate(parseInt(todaysDateSplit[1]));
+    t.setFullYear(parseInt(todaysDateSplit[2]));
+
     // initial state
     this.state = {
       project: "",
       activity: "",
-      details: ""
+      details: "",
+      timestamp: t
     }
 
     // handlers
@@ -27,6 +36,15 @@ class NewTaskForm extends Component {
   }
 
   handleSubmit(event) {
+
+    const todaysDate = this.props.todaysDate;
+    const todaysDateSplit = todaysDate.split("-");
+
+    let t = new Date();
+    t.setMonth(parseInt(todaysDateSplit[0]) - 1);
+    t.setDate(parseInt(todaysDateSplit[1]));
+    t.setFullYear(parseInt(todaysDateSplit[2]));
+
     // to stop actual submit action
     event.preventDefault();
     // wrap up a new piece of data
@@ -36,7 +54,7 @@ class NewTaskForm extends Component {
       activity: this.state.activity,
       details: this.state.details,
       seconds: 0,
-      timestamp: Math.floor(Date.now())
+      timestamp: t
     }
     // pass it to the parent
     this.props.onHandleSubmit(task);

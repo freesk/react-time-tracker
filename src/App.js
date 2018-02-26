@@ -26,6 +26,13 @@ function getMmDdYyyy(timestamp) {
 class App extends Component {
   constructor(props) {
     super(props);
+
+    const timestamp = Date.now();
+    const todaysDate = getMmDdYyyy(timestamp);
+
+    // const found = slides.find(slide => slide.date === todaysDate);
+    // const index = slides.indexOf(found);
+
     // keep all this data as a state
     this.state = {
       tasks: [
@@ -61,11 +68,17 @@ class App extends Component {
           seconds: 3600,
           timestamp: 1519631957979
         }
-      ]
+      ],
+      todaysDate: todaysDate
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleTimeUpdate = this.handleTimeUpdate.bind(this);
+    this.handleDateChange = this.handleDateChange.bind(this);
+  }
+
+  handleDateChange(todaysDate) {
+    this.setState({ todaysDate: todaysDate });
   }
 
   handleTimeUpdate(obj) {
@@ -119,12 +132,6 @@ class App extends Component {
       }
     }
 
-    const timestamp = Date.now();
-    const todaysDate = getMmDdYyyy(timestamp);
-
-    const found = slides.find(slide => slide.date === todaysDate);
-    const index = slides.indexOf(found);
-
     return (
       <div className="container">
         <div className="row">
@@ -136,12 +143,14 @@ class App extends Component {
           <div className="col">
             <Slider
               slides={slides}
-              index={index} />
+              todaysDate={this.state.todaysDate}
+              onHandleDateChnage={this.handleDateChange} />
           </div>
         </div>
         <div className="row">
           <div className="col">
           <NewTaskForm
+            todaysDate={this.state.todaysDate}
             onHandleSubmit={this.handleSubmit} />
           </div>
         </div>
