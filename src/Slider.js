@@ -4,7 +4,7 @@ class Slider extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			currentIndex: 0
+			currentIndex: this.props.index
 		};
 		this.handleClick = this.handleClick.bind(this);
 	}
@@ -22,10 +22,7 @@ class Slider extends Component {
 
 			const date = obj.date;
 			const table = obj.table;
-
-			// console.log(date);
-			// console.log(table);
-
+			
 			let isHidden;
 
 			if(this.state.currentIndex !== index)
