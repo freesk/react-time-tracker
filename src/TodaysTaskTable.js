@@ -2,13 +2,15 @@ import React, { Component } from 'react';
 
 import SearchBar from './SearchBar';
 import TaskTable from './TaskTable';
+import NewTaskForm from './NewTaskForm';
 
-class FilterableTaskTable extends Component {
+class TodaysTaskTable extends Component {
   constructor(props) {
     super(props);
     this.state = { filterText: '' };
     this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
     this.handleTimeUpdate = this.handleTimeUpdate.bind(this);
+    this.handleNewTask = this.handleNewTask.bind(this);
   }
 
   handleFilterTextChange(filterText) {
@@ -21,6 +23,10 @@ class FilterableTaskTable extends Component {
     this.props.onHandleTimeUpdate(obj);
   }
 
+  handleNewTask(task) {
+    this.props.onHandleNewTask(task);
+  }
+
   render() {
     return (
       <div>
@@ -31,9 +37,12 @@ class FilterableTaskTable extends Component {
           onHandleTimeUpdate={this.handleTimeUpdate}
           tasks={this.props.tasks}
           filterText={this.state.filterText} />
+        <NewTaskForm
+          date={this.props.date}
+          onHandleNewTask={this.handleNewTask} />
       </div>
     );
   }
 }
 
-export default FilterableTaskTable;
+export default TodaysTaskTable;

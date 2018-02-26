@@ -1,49 +1,71 @@
 import React, { Component } from 'react';
 
+import collectjs from '../node_modules/collect.js';
+
+import TodaysTaskTable from './TodaysTaskTable';
+
 class Slider extends Component {
 	constructor(props) {
 		super(props);
-		this.handleClick = this.handleClick.bind(this);
+
+		// to initialize it with today's date
+		const collection = collectjs(this.props.tasks);
+		const grouped = collection.groupBy("date").all();
+		const iterable = getIterable(grouped);
+		const todaysDate = getMmDdYyyy(Date.now());
+		const found = iterable.find(obj => {
+			return obj.key === todaysDate;
+		});
+		const index = iterable.indexOf(found);
+
+		this.state = {
+			currentIndex: index
+		}
+
+		this.handleControlClick = this.handleControlClick.bind(this);
+		this.handleTimeUpdate = this.handleTimeUpdate.bind(this);
+		this.handleNewTask = this.handleNewTask.bind(this);
 	}
 
-	handleClick(id) {
-		this.props.onHandleDateChnage(this.props.slides[id].date);
+	handleTimeUpdate(obj) {
+    this.props.onHandleTimeUpdate(obj);
+  }
+
+  handleNewTask(task) {
+    this.props.onHandleNewTask(task);
+  }
+
+	handleControlClick(index) {
+		this.setState({ currentIndex: index });
 	}
 
 	render() {
 
-		let slide;
+		const collection = collectjs(this.props.tasks);
+		const grouped = collection.groupBy("date").all();
+		const iterable = getIterable(grouped);
+
 		let controls = [];
+		let table;
 
-		this.props.slides.forEach((obj, index) => {
-
-			const date = obj.date;
-			const table = obj.table;
-
-			let isHidden;
-
-			if(this.props.todaysDate !== date)
-				isHidden = true;
-			else
-				isHidden = false;
-
-			if(!isHidden) {
-				slide = <div
-					className={isHidden ? "hidden" : ""}
-					key={date}>
-					{table}
-				</div>
+		iterable.forEach((object, index) => {
+			const date = object.key;
+			const isOn = this.state.currentIndex === index;
+			if(isOn) {
+				table = <TodaysTaskTable
+	        tasks={object.items}
+	        date={date}
+	        onHandleTimeUpdate={this.handleTimeUpdate}
+	        onHandleNewTask={this.handleNewTask} />
 			}
-
 			controls.push(
 				<Control
-					onHandleClick={this.handleClick}
-					isActive={!isHidden}
-					date={date}
 					key={index}
-					id={index} />
+					isOn={isOn}
+					date={date}
+					index={index}
+					onHandleControlClick={this.handleControlClick} />
 			);
-
 		});
 
 		return (
@@ -60,17 +82,9 @@ class Slider extends Component {
 					</div>
 				</div>
 				<div>
-					{slide}
+					{table}
 				</div>
 			</div>
-		);
-	}
-}
-
-class Slide extends Component {
-	render() {
-		return (
-			<div>{this.props.body}</div>
 		);
 	}
 }
@@ -78,18 +92,39 @@ class Slide extends Component {
 class Control extends Component {
 	constructor(props) {
 		super(props);
-		this.handleClick = this.handleClick.bind(this);
+		this.handleControlClick = this.handleControlClick.bind(this);
 	}
 
-	handleClick() {
-		this.props.onHandleClick(this.props.id);
+	handleControlClick() {
+		this.props.onHandleControlClick(this.props.index);
 	}
 
 	render() {
 		return (
-			<button className={"btn btn-sm btn-outline-secondary" + (this.props.isActive ? "active" : "")} onClick={this.handleClick}>{this.props.date}</button>
+			<button className={"btn btn-sm btn-outline-secondary" + (this.props.isOn ? "active" : "")} onClick={this.handleControlClick}>{this.props.date}</button>
 		);
 	}
+}
+
+function getMmDdYyyy(timestamp) {
+  const t = new Date(timestamp);
+  return (t.getMonth() + 1) + "-" + t.getDate() + "-" + t.getFullYear();
+}
+
+function getIterable(object) {
+
+	let arr = [];
+
+	for (var key in object) {
+		if (object.hasOwnProperty(key)) {
+			arr.push({
+				key: key,
+				items: object[key].items
+			});
+		}
+	}
+
+	return arr;
 }
 
 export default Slider;

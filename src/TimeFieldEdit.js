@@ -12,7 +12,7 @@ class TimeFieldEditor extends Component {
 			hh: formatedTime.hh,
 			mm: formatedTime.mm,
 			ss: formatedTime.ss
-		}
+		};
 
 		this.handleHoursChange = this.handleHoursChange.bind(this);
 		this.handleMinutesChange = this.handleMinutesChange.bind(this);
@@ -21,19 +21,17 @@ class TimeFieldEditor extends Component {
   }
 
 	handleTimeEdit(e) {
-
 		e.preventDefault();
 
-		let seconds;
-		try {
-			seconds = parseInt(this.state.hh, 10) * 3600 +
-								parseInt(this.state.mm, 10) * 60 +
-								parseInt(this.state.ss, 10);
-		} catch (e) {
-			console.log(e.message);
-			// set back to the input
+		let seconds = parseInt(this.state.hh, 10) * 3600 +
+									parseInt(this.state.mm, 10) * 60 +
+									parseInt(this.state.ss, 10);
+
+		if (isNaN(seconds)) {
+			console.log("NaN");
 			seconds = this.props.seconds;
 		}
+
 		this.props.onHandleTimeEdit(seconds);
 	}
 

@@ -12,39 +12,21 @@ class NewTaskForm extends Component {
   constructor(props) {
     super(props);
 
-    const todaysDate = this.props.todaysDate;
-    const todaysDateSplit = todaysDate.split("-");
-
-    let t = new Date();
-    t.setMonth(parseInt(todaysDateSplit[0]) - 1);
-    t.setDate(parseInt(todaysDateSplit[1]));
-    t.setFullYear(parseInt(todaysDateSplit[2]));
-
     // initial state
     this.state = {
       project: "",
       activity: "",
-      details: "",
-      timestamp: t
+      details: ""
     }
 
     // handlers
     this.handleProjectChange = this.handleProjectChange.bind(this);
     this.handleActivityChange = this.handleActivityChange.bind(this);
     this.handleDetailsChange = this.handleDetailsChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleNewTask = this.handleNewTask.bind(this);
   }
 
-  handleSubmit(event) {
-
-    const todaysDate = this.props.todaysDate;
-    const todaysDateSplit = todaysDate.split("-");
-
-    let t = new Date();
-    t.setMonth(parseInt(todaysDateSplit[0]) - 1);
-    t.setDate(parseInt(todaysDateSplit[1]));
-    t.setFullYear(parseInt(todaysDateSplit[2]));
-
+  handleNewTask(event) {
     // to stop actual submit action
     event.preventDefault();
     // wrap up a new piece of data
@@ -54,10 +36,10 @@ class NewTaskForm extends Component {
       activity: this.state.activity,
       details: this.state.details,
       seconds: 0,
-      timestamp: t
+      date: this.props.date
     }
     // pass it to the parent
-    this.props.onHandleSubmit(task);
+    this.props.onHandleNewTask(task);
   }
 
   handleProjectChange(project) {
@@ -75,7 +57,6 @@ class NewTaskForm extends Component {
   render() {
     return (
       <form className="NewTaskForm">
-
         <div className="input-group">
           <TextInput
             className="form-control"
@@ -93,10 +74,9 @@ class NewTaskForm extends Component {
             onHandleChange={this.handleDetailsChange}
             value={this.state.details} />
           <div className="input-group-append">
-            <button className="btn btn-outline-secondary" type="button"  onClick={this.handleSubmit}>Submit</button>
+            <button className="btn btn-outline-secondary" type="button" onClick={this.handleNewTask}>Submit</button>
           </div>
         </div>
-
       </form>
     );
   }
