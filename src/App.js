@@ -1,6 +1,8 @@
 // react
 import React, { Component } from 'react';
 
+import collectjs from '../node_modules/collect.js';
+
 // style
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -102,9 +104,18 @@ class App extends Component {
           details: "https://reactjs.org/docs",
           seconds: 3600,
           timestamp: 1519586396874
+        },
+        {
+          id: getRandomInt(1000000),
+          project: "React Application",
+          activity: "Splitting the app content by date",
+          details: "none",
+          seconds: 3600,
+          timestamp: 1519631957979
         }
       ]
     };
+
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleTimeUpdate = this.handleTimeUpdate.bind(this);
   }
@@ -132,8 +143,41 @@ class App extends Component {
   }
 
   render() {
+
+    const tasks = this.state.tasks.slice();
+
+    let formated = tasks.map(task => {
+      const t = new Date(task.timestamp);
+      task.date = t.getMonth() + "-" + t.getDate() + "-" + t.getYear();
+      return task;
+    });
+
+    const collection = collectjs(formated);
+    const grouped = collection.groupBy('date').all();
+
+    // console.log(grouped.all());
+
+    let tables = [];
+
+    for (let table in grouped) {
+      if (grouped.hasOwnProperty(table)) {
+        const tasks = grouped[table].items;
+        tables.push(
+          <FilterableTaskTable
+            key={table}
+            tasks={tasks}
+            onHandleTimeUpdate={this.handleTimeUpdate} />
+        );
+      }
+    }
+
     return (
       <div className="container">
+        <div className="row">
+          <div className="col">
+
+          </div>
+        </div>
         <div className="row">
           <div className="col">
             <h1>Time Tracker</h1>
@@ -141,9 +185,7 @@ class App extends Component {
         </div>
         <div className="row">
           <div className="col">
-            <FilterableTaskTable
-              tasks={this.state.tasks}
-              onHandleTimeUpdate={this.handleTimeUpdate} />
+            {tables}
           </div>
         </div>
         <div className="row">

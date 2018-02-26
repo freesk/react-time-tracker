@@ -1,11 +1,12 @@
 legend {
 	padding: 0px 10px !important;
 	width: auto !important;
+	margin-bottom: 0 !important;
 }
 
 fieldset {
 	padding: 15px !important;
-	border: 1px solid rgba(21, 202, 219, 0.5) !important;
+	border: 1px solid #ced4da !important;
 	border-radius: 3px;
 }
 
@@ -15,4 +16,18 @@ fieldset {
 
 .NewTaskForm {
 	margin-top: 20px;
+}
+
+fieldset > div {
+	margin-top: 10px;
+}
+
+fieldset > div:nth-child(2) {
+	margin-top: 0px !important;
+}
+
+@media (max-width: 768px) {
+	fieldset > div .col-sm-12:not(:first-child) {
+		margin-top: 10px;
+	}
 }

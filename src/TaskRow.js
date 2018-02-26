@@ -72,19 +72,23 @@ class TaskRow extends Component {
     }
 
     return (
-      <div className="row">
-        <div className="col">
-          <div>{this.props.activity}</div>
-          <div>{this.props.details}</div>
-        </div>
-        <div className="col">
-          {timeField}
-        </div>
-        <div className="col">
-          <Button
-            className="btn btn-secondary"
-            text={this.props.isToggleOn ? "STOP" : "RUN"}
-            onHandleClick={this.handleClick} />
+      <div className="card">
+        <div className="card-body">
+          <div className="row align-items-center">
+            <div className="col-sm-12 col-md-4">
+              <h5>{this.props.activity}</h5>
+              <small>{this.props.details}</small>
+            </div>
+            <div className="col-sm-12 col-md-4">
+              {timeField}
+            </div>
+            <div className="col-sm-12 col-md-4">
+              <Button
+                className="btn btn-secondary"
+                text={this.props.isToggleOn ? "STOP" : "RUN"}
+                onHandleClick={this.handleClick} />
+            </div>
+          </div>
         </div>
       </div>
     );
