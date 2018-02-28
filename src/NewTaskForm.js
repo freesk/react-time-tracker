@@ -7,6 +7,26 @@ function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
 
+class DropDownItem extends Component {
+  constructor(props) {
+    super(props);
+
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick() {
+    this.props.onHandleDropDownClick(this.props.project);
+  }
+
+  render() {
+    return(
+      <a className="dropdown-item" onClick={this.handleClick}>
+        {this.props.project}
+      </a>
+    );
+  }
+}
+
 class NewTaskForm extends Component {
 
   constructor(props) {
@@ -24,6 +44,7 @@ class NewTaskForm extends Component {
     this.handleActivityChange = this.handleActivityChange.bind(this);
     this.handleDetailsChange = this.handleDetailsChange.bind(this);
     this.handleNewTask = this.handleNewTask.bind(this);
+    this.handleDropDownClick = this.handleDropDownClick.bind(this);
   }
 
   handleNewTask(event) {
@@ -42,6 +63,10 @@ class NewTaskForm extends Component {
     this.props.onHandleNewTask(task);
   }
 
+  handleDropDownClick(project) {
+    this.setState({ project: project });
+  }
+
   handleProjectChange(project) {
     this.setState({ project: project });
   }
@@ -55,9 +80,23 @@ class NewTaskForm extends Component {
   }
 
   render() {
+
+    // add projects
+    const dropDownItems = this.props.projects.map(project =>
+      <DropDownItem key={project} project={project} onHandleDropDownClick={this.handleDropDownClick} />
+    );
+
     return (
       <form className="NewTaskForm">
         <div className="input-group">
+          <div className="input-group-btn">
+            <button type="button" className="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Select
+            </button>
+            <div className="dropdown-menu">
+              {dropDownItems}
+            </div>
+          </div>
           <TextInput
             className="form-control"
             placeholder={"Project"}
@@ -73,7 +112,7 @@ class NewTaskForm extends Component {
             placeholder={"Details"}
             onHandleChange={this.handleDetailsChange}
             value={this.state.details} />
-          <div className="input-group-append">
+          <div className="input-group-btn">
             <button className="btn btn-outline-secondary" type="button" onClick={this.handleNewTask}>Submit</button>
           </div>
         </div>

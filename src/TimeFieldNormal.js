@@ -42,8 +42,10 @@ class TimeFieldNormal extends Component {
 							className="form-control"
 							onHandleChange={function(){}}
 							value={ss} />
-						<div className="input-group-append">
+						<div className="input-group-btn">
 							<button className="btn btn-outline-secondary" type="button"  onClick={this.handleClick}>Edit</button>
+						</div>
+						<div className="input-group-btn">
 							<button className="btn btn-outline-secondary" type="button"  onClick={this.handleDeleteClick}>Delete</button>
 						</div>
 				</div>

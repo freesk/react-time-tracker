@@ -3,7 +3,9 @@ import React, { Component } from 'react';
 
 // style
 import './App.css';
-import 'bootstrap/dist/css/bootstrap.css';
+// import 'bootstrap/dist/css/bootstrap.css';
+
+import collectjs from '../node_modules/collect.js';
 
 // my components
 import Slider from './Slider';
@@ -102,6 +104,12 @@ class App extends Component {
   }
 
   render() {
+
+    // collect all projects for autofill
+    const collection = collectjs(this.state.tasks);
+    const grouped = collection.groupBy("project").keys();
+    const projects = grouped.items;
+
     return (
       <div className="container">
         <div className="row">
@@ -113,6 +121,7 @@ class App extends Component {
           <div className="col">
             <Slider
               tasks={this.state.tasks}
+              projects={projects}
               onHandleNewTask={this.handleNewTask}
               onHandleTimeUpdate={this.handleTimeUpdate}
               onHandleDeleteClick={this.handleDeleteClick} />

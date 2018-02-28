@@ -61,6 +61,7 @@ class TaskRow extends Component {
   }
 
   handleDeleteClick() {
+    this.stopTimer();
     this.props.onHandleDeleteClick(this.props.id);
   }
 
@@ -97,7 +98,7 @@ class TaskRow extends Component {
             <div className="col-sm-12 col-md-4">
               <Button
                 className="btn btn-secondary"
-                text={this.props.isToggleOn ? "STOP" : "RUN"}
+                text={this.props.isToggleOn ? "Stop" : "Start"}
                 onHandleClick={this.handleClick}/>
             </div>
           </div>

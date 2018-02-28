@@ -90,6 +90,7 @@ class Slider extends Component {
 				form =
 					<NewTaskForm
 						date={date}
+						projects={this.props.projects}
 						onHandleNewTask={this.handleNewTask} />
 			}
 

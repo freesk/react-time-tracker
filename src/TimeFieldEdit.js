@@ -73,8 +73,10 @@ class TimeFieldEditor extends Component {
 						className="form-control"
 						onHandleChange={this.handleSecondsChange}
 						value={ss} />
-					<div className="input-group-append">
+					<div className="input-group-btn">
 						<button className="btn btn-outline-secondary" type="button" onClick={this.handleTimeEdit}>Save</button>
+					</div>
+					<div className="input-group-btn">
 						<button className="btn btn-outline-secondary" type="button" onClick={this.handleEditCancel}>Cancel</button>
 					</div>
 				</div>
