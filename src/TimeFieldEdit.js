@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 
-import TextInput from './TextInput';
-
 class TimeFieldEditor extends Component {
 	constructor(props) {
     super(props);
@@ -40,16 +38,16 @@ class TimeFieldEditor extends Component {
 		this.props.onHandleTimeEdit(seconds);
 	}
 
-	handleHoursChange(hh) {
-		this.setState({ hh: hh });
+	handleHoursChange(event) {
+		this.setState({ hh: event.target.value });
 	}
 
-	handleMinutesChange(mm) {
-		this.setState({ mm: mm });
+	handleMinutesChange(event) {
+		this.setState({ mm: event.target.value });
 	}
 
-	handleSecondsChange(ss) {
-		this.setState({ ss: ss });
+	handleSecondsChange(event) {
+		this.setState({ ss: event.target.value });
 	}
 
 	render() {
@@ -63,17 +61,17 @@ class TimeFieldEditor extends Component {
 				<div className="row">
 					<div className="col-6 col-xs-8">
 						<div className="input-group">
-							<TextInput
+							<input
 								className="form-control"
-								onHandleChange={this.handleHoursChange}
+								onChange={this.handleHoursChange}
 								value={hh} />
-							<TextInput
+							<input
 								className="form-control"
-								onHandleChange={this.handleMinutesChange}
+								onChange={this.handleMinutesChange}
 								value={mm} />
-							<TextInput
+							<input
 								className="form-control"
-								onHandleChange={this.handleSecondsChange}
+								onChange={this.handleSecondsChange}
 								value={ss} />
 						</div>
 					</div>

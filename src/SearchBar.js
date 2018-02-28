@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 
-import TextInput from './TextInput';
-
 class SearchBar extends Component {
 
   constructor(props) {
@@ -9,8 +7,8 @@ class SearchBar extends Component {
     this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
   }
 
-  handleFilterTextChange(filterText) {
-    this.props.onFilterTextChange(filterText);
+  handleFilterTextChange(event) {
+    this.props.onFilterTextChange(event.target.value);
   }
 
   render() {
@@ -19,10 +17,13 @@ class SearchBar extends Component {
 
     return (
       <form>
-      <TextInput
-        placeholder="Search..."
-        value={filterText}
-        onHandleChange={this.handleFilterTextChange} />
+        <div class="form-group">
+          <input
+            className="form-control"
+            placeholder="Search..."
+            value={filterText}
+            onChange={this.handleFilterTextChange} />
+        </div>
       </form>
     );
   }

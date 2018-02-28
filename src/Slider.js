@@ -108,26 +108,20 @@ class Slider extends Component {
 
 		return (
 			<div className="Slider">
-				<div className="control row align-items-center no-gutters">
-					<div className="col-1 text-center">
-						<a href={""}
-							className={"badge badge-pill badge-warning "}
-							onClick={this.onClickPrev}>
-							Prev
-						</a>
-					</div>
-					<div className="col-10">
-						<div className="row no-gutters">
+				<div className="control row justify-content-md-center">
+
+					<div className="btn-toolbar">
+						<div className="btn-group btn-group-sm mr-2">
+							<button type="button" className="btn btn-secondary" onClick={this.onClickPrev}>Prev</button>
+						</div>
+						<div className="btn-group btn-group-sm mr-2">
 							{controls}
 						</div>
+						<div className="btn-group btn-group-sm">
+							<button type="button" className="btn btn-secondary" onClick={this.onClickNext}>Next</button>
+						</div>
 					</div>
-					<div className="col-1 text-center">
-						<a href={""}
-							className={"badge badge-pill badge-warning "}
-							onClick={this.onClickNext}>
-							Next
-						</a>
-					</div>
+
 				</div>
 				<div>
 					{table}
@@ -153,13 +147,12 @@ class Control extends Component {
 
 	render() {
 		return (
-			<div className="col text-center">
-				<a href={""}
-					className={"badge badge-pill " + (this.props.isOn ? "badge-primary" : "badge-info")}
-					onClick={this.handleControlClick}>
+			<button
+				type="button"
+				onClick={this.handleControlClick}
+				className={"btn btn-secondary" + (this.props.isOn ? "active" : "")}>
 					{this.props.date}
-				</a>
-			</div>
+			</button>
 		);
 	}
 }

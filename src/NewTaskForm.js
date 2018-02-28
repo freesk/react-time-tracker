@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 
-import TextInput from './TextInput';
-
 // temporal solution for unique id
 function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
@@ -67,16 +65,16 @@ class NewTaskForm extends Component {
     this.setState({ project: project });
   }
 
-  handleProjectChange(project) {
-    this.setState({ project: project });
+  handleProjectChange(event) {
+    this.setState({ project: event.target.value });
   }
 
-  handleActivityChange(activity) {
-    this.setState({ activity: activity });
+  handleActivityChange(event) {
+    this.setState({ activity: event.target.value });
   }
 
-  handleDetailsChange(details) {
-    this.setState({ details: details });
+  handleDetailsChange(event) {
+    this.setState({ details: event.target.value });
   }
 
   render() {
@@ -97,20 +95,20 @@ class NewTaskForm extends Component {
               {dropDownItems}
             </div>
           </div>
-          <TextInput
+          <input
             className="form-control"
             placeholder={"Project"}
-            onHandleChange={this.handleProjectChange}
+            onChange={this.handleProjectChange}
             value={this.state.project} />
-          <TextInput
+          <input
             className="form-control"
             placeholder={"Activity"}
-            onHandleChange={this.handleActivityChange}
+            onChange={this.handleActivityChange}
             value={this.state.activity} />
-          <TextInput
+          <input
             className="form-control"
             placeholder={"Details"}
-            onHandleChange={this.handleDetailsChange}
+            onChange={this.handleDetailsChange}
             value={this.state.details} />
           <div className="input-group-btn">
             <button className="btn btn-secondary" type="button" onClick={this.handleNewTask}>Submit</button>

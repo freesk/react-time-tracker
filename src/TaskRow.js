@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 
 import TimeFieldEdit from './TimeFieldEdit';
 import TimeFieldNormal from './TimeFieldNormal';
-import Button from './Button';
 
 class TaskRow extends Component {
 
@@ -96,10 +95,11 @@ class TaskRow extends Component {
               {timeField}
             </div>
             <div className="col-sm-12 col-md-2">
-              <Button
+              <button
                 className={"btn " + (this.props.isToggleOn ? "btn-danger" : "btn-success")}
-                text={this.props.isToggleOn ? "Stop" : "Start"}
-                onHandleClick={this.handleClick}/>
+                onClick={this.handleClick}>
+                {this.props.isToggleOn ? "Stop" : "Start"}
+              </button>
             </div>
           </div>
         </div>

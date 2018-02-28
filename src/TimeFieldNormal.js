@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 
-import TextInput from './TextInput';
-
 class TimeFieldNormal extends Component {
 	constructor(props) {
     super(props);
@@ -32,17 +30,17 @@ class TimeFieldNormal extends Component {
 				<div className="row">
 					<div className="col-6 col-xs-8">
 						<div className="input-group">
-							<TextInput
+							<input
+								disabled
 								className="form-control"
-								onHandleChange={function(){}}
 								value={hh} />
-							<TextInput
+							<input
+								disabled
 								className="form-control"
-								onHandleChange={function(){}}
 								value={mm} />
-							<TextInput
+							<input
+								disabled
 								className="form-control"
-								onHandleChange={function(){}}
 								value={ss} />
 						</div>
 					</div>
