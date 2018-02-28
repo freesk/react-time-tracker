@@ -29,25 +29,29 @@ class TimeFieldNormal extends Component {
 
 		return (
 			<form>
-				<div className="input-group">
-						<TextInput
-							className="form-control"
-							onHandleChange={function(){}}
-							value={hh} />
-						<TextInput
-							className="form-control"
-							onHandleChange={function(){}}
-							value={mm} />
-						<TextInput
-							className="form-control"
-							onHandleChange={function(){}}
-							value={ss} />
-						<div className="input-group-btn">
-							<button className="btn btn-outline-secondary" type="button"  onClick={this.handleClick}>Edit</button>
+				<div className="row">
+					<div className="col-6 col-xs-8">
+						<div className="input-group">
+							<TextInput
+								className="form-control"
+								onHandleChange={function(){}}
+								value={hh} />
+							<TextInput
+								className="form-control"
+								onHandleChange={function(){}}
+								value={mm} />
+							<TextInput
+								className="form-control"
+								onHandleChange={function(){}}
+								value={ss} />
 						</div>
-						<div className="input-group-btn">
-							<button className="btn btn-outline-secondary" type="button"  onClick={this.handleDeleteClick}>Delete</button>
+					</div>
+					<div className="col-6 col-xs-4">
+						<div className="btn-group">
+							<button className="btn btn-secondary" type="button"  onClick={this.handleClick}>Edit</button>
+							<button className="btn btn-secondary" type="button"  onClick={this.handleDeleteClick}>Delete</button>
 						</div>
+					</div>
 				</div>
 			</form>
 		);

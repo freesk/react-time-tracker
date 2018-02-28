@@ -113,7 +113,7 @@ class NewTaskForm extends Component {
             onHandleChange={this.handleDetailsChange}
             value={this.state.details} />
           <div className="input-group-btn">
-            <button className="btn btn-outline-secondary" type="button" onClick={this.handleNewTask}>Submit</button>
+            <button className="btn btn-secondary" type="button" onClick={this.handleNewTask}>Submit</button>
           </div>
         </div>
       </form>

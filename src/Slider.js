@@ -28,7 +28,8 @@ class Slider extends Component {
 		this.onClickNext = this.onClickNext.bind(this);
 	}
 
-	onClickPrev() {
+	onClickPrev(e) {
+		e.preventDefault();
 		const currentDate = this.state.currentDate;
 		const startOfWeek = moment(currentDate, "MM-DD-YYYY").startOf('week');
 		const prevDay = startOfWeek.day(-1).toObject();
@@ -36,7 +37,8 @@ class Slider extends Component {
 		this.setState({currentDate: prevDayStr});
 	}
 
-	onClickNext() {
+	onClickNext(e) {
+		e.preventDefault();
 		const currentDate = this.state.currentDate;
 		const startOfWeek = moment(currentDate, "MM-DD-YYYY").startOf('week');
 		const nextDay = startOfWeek.day(7).toObject();
@@ -107,16 +109,24 @@ class Slider extends Component {
 		return (
 			<div className="Slider">
 				<div className="control row align-items-center no-gutters">
-					<div className="col-1">
-						<button className="btn btn-sm btn-block btn-outline-secondary prev" onClick={this.onClickPrev}>{"<"}</button>
+					<div className="col-1 text-center">
+						<a href={""}
+							className={"badge badge-pill badge-warning "}
+							onClick={this.onClickPrev}>
+							Prev
+						</a>
 					</div>
 					<div className="col-10">
-					<div className="row no-gutters">
-						{controls}
+						<div className="row no-gutters">
+							{controls}
+						</div>
 					</div>
-					</div>
-					<div className="col-1">
-						<button className="btn btn-sm btn-block btn-outline-secondary next" onClick={this.onClickNext}>{">"}</button>
+					<div className="col-1 text-center">
+						<a href={""}
+							className={"badge badge-pill badge-warning "}
+							onClick={this.onClickNext}>
+							Next
+						</a>
 					</div>
 				</div>
 				<div>
@@ -136,14 +146,19 @@ class Control extends Component {
 		this.handleControlClick = this.handleControlClick.bind(this);
 	}
 
-	handleControlClick() {
+	handleControlClick(e) {
+		e.preventDefault();
 		this.props.onHandleControlClick(this.props.date);
 	}
 
 	render() {
 		return (
-			<div className="col">
-				<button className={"btn btn-sm btn-block btn-outline-secondary " + (this.props.isOn ? "active" : "")} onClick={this.handleControlClick}>{this.props.date}</button>
+			<div className="col text-center">
+				<a href={""}
+					className={"badge badge-pill " + (this.props.isOn ? "badge-primary" : "badge-info")}
+					onClick={this.handleControlClick}>
+					{this.props.date}
+				</a>
 			</div>
 		);
 	}

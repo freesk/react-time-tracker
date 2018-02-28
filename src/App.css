@@ -19,6 +19,10 @@ fieldset {
 	margin-top: 10px;
 }
 
+.TaskProjectRow .card {
+	padding: 10px;
+}
+
 .NewTaskForm {
 	margin-top: 20px;
 	margin-bottom: 20px;
@@ -46,8 +50,3 @@ fieldset > div:nth-child(2) {
 	margin-top: 10px;
 	margin-bottom: 20px;
 }
-
-/* .Slider .prev,
-.Slider .next {
-	height: 100%;
-} */

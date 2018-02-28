@@ -60,24 +60,28 @@ class TimeFieldEditor extends Component {
 
 		return (
 			<form onSubmit={this.handleTimeEdit}>
-				<div className="input-group">
-					<TextInput
-						className="form-control"
-						onHandleChange={this.handleHoursChange}
-						value={hh} />
-					<TextInput
-						className="form-control"
-						onHandleChange={this.handleMinutesChange}
-						value={mm} />
-					<TextInput
-						className="form-control"
-						onHandleChange={this.handleSecondsChange}
-						value={ss} />
-					<div className="input-group-btn">
-						<button className="btn btn-outline-secondary" type="button" onClick={this.handleTimeEdit}>Save</button>
+				<div className="row">
+					<div className="col-6 col-xs-8">
+						<div className="input-group">
+							<TextInput
+								className="form-control"
+								onHandleChange={this.handleHoursChange}
+								value={hh} />
+							<TextInput
+								className="form-control"
+								onHandleChange={this.handleMinutesChange}
+								value={mm} />
+							<TextInput
+								className="form-control"
+								onHandleChange={this.handleSecondsChange}
+								value={ss} />
+						</div>
 					</div>
-					<div className="input-group-btn">
-						<button className="btn btn-outline-secondary" type="button" onClick={this.handleEditCancel}>Cancel</button>
+					<div className="col-6 col-xs-4">
+						<div className="btn-group">
+							<button className="btn btn-secondary" type="button" onClick={this.handleTimeEdit}>Save</button>
+							<button className="btn btn-secondary" type="button" onClick={this.handleEditCancel}>Cancel</button>
+						</div>
 					</div>
 				</div>
 			</form>

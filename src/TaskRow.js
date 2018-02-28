@@ -92,12 +92,12 @@ class TaskRow extends Component {
               <h5>{this.props.activity}</h5>
               <small>{this.props.details}</small>
             </div>
-            <div className="col-sm-12 col-md-4">
+            <div className="col-sm-12 col-md-6">
               {timeField}
             </div>
-            <div className="col-sm-12 col-md-4">
+            <div className="col-sm-12 col-md-2">
               <Button
-                className="btn btn-secondary"
+                className={"btn " + (this.props.isToggleOn ? "btn-danger" : "btn-success")}
                 text={this.props.isToggleOn ? "Stop" : "Start"}
                 onHandleClick={this.handleClick}/>
             </div>
