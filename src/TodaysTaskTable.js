@@ -8,12 +8,22 @@ class TodaysTaskTable extends Component {
     super(props);
     this.state = { filterText: '' };
     this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
+    this.handleTimeUpdate = this.handleTimeUpdate.bind(this);
+    this.handleDeleteClick = this.handleDeleteClick.bind(this);
+  }
+
+  handleTimeUpdate(obj) {
+    this.props.onHandleTimeUpdate(obj);
   }
 
   handleFilterTextChange(filterText) {
     this.setState({
       filterText: filterText
     });
+  }
+
+  handleDeleteClick(id) {
+    this.props.onHandleDeleteClick(id);
   }
 
   render() {
@@ -25,7 +35,8 @@ class TodaysTaskTable extends Component {
         <TaskTable
           onHandleTimeUpdate={this.handleTimeUpdate}
           tasks={this.props.tasks}
-          filterText={this.state.filterText} />
+          filterText={this.state.filterText}
+          onHandleDeleteClick={this.handleDeleteClick} />
       </div>
     );
   }

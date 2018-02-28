@@ -14,6 +14,12 @@ class TaskRow extends Component {
 		this.handleClick = this.handleClick.bind(this);
 		this.handleTimeEdit = this.handleTimeEdit.bind(this);
     this.handleEditOn = this.handleEditOn.bind(this);
+    this.handleDeleteClick = this.handleDeleteClick.bind(this);
+    this.handleEditClose = this.handleEditClose.bind(this);
+  }
+
+  handleEditClose() {
+    this.setState({ isEditMode: false });
   }
 
 	handleTimeEdit(seconds) {
@@ -54,6 +60,10 @@ class TaskRow extends Component {
     clearInterval(this.timerID);
   }
 
+  handleDeleteClick() {
+    this.props.onHandleDeleteClick(this.props.id);
+  }
+
   render() {
 		// make sure it is not running on each render
 		if(!this.props.isToggleOn)
@@ -64,11 +74,13 @@ class TaskRow extends Component {
     if(this.state.isEditMode) {
       timeField = <TimeFieldEdit
         seconds={this.props.seconds}
-        onHandleTimeEdit={this.handleTimeEdit} />
+        onHandleTimeEdit={this.handleTimeEdit}
+        onHandleEditClose={this.handleEditClose}  />
     } else {
       timeField = <TimeFieldNormal
         seconds={this.props.seconds}
-        onHandleClick={this.handleEditOn} />
+        onHandleClick={this.handleEditOn}
+        onHandleDeleteClick={this.handleDeleteClick} />
     }
 
     return (
@@ -86,7 +98,7 @@ class TaskRow extends Component {
               <Button
                 className="btn btn-secondary"
                 text={this.props.isToggleOn ? "STOP" : "RUN"}
-                onHandleClick={this.handleClick} />
+                onHandleClick={this.handleClick}/>
             </div>
           </div>
         </div>

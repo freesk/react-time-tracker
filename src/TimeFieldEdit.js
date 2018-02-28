@@ -18,7 +18,12 @@ class TimeFieldEditor extends Component {
 		this.handleMinutesChange = this.handleMinutesChange.bind(this);
 		this.handleSecondsChange = this.handleSecondsChange.bind(this);
 		this.handleTimeEdit = this.handleTimeEdit.bind(this);
+		this.handleEditCancel = this.handleEditCancel.bind(this);
   }
+
+	handleEditCancel() {
+		this.props.onHandleEditClose();
+	}
 
 	handleTimeEdit(e) {
 		e.preventDefault();
@@ -70,6 +75,7 @@ class TimeFieldEditor extends Component {
 						value={ss} />
 					<div className="input-group-append">
 						<button className="btn btn-outline-secondary" type="button" onClick={this.handleTimeEdit}>Save</button>
+						<button className="btn btn-outline-secondary" type="button" onClick={this.handleEditCancel}>Cancel</button>
 					</div>
 				</div>
 			</form>

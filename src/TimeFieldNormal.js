@@ -7,7 +7,12 @@ class TimeFieldNormal extends Component {
     super(props);
 
 		this.handleClick = this.handleClick.bind(this);
+		this.handleDeleteClick = this.handleDeleteClick.bind(this);
   }
+
+	handleDeleteClick() {
+		this.props.onHandleDeleteClick();
+	}
 
 	handleClick(e) {
 		e.preventDefault();
@@ -39,6 +44,7 @@ class TimeFieldNormal extends Component {
 							value={ss} />
 						<div className="input-group-append">
 							<button className="btn btn-outline-secondary" type="button"  onClick={this.handleClick}>Edit</button>
+							<button className="btn btn-outline-secondary" type="button"  onClick={this.handleDeleteClick}>Delete</button>
 						</div>
 				</div>
 			</form>

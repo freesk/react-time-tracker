@@ -21,6 +21,7 @@ class Slider extends Component {
 
 		this.handleTimeUpdate = this.handleTimeUpdate.bind(this);
 		this.handleNewTask = this.handleNewTask.bind(this);
+		this.handleDeleteClick = this.handleDeleteClick.bind(this);
 
 		this.handleControlClick = this.handleControlClick.bind(this);
 		this.onClickPrev = this.onClickPrev.bind(this);
@@ -43,6 +44,10 @@ class Slider extends Component {
 		this.setState({currentDate: nextDayStr});
 	}
 
+	handleDeleteClick(id) {
+		this.props.onHandleDeleteClick(id);
+	}
+
 	handleTimeUpdate(obj) {
     this.props.onHandleTimeUpdate(obj);
   }
@@ -59,7 +64,6 @@ class Slider extends Component {
 
 		const collection = collectjs(this.props.tasks);
 		const grouped = collection.groupBy("date").all();
-		const iterable = getIterable(grouped);
 
 		let controls = [];
 		let table = null;
@@ -79,7 +83,8 @@ class Slider extends Component {
 					table = <TodaysTaskTable
 				        tasks={tasks}
 				        onHandleTimeUpdate={this.handleTimeUpdate}
-				        onHandleNewTask={this.handleNewTask} />;
+				        onHandleNewTask={this.handleNewTask}
+								onHandleDeleteClick={this.handleDeleteClick} />;
 				}
 
 				form =
@@ -154,29 +159,11 @@ function getWeekArray(date) {
 	for (var i = 1; i < NUMBER_OF_DAYS; i++)
 		daysOfWeek.push(startOfWeek.day(i).toObject());
 
-	return daysOfWeek.map(day => {
-		return dateObjectToString(day);
-	});
+	return daysOfWeek.map(day => dateObjectToString(day));
 }
 
 function dateObjectToString(obj) {
 	return (obj.months + 1) + "-" + obj.date + "-" + obj.years;
-}
-
-function getIterable(object) {
-
-	let arr = [];
-
-	for (var key in object) {
-		if (object.hasOwnProperty(key)) {
-			arr.push({
-				key: key,
-				items: object[key].items
-			});
-		}
-	}
-
-	return arr;
 }
 
 export default Slider;

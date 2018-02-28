@@ -72,19 +72,26 @@ class App extends Component {
 
     this.handleNewTask = this.handleNewTask.bind(this);
     this.handleTimeUpdate = this.handleTimeUpdate.bind(this);
+    this.handleDeleteClick = this.handleDeleteClick.bind(this);
   }
 
   handleTimeUpdate(obj) {
     let tasks = this.state.tasks.slice();
-
     const found = tasks.find(task => {
       return task.id === obj.id;
     });
-
     const index = tasks.indexOf(found);
-
     tasks[index].seconds = obj.seconds;
+    this.setState({ tasks: tasks });
+  }
 
+  handleDeleteClick(id) {
+    let tasks = this.state.tasks.slice();
+    const found = tasks.find(task => {
+      return task.id === id;
+    });
+    const index = tasks.indexOf(found);
+    tasks.splice(index, 1);
     this.setState({ tasks: tasks });
   }
 
@@ -107,7 +114,8 @@ class App extends Component {
             <Slider
               tasks={this.state.tasks}
               onHandleNewTask={this.handleNewTask}
-              onHandleTimeUpdate={this.handleTimeUpdate} />
+              onHandleTimeUpdate={this.handleTimeUpdate}
+              onHandleDeleteClick={this.handleDeleteClick} />
           </div>
         </div>
       </div>

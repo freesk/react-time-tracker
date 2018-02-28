@@ -15,6 +15,11 @@ class TaskTable extends Component {
 		this.newID = null;
 		this.handleIdChnage = this.handleIdChnage.bind(this);
     this.handleTimeUpdate = this.handleTimeUpdate.bind(this);
+    this.handleDeleteClick = this.handleDeleteClick.bind(this);
+  }
+
+  handleDeleteClick(id) {
+    this.props.onHandleDeleteClick(id);
   }
 
   handleTimeUpdate(obj) {
@@ -67,6 +72,7 @@ class TaskTable extends Component {
         			isToggleOn={isToggleOn}
               onHandleIdChange={this.handleIdChnage}
               onHandleTimeUpdate={this.handleTimeUpdate}
+              onHandleDeleteClick={this.handleDeleteClick}
               activity={task.activity}
               seconds={task.seconds}
               details={task.details}
