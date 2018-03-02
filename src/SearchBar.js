@@ -17,7 +17,7 @@ class SearchBar extends Component {
 
     return (
       <form>
-        <div class="form-group">
+        <div className="form-group">
           <input
             className="form-control"
             placeholder="Search..."
