@@ -85,7 +85,7 @@ class NewTaskForm extends Component {
     );
 
     return (
-      <form className="NewTaskForm">
+      <form className="NewTaskForm" onSubmit={this.handleNewTask}>
         <div className="input-group">
           <div className="input-group-btn">
             <button type="button" className="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -96,22 +96,25 @@ class NewTaskForm extends Component {
             </div>
           </div>
           <input
+            required={true}
             className="form-control"
             placeholder={"Project"}
             onChange={this.handleProjectChange}
             value={this.state.project} />
           <input
+            required={true}
             className="form-control"
             placeholder={"Activity"}
             onChange={this.handleActivityChange}
             value={this.state.activity} />
           <input
+            required={true}
             className="form-control"
             placeholder={"Details"}
             onChange={this.handleDetailsChange}
             value={this.state.details} />
           <div className="input-group-btn">
-            <button className="btn btn-secondary" type="button" onClick={this.handleNewTask}>Submit</button>
+            <button className="btn btn-secondary" type="submit">Submit</button>
           </div>
         </div>
       </form>

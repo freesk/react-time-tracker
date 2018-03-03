@@ -77,7 +77,7 @@ class TimeFieldEditor extends Component {
 					</div>
 					<div className="col-6 col-xs-4">
 						<div className="btn-group">
-							<button className="btn btn-secondary" type="button" onClick={this.handleTimeEdit}>Save</button>
+							<button className="btn btn-secondary" type="submit">Save</button>
 							<button className="btn btn-secondary" type="button" onClick={this.handleEditCancel}>Cancel</button>
 						</div>
 					</div>

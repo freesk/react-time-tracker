@@ -108,21 +108,30 @@ class Slider extends Component {
 
 		return (
 			<div className="Slider">
-				<div className="control row justify-content-md-center">
 
-					<div className="btn-toolbar">
-						<div className="btn-group btn-group-sm mr-2">
-							<button type="button" className="btn btn-secondary" onClick={this.onClickPrev}>Prev</button>
-						</div>
-						<div className="btn-group btn-group-sm mr-2">
-							{controls}
-						</div>
-						<div className="btn-group btn-group-sm">
-							<button type="button" className="btn btn-secondary" onClick={this.onClickNext}>Next</button>
-						</div>
-					</div>
-
-				</div>
+				<table className="top-control">
+					<tbody>
+					<tr>
+						<td className="prev-td">
+							<a href="" onClick={this.onClickPrev}>Prev</a>
+						</td>
+						<td>
+							<div className="flex-container">
+								<div className="flex-item">{controls[0]}</div>
+								<div className="flex-item">{controls[2]}</div>
+								<div className="flex-item">{controls[4]}</div>
+								<div className="flex-item">{controls[6]}</div>
+								<div className="flex-item">{controls[1]}</div>
+								<div className="flex-item">{controls[3]}</div>
+								<div className="flex-item">{controls[5]}</div>
+							</div>
+						</td>
+						<td className="next-td">
+							<a href="" onClick={this.onClickNext}>Next</a>
+						</td>
+					</tr>
+					</tbody>
+				</table>
 				<div>
 					{table}
 				</div>
@@ -146,13 +155,14 @@ class Control extends Component {
 	}
 
 	render() {
+
 		return (
-			<button
-				type="button"
+			<a
+				href=""
 				onClick={this.handleControlClick}
-				className={"btn btn-secondary" + (this.props.isOn ? "active" : "")}>
+				className={this.props.isOn ? "active" : ""}>
 					{this.props.date}
-			</button>
+			</a>
 		);
 	}
 }
