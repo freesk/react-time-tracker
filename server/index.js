@@ -6,6 +6,8 @@ const app = express();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
+mongoose.set('debug', true);
+
 const userRoutes = require('./routes/user');
 const recordRoutes = require('./routes/record');
 

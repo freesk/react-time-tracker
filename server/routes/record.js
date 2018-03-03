@@ -68,26 +68,21 @@ router.delete('/', (req, res, next) => {
 	const recordId = req.body.recordId;
 
 	// filter by user id
-	Record.find({ "user" : userId, "id" : recordId }, { "user": 0 })
+	Record.find({ "user" : userId, "_id" : recordId }, { "user": 0 })
 		.remove()
-		.exec(function(err, doc) {
+		.exec(function(err) {
 			if(err) return res.status(500).json({
 				message: "an error occured"
 			});
 			// good to go
 			res.status(200).json({
-				message: "success",
-				doc: doc
+				message: "success"
 			});
 		});
 
-})
+});
 
 router.post('/', (req, res, next) => {
-
-	console.log(req);
-	console.log(req.body);
-
 	const project  = req.body.project;
 	const activity = req.body.activity;
 	const details  = req.body.details;

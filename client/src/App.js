@@ -10,11 +10,6 @@ import collectjs from '../node_modules/collect.js';
 // my components
 import Slider from './Slider';
 
-// temporal solution for unique id
-function getRandomInt(max) {
-  return Math.floor(Math.random() * Math.floor(max));
-}
-
 class App extends Component {
   constructor(props) {
     super(props);
@@ -42,9 +37,11 @@ class App extends Component {
   }
 
   handleLogIn(callback) {
+    // hardcoded for now
     const username = "dmitry";
     const password = "password";
 
+    // get token and user id
     fetch('http://localhost:8000/user/login?username=' + username + '&password=' + password + '')
       .then((response) => response.json())
       .then((responseJson) => {
@@ -59,24 +56,30 @@ class App extends Component {
       });
   }
 
+  // on init
   componentDidMount() {
 
     const that = this;
 
     this.handleLogIn(function() {
 
+      // get token from the local storage
       const token = localStorage.getItem("token");
+      // get user id from the local storage
       const userId = localStorage.getItem("userId");
+      // for a url
       const url = 'http://localhost:8000/record?userId=' + userId + '&token=' + token;
-
+      // fetch
       fetch(url, { method: 'GET' })
         .then((response) => response.json())
         .then((responseJson) => {
 
           const tasks = responseJson.doc;
 
+          // debug
           console.log(tasks);
 
+          // update the state with data
           that.setState({
             tasks: tasks,
             token: token,
@@ -92,7 +95,7 @@ class App extends Component {
   }
 
   syncTime() {
-
+    // send requests to the server with
   }
 
   handleTimeUpdate(obj) {
@@ -112,17 +115,42 @@ class App extends Component {
   }
 
   handleDeleteClick(id) {
-    let tasks = this.state.tasks.slice();
-    const found = tasks.find(task => {
-      return task._id === id;
+
+    console.log(id);
+
+    const that = this;
+    const data = { recordId: id };
+    const userId = this.state.userId;
+    const token = this.state.token;
+    const url = 'http://localhost:8000/record?userId=' + userId + '&token=' + token;
+
+    fetch(url, {
+      method: 'DELETE',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then((responseJson) => {
+
+      console.log(responseJson.message);
+
+      // create a copy of the array
+      let tasks = this.state.tasks.slice();
+      // find a record by its id
+      const found = tasks.find(task => {
+        return task._id === id;
+      });
+      // get its index
+      const index = tasks.indexOf(found);
+      // remove the record from the array
+      tasks.splice(index, 1);
+      // apply the change to the state
+      this.setState({ tasks: tasks });
+    })
+    .catch((error) => {
+      console.error(error);
     });
-    const index = tasks.indexOf(found);
-    tasks.splice(index, 1);
 
-    // send a request to the server
-    // ...
-
-    this.setState({ tasks: tasks });
   }
 
   handleNewTask(task) {
@@ -135,16 +163,9 @@ class App extends Component {
       date: task.date
     };
 
-    console.log(data);
-
     const userId = this.state.userId;
     const token = this.state.token;
     const url = 'http://localhost:8000/record?userId=' + userId + '&token=' + token;
-
-    // let tasks = this.state.tasks.slice();
-    // tasks.push(task);
-
-    // console.log(task);
 
     fetch(url, {
       method: 'POST',
@@ -153,14 +174,13 @@ class App extends Component {
     })
     .then(response => response.json())
     .then((responseJson) => {
-
       const task = responseJson.doc;
-
+      // create a copy of the task array
       let tasks = this.state.tasks.slice();
+      // push a new record
       tasks.push(task);
-
+      // update the state with a new array
       this.setState({ tasks: tasks });
-
     })
     .catch((error) => {
       console.error(error);
