@@ -24,7 +24,7 @@ class TaskRow extends Component {
 	handleTimeEdit(seconds) {
     this.setState({ isEditMode: false });
 		this.props.onHandleTimeUpdate({
-			id: this.props.id,
+			_id: this.props._id,
 			seconds: seconds
 		});
 	}
@@ -37,14 +37,14 @@ class TaskRow extends Component {
     if(this.props.isToggleOn) {
 			this.props.onHandleIdChange(null);
     } else {
-			this.props.onHandleIdChange(this.props.id);
+			this.props.onHandleIdChange(this.props._id);
 			this.startTimer();
     }
   }
 
   tick() {
     this.props.onHandleTimeUpdate({
-      id: this.props.id,
+      _id: this.props._id,
       seconds: this.props.seconds + 1
     });
   }
@@ -61,7 +61,7 @@ class TaskRow extends Component {
 
   handleDeleteClick() {
     this.stopTimer();
-    this.props.onHandleDeleteClick(this.props.id);
+    this.props.onHandleDeleteClick(this.props._id);
   }
 
   render() {

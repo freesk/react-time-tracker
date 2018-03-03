@@ -59,7 +59,7 @@ class TaskTable extends Component {
         	let isToggleOn = false;
 
         	// if the task id is in the currentId run it
-        	if(task.id === this.state.currentId)
+        	if(task._id === this.state.currentId)
         		isToggleOn = true;
 
         	// if the task id is in the currentId and in the this.newId turn it off
@@ -68,7 +68,7 @@ class TaskTable extends Component {
 
           taskRows.push(
             <TaskRow
-        			id={task.id}
+        			_id={task._id}
         			isToggleOn={isToggleOn}
               onHandleIdChange={this.handleIdChnage}
               onHandleTimeUpdate={this.handleTimeUpdate}
@@ -76,7 +76,7 @@ class TaskTable extends Component {
               activity={task.activity}
               seconds={task.seconds}
               details={task.details}
-              key={task.id} />
+              key={task._id} />
           );
 
         }
