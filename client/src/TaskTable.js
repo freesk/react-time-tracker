@@ -9,27 +9,22 @@ class TaskTable extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      currentId: null
-    }
-		this.newID = null;
-		this.handleIdChnage = this.handleIdChnage.bind(this);
-    this.handleTimeUpdate = this.handleTimeUpdate.bind(this);
+		this.handleToggleId = this.handleToggleId.bind(this);
+    this.handleTimeEdit = this.handleTimeEdit.bind(this);
     this.handleDeleteClick = this.handleDeleteClick.bind(this);
+  }
+
+  handleTimeEdit(id, seconds) {
+    this.props.onHandleTimeEdit(id, seconds);
+  }
+
+  handleToggleId(id) {
+    this.props.onHandleToggleId(id);
   }
 
   handleDeleteClick(id) {
     this.props.onHandleDeleteClick(id);
   }
-
-  handleTimeUpdate(obj, forced) {
-    this.props.onHandleTimeUpdate(obj, forced);
-  }
-
-	handleIdChnage(newId) {
-		this.newID = newId;
-		this.setState({ currentId: newId });
-	}
 
   render() {
     const filterText = this.props.filterText;
@@ -55,23 +50,18 @@ class TaskTable extends Component {
             task.details.indexOf(filterText) === -1
           ) continue;
 
-        	// turned off by default
-        	let isToggleOn = false;
+          task._id === this.props.currentId
 
-        	// if the task id is in the currentId run it
-        	if(task._id === this.state.currentId)
-        		isToggleOn = true;
-
-        	// if the task id is in the currentId and in the this.newId turn it off
-        	if(this.state.currentId === this.newId)
-        		isToggleOn = false;
+          const id = task._id;
+          const currentId = this.props.currentId;
+        	const isToggleOn = id === currentId;
 
           taskRows.push(
             <TaskRow
         			_id={task._id}
-        			isToggleOn={isToggleOn}
-              onHandleIdChange={this.handleIdChnage}
-              onHandleTimeUpdate={this.handleTimeUpdate}
+              isToggleOn={isToggleOn}
+              onHandleToggleId={this.handleToggleId}
+              onHandleTimeEdit={this.handleTimeEdit}
               onHandleDeleteClick={this.handleDeleteClick}
               activity={task.activity}
               seconds={task.seconds}

@@ -16,18 +16,63 @@ class Slider extends Component {
 
 		// set now for initialization
 		this.state = {
-			currentDate: dateObjectToString(currentDate.toObject())
+			currentDate: dateObjectToString(currentDate.toObject()),
+			currentId: null
 		}
 
-		this.handleTimeUpdate = this.handleTimeUpdate.bind(this);
+		// globals
+		this.timerID = null;
+
+		this.handleTimeEdit = this.handleTimeEdit.bind(this);
 		this.handleNewTask = this.handleNewTask.bind(this);
 		this.handleDeleteClick = this.handleDeleteClick.bind(this);
-
 		this.handleControlClick = this.handleControlClick.bind(this);
 		this.onClickPrev = this.onClickPrev.bind(this);
 		this.onClickNext = this.onClickNext.bind(this);
+		this.tick = this.tick.bind(this);
+		this.handleToggleId = this.handleToggleId.bind(this);
 	}
 
+	handleTimeEdit(id, seconds) {
+		this.props.onHandleTimeUpdate(id, seconds);
+  }
+
+	handleToggleId(id) {
+		// if the current id is null, start the timer
+		if (!this.state.currentId) {
+			this.startTimer();
+			this.setState({ currentId: id });
+		// if the current id is the same as a new one, stop the timer
+		} else if (this.state.currentId === id) {
+			this.stopTimer();
+			this.setState({ currentId: null });
+		// if the current id is different than a new one, redefine the timer
+		} else if (this.state.currentId !== id) {
+			this.stopTimer();
+			this.startTimer();
+			this.setState({ currentId: id });
+		}
+	}
+
+	tick() {
+		this.props.onHandleTimeUpdate(this.state.currentId);
+	}
+
+	startTimer() {
+		this.timerID = setInterval(() => this.tick(),
+			1000
+		);
+	}
+
+	handleDeleteClick(id) {
+		this.props.onHandleDeleteClick(id);
+	}
+
+	stopTimer() {
+		clearInterval(this.timerID);
+	}
+
+	// get to the prev week
 	onClickPrev(e) {
 		e.preventDefault();
 		const currentDate = this.state.currentDate;
@@ -37,6 +82,7 @@ class Slider extends Component {
 		this.setState({currentDate: prevDayStr});
 	}
 
+	// get to the next week
 	onClickNext(e) {
 		e.preventDefault();
 		const currentDate = this.state.currentDate;
@@ -46,18 +92,11 @@ class Slider extends Component {
 		this.setState({currentDate: nextDayStr});
 	}
 
-	handleDeleteClick(id) {
-		this.props.onHandleDeleteClick(id);
-	}
-
-	handleTimeUpdate(obj, forced) {
-    this.props.onHandleTimeUpdate(obj, forced);
-  }
-
   handleNewTask(task) {
     this.props.onHandleNewTask(task);
   }
 
+	// when one of the days in the top nav gets clicked
 	handleControlClick(date) {
 		this.setState({ currentDate: date });
 	}
@@ -83,9 +122,11 @@ class Slider extends Component {
 					const tasks = grouped[date].items;
 
 					table = <TodaysTaskTable
+								currentId={this.state.currentId}
 				        tasks={tasks}
-				        onHandleTimeUpdate={this.handleTimeUpdate}
+				        onHandleTimeEdit={this.handleTimeEdit}
 				        onHandleNewTask={this.handleNewTask}
+								onHandleToggleId={this.handleToggleId}
 								onHandleDeleteClick={this.handleDeleteClick} />;
 				}
 

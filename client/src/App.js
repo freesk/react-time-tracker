@@ -90,6 +90,10 @@ class App extends Component {
     }, this.syncTimeSpan);
   }
 
+  clearSyncTimer() {
+    clearTimeout(this.timerId);
+  }
+
   syncTime() {
     // send updates to the server if there are any
     if(!this.toSync.length)
@@ -107,7 +111,7 @@ class App extends Component {
       })
       .then(response => response.json())
       .then((responseJson) => {
-        console.log(responseJson.message);
+        // console.log(responseJson.message);
         // after sync clear the array
         this.toSync = [];
         // run the timout again
@@ -119,21 +123,24 @@ class App extends Component {
       });
   }
 
-  handleTimeUpdate(obj, forced) {
+  handleTimeUpdate(id, seconds) {
     const tasks = this.state.tasks.slice();
     const found = tasks.find(task => {
-      return task._id === obj._id;
+      return task._id === id;
     });
     const index = tasks.indexOf(found);
     const task = tasks[index];
-    task.seconds = obj.seconds;
-    // save for future sync
+    // seconds is not defined for a timer event
+    task.seconds = seconds ? seconds : task.seconds + 1;
+
     if(this.toSync.indexOf(task) < 0)
       this.toSync.push(task);
-    // update the state
+
     this.setState({ tasks: tasks });
-    if(forced) {
-      clearTimeout(this.timerId);
+
+    // if the time has been edited
+    if(seconds) {
+      this.clearSyncTimer()
       this.syncTime();
     }
   }

@@ -16,7 +16,6 @@ $ npm run postinstall
 $ npm start
 ```
 ## Development
-The app stops tracking time if the current day gets changed.  
 The client is missing a login form.  
 The client is missing a signup form.  
 The client is missing server errors handling.  

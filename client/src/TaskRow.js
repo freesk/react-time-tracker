@@ -10,7 +10,7 @@ class TaskRow extends Component {
 
     this.state = { isEditMode: false };
 
-		this.handleClick = this.handleClick.bind(this);
+		this.handleToggleId = this.handleToggleId.bind(this);
 		this.handleTimeEdit = this.handleTimeEdit.bind(this);
     this.handleEditOn = this.handleEditOn.bind(this);
     this.handleDeleteClick = this.handleDeleteClick.bind(this);
@@ -23,51 +23,22 @@ class TaskRow extends Component {
 
 	handleTimeEdit(seconds) {
     this.setState({ isEditMode: false });
-		this.props.onHandleTimeUpdate({
-			_id: this.props._id,
-			seconds: seconds
-		}, true);
+    this.props.onHandleTimeEdit(this.props._id, seconds);
 	}
 
   handleEditOn() {
     this.setState({ isEditMode: true });
   }
 
-  handleClick() {
-    if(this.props.isToggleOn) {
-			this.props.onHandleIdChange(null);
-    } else {
-			this.props.onHandleIdChange(this.props._id);
-			this.startTimer();
-    }
-  }
-
-  tick() {
-    this.props.onHandleTimeUpdate({
-      _id: this.props._id,
-      seconds: this.props.seconds + 1
-    }, false);
-  }
-
-  startTimer() {
-    this.timerID = setInterval(() => this.tick(),
-      1000
-    );
-  }
-
-  stopTimer() {
-    clearInterval(this.timerID);
+  handleToggleId() {
+		this.props.onHandleToggleId(this.props._id);
   }
 
   handleDeleteClick() {
-    this.stopTimer();
     this.props.onHandleDeleteClick(this.props._id);
   }
 
   render() {
-		// make sure it is not running on each render
-		if(!this.props.isToggleOn)
-			this.stopTimer();
 
     let timeField;
 
@@ -83,6 +54,8 @@ class TaskRow extends Component {
         onHandleDeleteClick={this.handleDeleteClick} />
     }
 
+    const isToggleOn = this.props.isToggleOn;
+
     return (
       <div className="card">
         <div className="card-body">
@@ -96,8 +69,8 @@ class TaskRow extends Component {
             </div>
             <div className="col-sm-12 col-md-2">
               <button
-                className={"btn " + (this.props.isToggleOn ? "btn-danger" : "btn-success")}
-                onClick={this.handleClick}>
+                className={"btn " + (isToggleOn ? "btn-danger" : "btn-success")}
+                onClick={this.handleToggleId}>
                 {this.props.isToggleOn ? "Stop" : "Start"}
               </button>
             </div>
