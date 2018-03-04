@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class TimeFieldEditor extends Component {
+class TimeFormEditOnor extends Component {
 	constructor(props) {
     super(props);
 
@@ -104,4 +104,4 @@ function formatTime(seconds) {
 	};
 }
 
-export default TimeFieldEditor;
+export default TimeFormEditOnor;

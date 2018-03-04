@@ -32,17 +32,15 @@ class TaskTable extends Component {
     const collection = collectjs(this.props.tasks);
     const grouped = collection.groupBy('project');
     const projects = grouped.all();
-
-    let projectRows = [];
+    const projectRows = [];
 
     for (var project in projects) {
       if (projects.hasOwnProperty(project)) {
 
-        let taskRows = [];
-
+        const taskRows = [];
         const tasks = projects[project].items;
 
-        for (var i = 0; i < tasks.length; i++) {
+        for (let i = 0; i < tasks.length; i++) {
           const task = tasks[i];
 
           if (

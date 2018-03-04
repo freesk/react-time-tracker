@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
-import TimeFieldEdit from './TimeFieldEdit';
-import TimeFieldNormal from './TimeFieldNormal';
+import TimeFormEditOn from './TimeFormEditOn';
+import TimeFormEditOff from './TimeFormEditOff';
 
 class Task extends Component {
 
@@ -43,12 +43,12 @@ class Task extends Component {
     let timeField;
 
     if(this.state.isEditMode) {
-      timeField = <TimeFieldEdit
+      timeField = <TimeFormEditOn
         seconds={this.props.seconds}
         onHandleTimeEdit={this.handleTimeEdit}
         onHandleEditClose={this.handleEditClose}  />
     } else {
-      timeField = <TimeFieldNormal
+      timeField = <TimeFormEditOff
         seconds={this.props.seconds}
         onHandleClick={this.handleEditOn}
         onHandleDeleteClick={this.handleDeleteClick} />

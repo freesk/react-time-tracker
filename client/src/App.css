@@ -1,6 +1,6 @@
 .title {
 	text-align: center;
-	margin-top: 20px;
+	margin-top: 25px;
 }
 
 legend {
@@ -94,11 +94,34 @@ fieldset > div:nth-child(2) {
 }
 
 .DateController .no-records {
-	color: rgb(209, 209, 209);
-	margin: 0 20px;
+	color: #eceeef;
 }
 
 .modal {
 	display: block;
 	background-color: rgba(0, 0, 0, 0.7);
+}
+
+@media (min-width: 767.98px) {
+	.DateController .flex-item {
+	  width: 14.2% !important;
+	}
+	.DateController .flex-item:nth-child(5) {
+	  margin-left: 0 !important;
+	}
+	.DateController .flex-item:nth-child(7) {
+	  margin-right: 0 !important;
+	}
+}
+
+.top-control {
+	margin: 20px 0;
+}
+
+.dropdown-toggle::after {
+	margin-left: 0 !important;
+}
+
+.dropdown-toggle.btn {
+	padding: .5rem 0.6rem !important;
 }

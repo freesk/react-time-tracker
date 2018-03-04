@@ -106,8 +106,8 @@ class DateController extends Component {
 
 		const collection = collectjs(this.props.tasks);
 		const grouped = collection.groupBy("date").all();
+		const controls = [];
 
-		let controls = [];
 		let table = null;
 		let form = null;
 
@@ -218,7 +218,7 @@ function getWeekArray(date) {
 	// get the first day of the week where the give day sits
 	const startOfWeek = moment(date, "MM-DD-YYYY").startOf('week');
 	// define an array
-	let daysOfWeek = [];
+	const daysOfWeek = [];
 	// push the first day of the week
 	daysOfWeek.push(startOfWeek.toObject());
 	// push the rest of the 6 days

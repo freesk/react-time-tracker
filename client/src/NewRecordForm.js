@@ -82,7 +82,7 @@ class NewRecordForm extends Component {
         <div className="input-group">
           <div className="input-group-btn">
             <button type="button" className="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Select
+              <span className="sr-only">Toggle Dropdown</span>
             </button>
             <div className="dropdown-menu">
               {dropDownItems}

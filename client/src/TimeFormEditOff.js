@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class TimeFieldNormal extends Component {
+class TimeFormEditOff extends Component {
 	constructor(props) {
     super(props);
 
@@ -73,4 +73,4 @@ function formatTime(seconds) {
 	};
 }
 
-export default TimeFieldNormal;
+export default TimeFormEditOff;
