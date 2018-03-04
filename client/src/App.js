@@ -10,6 +10,7 @@ import collectjs from '../node_modules/collect.js';
 // my components
 import Slider from './Slider';
 import Modal from './Modal';
+import LogIn from './LogIn';
 
 class App extends Component {
   constructor(props) {
@@ -30,45 +31,61 @@ class App extends Component {
     this.handleNewTask = this.handleNewTask.bind(this);
     this.handleTimeUpdate = this.handleTimeUpdate.bind(this);
     this.handleDeleteClick = this.handleDeleteClick.bind(this);
-    this.handleLogIn = this.handleLogIn.bind(this);
     this.startSyncTimer = this.startSyncTimer.bind(this);
     this.handleModalClose = this.handleModalClose.bind(this);
+    this.handleLogInSubmit = this.handleLogInSubmit.bind(this);
+  }
+
+  getTheRecords() {
+    const token = this.state.token;
+    // form a url string
+    const url = 'http://localhost:8000/record?token=' + token;
+    // fetch
+    fetch(url, { method: 'GET' })
+      .then((response) => response.json())
+      .then((responseJson) => {
+        if(responseJson.error)
+          // update the state with an error message and reset
+          // the token if this request returns an error
+          return this.setState({
+            error: responseJson.error,
+            token: ""
+          });
+        // a reference
+        const tasks = responseJson.doc;
+        // update the state with data
+        this.setState({ tasks: tasks }, () => {
+          this.startSyncTimer();
+        });
+      })
+      .catch(() => {
+        // critical error
+        // ...
+      });
   }
 
   componentDidMount() {
-    const that = this;
+    // get a token from the local storage
+    const token = localStorage.getItem("token");
 
-    this.handleLogIn(function() {
-      // get token from the local storage
-      const token = localStorage.getItem("token");
-      // for a url
-      const url = 'http://localhost:8000/record?token=' + token;
-      // fetch
-      fetch(url, { method: 'GET' })
-        .then((response) => response.json())
-        .then((responseJson) => {
-          if(responseJson.error)
-            return that.setState({ error: responseJson.error });
-          // a reference
-          const tasks = responseJson.doc;
-          // update the state with data
-          that.setState({
-            tasks: tasks,
-            token: token
-          });
-        })
-        .catch(() => {
+    // debug
+    // const token = null;
 
-        });
-    });
-
-    this.startSyncTimer();
+    // try to use an available token
+    if(token)
+      // update the state with the token form the local storage
+      this.setState({ token: token }, () => {
+        // once it is set, get the records
+        this.getTheRecords();
+      });
+    // else, do nothing and proceed
   }
 
-  handleLogIn(callback) {
-    // hardcoded for now
-    const username = "dmitry";
-    const password = "password";
+  handleLogInSubmit(credentials) {
+    const username = credentials.username;
+    const password = credentials.password;
+
+    console.log(username + ":" + password);
 
     // get token and user id
     fetch('http://localhost:8000/user/login?username=' + username + '&password=' + password + '')
@@ -78,12 +95,17 @@ class App extends Component {
           return this.setState({ error: responseJson.error });
         // a reference
         const token = responseJson.token;
-        // console.log(token);
+        // save into the local storage
         localStorage.setItem('token', token);
-        callback();
+        // update the state
+        this.setState({ token: token }, () => {
+          // must be withing a callback
+          this.getTheRecords();
+        });
       })
       .catch((error) => {
-        // show modal
+        // critical error
+        // ...
       });
   }
 
@@ -124,7 +146,8 @@ class App extends Component {
         this.startSyncTimer();
       })
       .catch(() => {
-        this.startSyncTimer();
+        // critical error
+        // ...
       });
   }
 
@@ -178,7 +201,8 @@ class App extends Component {
       this.setState({ tasks: tasks });
     })
     .catch(() => {
-
+      // critical error
+      // ...
     });
 
   }
@@ -214,7 +238,8 @@ class App extends Component {
       this.setState({ tasks: tasks });
     })
     .catch(() => {
-
+      // critical error
+      // ...
     });
 
   }
@@ -233,6 +258,21 @@ class App extends Component {
     // debug
     console.log(this.state);
 
+    const authorized = this.state.token ? true : false;
+
+    let body;
+
+    if (authorized) {
+      body = <Slider
+        tasks={this.state.tasks}
+        projects={projects}
+        onHandleNewTask={this.handleNewTask}
+        onHandleTimeUpdate={this.handleTimeUpdate}
+        onHandleDeleteClick={this.handleDeleteClick} />
+    } else {
+      body = <LogIn onHandleLogInSubmit={this.handleLogInSubmit} />
+    }
+
     return (
       <div className="container">
         <div className="row">
@@ -242,12 +282,7 @@ class App extends Component {
         </div>
         <div className="row">
           <div className="col">
-            <Slider
-              tasks={this.state.tasks}
-              projects={projects}
-              onHandleNewTask={this.handleNewTask}
-              onHandleTimeUpdate={this.handleTimeUpdate}
-              onHandleDeleteClick={this.handleDeleteClick} />
+            {body}
           </div>
         </div>
         {errorMessage ? <Modal message={errorMessage} title={"Error"} onHandleClose={this.handleModalClose}/> : ""}
