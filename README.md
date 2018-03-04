@@ -18,7 +18,6 @@ $ npm start
 ## Development
 The client is missing a login form.  
 The client is missing a signup form.  
-The client is missing server errors handling.  
 The server is missing email verification on a new signup request.  
 The server is missing data validation.  
 This must be wrapped up as a [Cordova](https://cordova.apache.org) hybrid app.  
