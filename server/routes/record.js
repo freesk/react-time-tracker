@@ -7,35 +7,36 @@ const Asem = require('../misc/asem');
 const User = require('../models/user');
 const Record = require('../models/record');
 
-
 // middleware that is specific to this router
 router.use('/', (req, res, next) => {
 	// each request must contain a token
 	const token = req.query.token;
   jwt.verify(token, 'secret', function(err, decoded) {
     if(err) return res.status(401).json({
-      message: "not authorized"
+      error: "not authorized"
     });
     next();
   });
 });
 
 router.get('/', (req, res, next) => {
-
 	const decoded = jwt.verify(req.query.token, 'secret');
 	const userId = decoded.user._id;
-
-	// console.log(userId);
 
   // filter by user id
   Record.find({ "user" : userId }, { "user": 0 })
 	 .exec(function(err, doc) {
+
+		 // return res.status(500).json({
+			//  error: "user could not be found"
+		 // });
+
 	   if(err) return res.status(500).json({
-	     message: "an error occured"
+	     error: err.message
 	   });
 	   // good to go
 	   res.status(200).json({
-	     message: "success",
+	     error: null,
 			 doc: doc
 	   });
 	 });
@@ -51,39 +52,30 @@ router.patch('/', (req, res, next) => {
 
 	const asem = new Asem(() => {
 		if(errors.length) return res.status(500).json({
-			message: errors.reduce((accumulator, currentValue) =>
+			error: errors.reduce((accumulator, currentValue) =>
 				accumulator + ", " + currentValue
 			)
 		});
 		res.status(200).json({
-			message: "success"
+			error: null
 		});
 	}, data.length);
+
+	function onError(err) {
+		errors.push(err.message);
+		asem.p();
+	}
 
 	data.forEach((obj) => {
 		// filter by user id and recrd id
 		Record.findOne({ "user" : userId, "_id" : obj._id })
 			.exec(function(err, doc) {
-				if(err) {
-					errors.push({
-						status: 500,
-						message: "an error occured"
-					});
-					asem.p();
-					return;
-				}
+				if(err) return onError(err.message);
 				// update the number of seconds
 				doc.seconds = obj.seconds;
 				// save the update
 				doc.save((err) => {
-					if(err) {
-						errors.push({
-							status: 500,
-							message: "an error occured"
-						});
-						asem.p();
-						return;
-					}
+					if(err) return onError(err.message);
 					asem.p();
 				});
 			});
@@ -102,11 +94,11 @@ router.delete('/', (req, res, next) => {
 		.remove()
 		.exec(function(err) {
 			if(err) return res.status(500).json({
-				message: "an error occured"
+				error: err.message
 			});
 			// good to go
 			res.status(200).json({
-				message: "success"
+				error: null
 			});
 		});
 
@@ -134,11 +126,11 @@ router.post('/', (req, res, next) => {
 	record.save((err, doc) => {
 		// status 500 - server error
     if (err) return res.status(500).json({
-      message: err.message
+      error: err.message
     });
 		// status 201 - new resourse created
 		res.status(201).json({
-			message: "new record created",
+			error: null,
 			doc: doc
 		});
 	});

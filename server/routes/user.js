@@ -20,11 +20,11 @@ router.get('/register', function (req, res) {
 	user.save((err, doc) => {
 		// status 500 - server error
     if (err) return res.status(500).json({
-      message: err.message
+      error: err.message
     });
 		// status 201 - new resourse created
 		res.status(201).json({
-			message: "new user created"
+			error: null
 		});
 	});
 
@@ -37,17 +37,17 @@ router.get('/login', (req, res) => {
 
 	User.findOne({ username: username }, (err, doc) => {
 		if(err) return res.status(500).json({
-      message: err.message
+      error: err.message
     });
 
 		// status 401 - not authorized
 		if(!doc) return res.status(401).json({
-			message: "user not found"
+			error: "user not found"
 		});
 
 		// decrypt and compare
 		if(!bcrypt.compareSync(password, doc.password)) return res.status(401).json({
-      message: "invalid password"
+      error: "invalid password"
     });
 
 		// create a token
@@ -55,7 +55,7 @@ router.get('/login', (req, res) => {
 
 		// good to go
     res.status(200).json({
-      message: 'success',
+      error: null,
       token: token
     });
 

@@ -93,3 +93,8 @@ fieldset > div:nth-child(2) {
 .Slider .flex-item:nth-child(7) {
   margin-right: 12.5%;
 }
+
+.modal {
+	display: block;
+	background-color: rgba(0, 0, 0, 0.7);
+}

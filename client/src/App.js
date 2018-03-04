@@ -9,6 +9,7 @@ import collectjs from '../node_modules/collect.js';
 
 // my components
 import Slider from './Slider';
+import Modal from './Modal';
 
 class App extends Component {
   constructor(props) {
@@ -16,7 +17,8 @@ class App extends Component {
 
     this.state = {
       tasks: [],
-      token: null
+      token: null,
+      error: ""
     };
 
     this.syncTimeSpan = 1000 * 10;
@@ -30,6 +32,37 @@ class App extends Component {
     this.handleDeleteClick = this.handleDeleteClick.bind(this);
     this.handleLogIn = this.handleLogIn.bind(this);
     this.startSyncTimer = this.startSyncTimer.bind(this);
+    this.handleModalClose = this.handleModalClose.bind(this);
+  }
+
+  componentDidMount() {
+    const that = this;
+
+    this.handleLogIn(function() {
+      // get token from the local storage
+      const token = localStorage.getItem("token");
+      // for a url
+      const url = 'http://localhost:8000/record?token=' + token;
+      // fetch
+      fetch(url, { method: 'GET' })
+        .then((response) => response.json())
+        .then((responseJson) => {
+          if(responseJson.error)
+            return that.setState({ error: responseJson.error });
+          // a reference
+          const tasks = responseJson.doc;
+          // update the state with data
+          that.setState({
+            tasks: tasks,
+            token: token
+          });
+        })
+        .catch(() => {
+
+        });
+    });
+
+    this.startSyncTimer();
   }
 
   handleLogIn(callback) {
@@ -41,45 +74,17 @@ class App extends Component {
     fetch('http://localhost:8000/user/login?username=' + username + '&password=' + password + '')
       .then((response) => response.json())
       .then((responseJson) => {
+        if(responseJson.error)
+          return this.setState({ error: responseJson.error });
+        // a reference
         const token = responseJson.token;
         // console.log(token);
         localStorage.setItem('token', token);
         callback();
       })
       .catch((error) => {
-        console.error(error);
+        // show modal
       });
-  }
-
-  // on init
-  componentDidMount() {
-
-    const that = this;
-
-    this.handleLogIn(function() {
-      // get token from the local storage
-      const token = localStorage.getItem("token");
-      // for a url
-      const url = 'http://localhost:8000/record?token=' + token;
-      // console.log(url);
-      // fetch
-      fetch(url, { method: 'GET' })
-        .then((response) => response.json())
-        .then((responseJson) => {
-          const tasks = responseJson.doc;
-          // update the state with data
-          that.setState({
-            tasks: tasks,
-            token: token
-          });
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    });
-
-    this.startSyncTimer();
-
   }
 
   startSyncTimer() {
@@ -111,14 +116,14 @@ class App extends Component {
       })
       .then(response => response.json())
       .then((responseJson) => {
-        // console.log(responseJson.message);
+        if(responseJson.error)
+          return this.setState({ error: responseJson.error });
         // after sync clear the array
         this.toSync = [];
         // run the timout again
         this.startSyncTimer();
       })
-      .catch((error) => {
-        console.error(error);
+      .catch(() => {
         this.startSyncTimer();
       });
   }
@@ -157,6 +162,8 @@ class App extends Component {
     })
     .then(response => response.json())
     .then((responseJson) => {
+      if(responseJson.error)
+        return this.setState({ error: responseJson.error });
       // create a copy of the array
       const tasks = this.state.tasks.slice();
       // find a record by its id
@@ -170,8 +177,8 @@ class App extends Component {
       // apply the change to the state
       this.setState({ tasks: tasks });
     })
-    .catch((error) => {
-      console.error(error);
+    .catch(() => {
+
     });
 
   }
@@ -195,6 +202,9 @@ class App extends Component {
     })
     .then(response => response.json())
     .then((responseJson) => {
+      if(responseJson.error)
+        return this.setState({ error: responseJson.error });
+      // a reference
       const task = responseJson.doc;
       // create a copy of the task array
       const tasks = this.state.tasks.slice();
@@ -203,18 +213,25 @@ class App extends Component {
       // update the state with a new array
       this.setState({ tasks: tasks });
     })
-    .catch((error) => {
-      console.error(error);
+    .catch(() => {
+
     });
 
   }
 
-  render() {
+  handleModalClose() {
+    this.setState({ error: "" });
+  }
 
+  render() {
     // collect all projects for autofill
     const collection = collectjs(this.state.tasks);
     const grouped = collection.groupBy("project").keys();
     const projects = grouped.items;
+    const errorMessage = this.state.error;
+
+    // debug
+    console.log(this.state);
 
     return (
       <div className="container">
@@ -233,6 +250,7 @@ class App extends Component {
               onHandleDeleteClick={this.handleDeleteClick} />
           </div>
         </div>
+        {errorMessage ? <Modal message={errorMessage} title={"Error"} onHandleClose={this.handleModalClose}/> : ""}
       </div>
     );
   }

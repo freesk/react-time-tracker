@@ -50,8 +50,6 @@ class TaskTable extends Component {
             task.details.indexOf(filterText) === -1
           ) continue;
 
-          task._id === this.props.currentId
-
           const id = task._id;
           const currentId = this.props.currentId;
         	const isToggleOn = id === currentId;

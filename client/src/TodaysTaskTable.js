@@ -39,11 +39,10 @@ class TodaysTaskTable extends Component {
           onFilterTextChange={this.handleFilterTextChange} />
         <TaskTable
           currentId={this.props.currentId}
-          onHandleTimeEdit={this.onHandleTimeEdit}
+          onHandleTimeEdit={this.handleTimeEdit}
           tasks={this.props.tasks}
           filterText={this.state.filterText}
           onHandleDeleteClick={this.handleDeleteClick}
-          onHandleTimeEdit={this.handleTimeEdit}
           onHandleToggleId={this.handleToggleId} />
       </div>
     );
