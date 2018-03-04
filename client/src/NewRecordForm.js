@@ -1,10 +1,5 @@
 import React, { Component } from 'react';
 
-// temporal solution for unique id
-function getRandomInt(max) {
-  return Math.floor(Math.random() * Math.floor(max));
-}
-
 class DropDownItem extends Component {
   constructor(props) {
     super(props);
@@ -25,7 +20,7 @@ class DropDownItem extends Component {
   }
 }
 
-class NewTaskForm extends Component {
+class NewRecordForm extends Component {
 
   constructor(props) {
     super(props);
@@ -50,11 +45,9 @@ class NewTaskForm extends Component {
     event.preventDefault();
     // wrap up a new piece of data
     const task = {
-      id: getRandomInt(1000000),
       project: this.state.project,
       activity: this.state.activity,
       details: this.state.details,
-      seconds: 0,
       date: this.props.date
     }
     // pass it to the parent
@@ -85,7 +78,7 @@ class NewTaskForm extends Component {
     );
 
     return (
-      <form className="NewTaskForm" onSubmit={this.handleNewTask}>
+      <form className="NewRecordForm" onSubmit={this.handleNewTask}>
         <div className="input-group">
           <div className="input-group-btn">
             <button type="button" className="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -122,4 +115,4 @@ class NewTaskForm extends Component {
   }
 }
 
-export default NewTaskForm;
+export default NewRecordForm;

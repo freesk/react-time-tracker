@@ -3,7 +3,8 @@ import React, { Component } from 'react';
 import collectjs from '../node_modules/collect.js';
 
 // my components
-import TaskRow from './TaskRow';
+import Project from './Project';
+import Task from './Task';
 
 class TaskTable extends Component {
 
@@ -55,8 +56,8 @@ class TaskTable extends Component {
         	const isToggleOn = id === currentId;
 
           taskRows.push(
-            <TaskRow
-        			_id={task._id}
+            <Task
+        			_id={id}
               isToggleOn={isToggleOn}
               onHandleToggleId={this.handleToggleId}
               onHandleTimeEdit={this.handleTimeEdit}
@@ -64,18 +65,18 @@ class TaskTable extends Component {
               activity={task.activity}
               seconds={task.seconds}
               details={task.details}
-              key={task._id} />
+              key={id} />
           );
 
         }
 
         if(taskRows.length)
           projectRows.push(
-            <TaskProjectRow
+            <Project
               key={project}
               project={project}>
               {taskRows}
-            </TaskProjectRow>
+            </Project>
           );
 
       }
@@ -87,19 +88,6 @@ class TaskTable extends Component {
 
   }
 
-}
-
-class TaskProjectRow extends Component {
-  render() {
-    return (
-      <div className="TaskProjectRow">
-        <fieldset>
-          <legend>{this.props.project}</legend>
-          {this.props.children}
-        </fieldset>
-      </div>
-    );
-  }
 }
 
 export default TaskTable;

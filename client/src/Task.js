@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import TimeFieldEdit from './TimeFieldEdit';
 import TimeFieldNormal from './TimeFieldNormal';
 
-class TaskRow extends Component {
+class Task extends Component {
 
   constructor(props) {
     super(props);
@@ -71,7 +71,7 @@ class TaskRow extends Component {
               <button
                 className={"btn " + (isToggleOn ? "btn-danger" : "btn-success")}
                 onClick={this.handleToggleId}>
-                {this.props.isToggleOn ? "Stop" : "Start"}
+                {isToggleOn ? "Stop" : "Start"}
               </button>
             </div>
           </div>
@@ -81,4 +81,4 @@ class TaskRow extends Component {
   }
 }
 
-export default TaskRow;
+export default Task;

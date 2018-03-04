@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import SearchBar from './SearchBar';
 import TaskTable from './TaskTable';
 
-class TodaysTaskTable extends Component {
+class SearchableTaskTable extends Component {
   constructor(props) {
     super(props);
     this.state = { filterText: '' };
@@ -49,4 +49,4 @@ class TodaysTaskTable extends Component {
   }
 }
 
-export default TodaysTaskTable;
+export default SearchableTaskTable;

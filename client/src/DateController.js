@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 
 import collectjs from '../node_modules/collect.js';
 
-import TodaysTaskTable from './TodaysTaskTable';
-import NewTaskForm from './NewTaskForm';
+import SearchableTaskTable from './SearchableTaskTable';
+import NewRecordForm from './NewRecordForm';
 
 import * as moment from 'moment';
 
-class Slider extends Component {
+// needs some refactoring
+class DateController extends Component {
 	constructor(props) {
 		super(props);
 
@@ -121,17 +122,23 @@ class Slider extends Component {
 				if(grouped[date]) {
 					const tasks = grouped[date].items;
 
-					table = <TodaysTaskTable
+					table = <SearchableTaskTable
 								currentId={this.state.currentId}
 				        tasks={tasks}
 				        onHandleTimeEdit={this.handleTimeEdit}
 				        onHandleNewTask={this.handleNewTask}
 								onHandleToggleId={this.handleToggleId}
 								onHandleDeleteClick={this.handleDeleteClick} />;
+				} else {
+					table = <div className="text-center no-records">
+						<hr />
+						<h2>No Records</h2>
+						<hr />
+					</div>;
 				}
 
 				form =
-					<NewTaskForm
+					<NewRecordForm
 						date={date}
 						projects={this.props.projects}
 						onHandleNewTask={this.handleNewTask} />
@@ -148,7 +155,7 @@ class Slider extends Component {
 		});
 
 		return (
-			<div className="Slider">
+			<div className="DateController">
 
 				<table className="top-control">
 					<tbody>
@@ -196,13 +203,11 @@ class Control extends Component {
 	}
 
 	render() {
-
+		const className = this.props.isOn ? "active" : "";
+		const date = this.props.date;
 		return (
-			<a
-				href=""
-				onClick={this.handleControlClick}
-				className={this.props.isOn ? "active" : ""}>
-					{this.props.date}
+			<a href="" onClick={this.handleControlClick} className={className}>
+				{date}
 			</a>
 		);
 	}
@@ -210,15 +215,16 @@ class Control extends Component {
 
 function getWeekArray(date) {
 	const NUMBER_OF_DAYS = 7;
+	// get the first day of the week where the give day sits
 	const startOfWeek = moment(date, "MM-DD-YYYY").startOf('week');
-
+	// define an array
 	let daysOfWeek = [];
-
+	// push the first day of the week
 	daysOfWeek.push(startOfWeek.toObject());
-
+	// push the rest of the 6 days
 	for (var i = 1; i < NUMBER_OF_DAYS; i++)
 		daysOfWeek.push(startOfWeek.day(i).toObject());
-
+	// return an array of formatted dates
 	return daysOfWeek.map(day => dateObjectToString(day));
 }
 
@@ -226,4 +232,4 @@ function dateObjectToString(obj) {
 	return (obj.months + 1) + "-" + obj.date + "-" + obj.years;
 }
 
-export default Slider;
+export default DateController;

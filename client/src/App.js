@@ -8,7 +8,7 @@ import './App.css';
 import collectjs from '../node_modules/collect.js';
 
 // my components
-import Slider from './Slider';
+import DateController from './DateController';
 import Modal from './Modal';
 import LogIn from './LogIn';
 
@@ -81,6 +81,7 @@ class App extends Component {
     // else, do nothing and proceed
   }
 
+  // most of it can be moved to the LogIn component
   handleLogInSubmit(credentials) {
     const username = credentials.username;
     const password = credentials.password;
@@ -112,8 +113,8 @@ class App extends Component {
   startSyncTimer() {
     // once a minute
     this.timerId = setTimeout(() => {
-        // sync time records with the server
-        this.syncTime();
+      // sync time records with the server
+      this.syncTime();
     }, this.syncTimeSpan);
   }
 
@@ -173,6 +174,7 @@ class App extends Component {
     }
   }
 
+  // try to move it to the TaskTable component
   handleDeleteClick(id) {
     const data = { recordId: id };
     const token = this.state.token;
@@ -207,6 +209,7 @@ class App extends Component {
 
   }
 
+  // try to move it to the TaskTable component
   handleNewTask(task) {
 
     const data = {
@@ -263,7 +266,7 @@ class App extends Component {
     let body;
 
     if (authorized) {
-      body = <Slider
+      body = <DateController
         tasks={this.state.tasks}
         projects={projects}
         onHandleNewTask={this.handleNewTask}
@@ -272,6 +275,11 @@ class App extends Component {
     } else {
       body = <LogIn onHandleLogInSubmit={this.handleLogInSubmit} />
     }
+
+    const modal = <Modal
+      message={errorMessage}
+      title={"Error"}
+      onHandleClose={this.handleModalClose} />;
 
     return (
       <div className="container">
@@ -285,7 +293,7 @@ class App extends Component {
             {body}
           </div>
         </div>
-        {errorMessage ? <Modal message={errorMessage} title={"Error"} onHandleClose={this.handleModalClose}/> : ""}
+        {errorMessage ? modal : null}
       </div>
     );
   }
