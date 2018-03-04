@@ -56,8 +56,7 @@ router.get('/login', (req, res) => {
 		// good to go
     res.status(200).json({
       message: 'success',
-      token: token,
-      userId: doc._id
+      token: token
     });
 
 	});

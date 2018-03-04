@@ -16,7 +16,6 @@ class App extends Component {
 
     this.state = {
       tasks: [],
-      userId: null,
       token: null
     };
 
@@ -42,9 +41,8 @@ class App extends Component {
     fetch('http://localhost:8000/user/login?username=' + username + '&password=' + password + '')
       .then((response) => response.json())
       .then((responseJson) => {
-        const userId = responseJson.userId;
         const token = responseJson.token;
-        localStorage.setItem('userId', userId);
+        // console.log(token);
         localStorage.setItem('token', token);
         callback();
       })
@@ -61,10 +59,9 @@ class App extends Component {
     this.handleLogIn(function() {
       // get token from the local storage
       const token = localStorage.getItem("token");
-      // get user id from the local storage
-      const userId = localStorage.getItem("userId");
       // for a url
-      const url = 'http://localhost:8000/record?userId=' + userId + '&token=' + token;
+      const url = 'http://localhost:8000/record?token=' + token;
+      // console.log(url);
       // fetch
       fetch(url, { method: 'GET' })
         .then((response) => response.json())
@@ -73,8 +70,7 @@ class App extends Component {
           // update the state with data
           that.setState({
             tasks: tasks,
-            token: token,
-            userId: userId
+            token: token
           });
         })
         .catch((error) => {
@@ -99,9 +95,8 @@ class App extends Component {
     if(!this.toSync.length)
       return this.startSyncTimer();
     // form a url
-    const userId = this.state.userId;
     const token = this.state.token;
-    const url = 'http://localhost:8000/record?userId=' + userId + '&token=' + token;
+    const url = 'http://localhost:8000/record?token=' + token;
     // form an object
     const data = { data: this.toSync };
     // post data
@@ -145,9 +140,8 @@ class App extends Component {
 
   handleDeleteClick(id) {
     const data = { recordId: id };
-    const userId = this.state.userId;
     const token = this.state.token;
-    const url = 'http://localhost:8000/record?userId=' + userId + '&token=' + token;
+    const url = 'http://localhost:8000/record?token=' + token;
 
     fetch(url, {
       method: 'DELETE',
@@ -184,9 +178,8 @@ class App extends Component {
       date: task.date
     };
 
-    const userId = this.state.userId;
     const token = this.state.token;
-    const url = 'http://localhost:8000/record?userId=' + userId + '&token=' + token;
+    const url = 'http://localhost:8000/record?token=' + token;
 
     fetch(url, {
       method: 'POST',

@@ -22,7 +22,10 @@ router.use('/', (req, res, next) => {
 
 router.get('/', (req, res, next) => {
 
-	const userId = req.query.userId;
+	const decoded = jwt.verify(req.query.token, 'secret');
+	const userId = decoded.user._id;
+
+	// console.log(userId);
 
   // filter by user id
   Record.find({ "user" : userId }, { "user": 0 })
@@ -40,9 +43,8 @@ router.get('/', (req, res, next) => {
 
 router.patch('/', (req, res, next) => {
 
-	console.log("PATCH");
-
-	const userId = req.query.userId;
+	const decoded = jwt.verify(req.query.token, 'secret');
+	const userId = decoded.user._id;
 	const data   = req.body.data;
 
 	let errors = [];
@@ -91,7 +93,8 @@ router.patch('/', (req, res, next) => {
 })
 
 router.delete('/', (req, res, next) => {
-	const userId   = req.query.userId;
+	const decoded = jwt.verify(req.query.token, 'secret');
+	const userId = decoded.user._id;
 	const recordId = req.body.recordId;
 
 	// filter by user id
@@ -110,12 +113,14 @@ router.delete('/', (req, res, next) => {
 });
 
 router.post('/', (req, res, next) => {
+	const decoded = jwt.verify(req.query.token, 'secret');
+	const userId = decoded.user._id;
+
 	const project  = req.body.project;
 	const activity = req.body.activity;
 	const details  = req.body.details;
 	const seconds  = 0;
 	const date		 = req.body.date;
-	const userId   = req.query.userId;
 
 	const record = new Record({
 		project: project,
