@@ -9,7 +9,7 @@ The app is still in development.
 $ npm install
 ```
 ```
-$ npm run post install
+$ npm run postinstall
 ```
 ## Usage
 ```
