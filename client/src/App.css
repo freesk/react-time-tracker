@@ -79,7 +79,6 @@ fieldset > div:nth-child(2) {
 
 .Slider .flex-item a {
 	white-space: nowrap;
-	text-decoration: none;
 }
 
 .Slider .flex-item a.active {
