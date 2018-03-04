@@ -2,8 +2,11 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 
+const Asem = require('../misc/asem');
+
 const User = require('../models/user');
 const Record = require('../models/record');
+
 
 // middleware that is specific to this router
 router.use('/', (req, res, next) => {
@@ -36,30 +39,54 @@ router.get('/', (req, res, next) => {
 });
 
 router.patch('/', (req, res, next) => {
-	const userId   = req.query.userId;
-	const seconds  = req.body.seconds;
-	const recordId = req.body.recordId;
 
-	// filter by user id
-	Record.find({ "user" : userId, "id" : recordId }, { "user": 0 })
-		.exec(function(err, doc) {
-			if(err) return res.status(500).json({
-				message: "an error occured"
-			});
-			// update the number of seconds
-			doc.seconds = seconds;
-			doc.save((err, updatedDoc) => {
-				if(err) return res.status(500).json({
-					message: "an error occured"
-				});
-				res.status(200).json({
-					message: "success",
-					doc: updatedDoc
-				});
+	console.log("PATCH");
 
-			});
+	const userId = req.query.userId;
+	const data   = req.body.data;
 
+	let errors = [];
+
+	const asem = new Asem(() => {
+		if(errors.length) return res.status(500).json({
+			message: errors.reduce((accumulator, currentValue) =>
+				accumulator + ", " + currentValue
+			)
 		});
+		res.status(200).json({
+			message: "success"
+		});
+	}, data.length);
+
+	data.forEach((obj) => {
+		// filter by user id and recrd id
+		Record.findOne({ "user" : userId, "_id" : obj._id })
+			.exec(function(err, doc) {
+				if(err) {
+					errors.push({
+						status: 500,
+						message: "an error occured"
+					});
+					asem.p();
+					return;
+				}
+				// update the number of seconds
+				doc.seconds = obj.seconds;
+				// save the update
+				doc.save((err) => {
+					if(err) {
+						errors.push({
+							status: 500,
+							message: "an error occured"
+						});
+						asem.p();
+						return;
+					}
+					asem.p();
+				});
+			});
+
+	});
 
 })
 

@@ -50,8 +50,8 @@ class Slider extends Component {
 		this.props.onHandleDeleteClick(id);
 	}
 
-	handleTimeUpdate(obj) {
-    this.props.onHandleTimeUpdate(obj);
+	handleTimeUpdate(obj, forced) {
+    this.props.onHandleTimeUpdate(obj, forced);
   }
 
   handleNewTask(task) {

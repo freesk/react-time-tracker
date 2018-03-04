@@ -12,8 +12,8 @@ class TodaysTaskTable extends Component {
     this.handleDeleteClick = this.handleDeleteClick.bind(this);
   }
 
-  handleTimeUpdate(obj) {
-    this.props.onHandleTimeUpdate(obj);
+  handleTimeUpdate(obj, forced) {
+    this.props.onHandleTimeUpdate(obj, forced);
   }
 
   handleFilterTextChange(filterText) {

@@ -20,20 +20,17 @@ class App extends Component {
       token: null
     };
 
+    this.syncTimeSpan = 1000 * 10;
+
     // to store ids of updated records
     this.toSync = [];
-
-    // once a minute
-    this.timerId = setInterval(() => {
-        // sync time records with the server
-        this.syncTime();
-    }, 1000 * 60);
 
     this.syncTime = this.syncTime.bind(this);
     this.handleNewTask = this.handleNewTask.bind(this);
     this.handleTimeUpdate = this.handleTimeUpdate.bind(this);
     this.handleDeleteClick = this.handleDeleteClick.bind(this);
     this.handleLogIn = this.handleLogIn.bind(this);
+    this.startSyncTimer = this.startSyncTimer.bind(this);
   }
 
   handleLogIn(callback) {
@@ -62,7 +59,6 @@ class App extends Component {
     const that = this;
 
     this.handleLogIn(function() {
-
       // get token from the local storage
       const token = localStorage.getItem("token");
       // get user id from the local storage
@@ -73,52 +69,81 @@ class App extends Component {
       fetch(url, { method: 'GET' })
         .then((response) => response.json())
         .then((responseJson) => {
-
           const tasks = responseJson.doc;
-
-          // debug
-          console.log(tasks);
-
           // update the state with data
           that.setState({
             tasks: tasks,
             token: token,
             userId: userId
           });
-
         })
         .catch((error) => {
           console.error(error);
         });
-
     });
+
+    this.startSyncTimer();
+
+  }
+
+  startSyncTimer() {
+    // once a minute
+    this.timerId = setTimeout(() => {
+        // sync time records with the server
+        this.syncTime();
+    }, this.syncTimeSpan);
   }
 
   syncTime() {
-    // send requests to the server with
+    // send updates to the server if there are any
+    if(!this.toSync.length)
+      return this.startSyncTimer();
+    // form a url
+    const userId = this.state.userId;
+    const token = this.state.token;
+    const url = 'http://localhost:8000/record?userId=' + userId + '&token=' + token;
+    // form an object
+    const data = { data: this.toSync };
+    // post data
+    fetch(url, {
+        method: 'PATCH',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then((responseJson) => {
+        console.log(responseJson.message);
+        // after sync clear the array
+        this.toSync = [];
+        // run the timout again
+        this.startSyncTimer();
+      })
+      .catch((error) => {
+        console.error(error);
+        this.startSyncTimer();
+      });
   }
 
-  handleTimeUpdate(obj) {
-    let tasks = this.state.tasks.slice();
+  handleTimeUpdate(obj, forced) {
+    const tasks = this.state.tasks.slice();
     const found = tasks.find(task => {
       return task._id === obj._id;
     });
     const index = tasks.indexOf(found);
-    tasks[index].seconds = obj.seconds;
-
-    const that = this;
-
-    // send a request to the server ???
-    // push an id into to-sync-array
-
+    const task = tasks[index];
+    task.seconds = obj.seconds;
+    // save for future sync
+    if(this.toSync.indexOf(task) < 0)
+      this.toSync.push(task);
+    // update the state
     this.setState({ tasks: tasks });
+    if(forced) {
+      clearTimeout(this.timerId);
+      this.syncTime();
+    }
   }
 
   handleDeleteClick(id) {
-
-    console.log(id);
-
-    const that = this;
     const data = { recordId: id };
     const userId = this.state.userId;
     const token = this.state.token;
@@ -131,11 +156,8 @@ class App extends Component {
     })
     .then(response => response.json())
     .then((responseJson) => {
-
-      console.log(responseJson.message);
-
       // create a copy of the array
-      let tasks = this.state.tasks.slice();
+      const tasks = this.state.tasks.slice();
       // find a record by its id
       const found = tasks.find(task => {
         return task._id === id;
@@ -155,7 +177,6 @@ class App extends Component {
 
   handleNewTask(task) {
 
-    const that = this;
     const data = {
       project: task.project,
       activity: task.activity,
@@ -176,7 +197,7 @@ class App extends Component {
     .then((responseJson) => {
       const task = responseJson.doc;
       // create a copy of the task array
-      let tasks = this.state.tasks.slice();
+      const tasks = this.state.tasks.slice();
       // push a new record
       tasks.push(task);
       // update the state with a new array

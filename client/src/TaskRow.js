@@ -26,7 +26,7 @@ class TaskRow extends Component {
 		this.props.onHandleTimeUpdate({
 			_id: this.props._id,
 			seconds: seconds
-		});
+		}, true);
 	}
 
   handleEditOn() {
@@ -46,7 +46,7 @@ class TaskRow extends Component {
     this.props.onHandleTimeUpdate({
       _id: this.props._id,
       seconds: this.props.seconds + 1
-    });
+    }, false);
   }
 
   startTimer() {
