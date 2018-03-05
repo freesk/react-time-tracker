@@ -5,11 +5,11 @@ const jwt = require('jsonwebtoken');
 
 const User = require('../models/user');
 
-router.get('/register', function (req, res) {
+router.post('/register', function (req, res) {
 
-	const username = req.query.username;
-	const email    = req.query.email;
-	const password = req.query.password;
+	const username = req.body.username;
+	const email    = req.body.email;
+	const password = req.body.password;
 
 	var user = new User({
 		username: username,

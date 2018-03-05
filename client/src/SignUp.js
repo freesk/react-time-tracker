@@ -1,18 +1,24 @@
 import React, { Component } from 'react';
 
-class LogIn extends Component {
+class SignUp extends Component {
 	constructor(props) {
 		super(props);
 
 		this.state = {
 			username: "",
-			password: ""
+			password: "",
+			email: ""
 		};
 
 		this.handleUsernameChange = this.handleUsernameChange.bind(this);
 		this.handlePasswordChange = this.handlePasswordChange.bind(this);
+		this.handleEmailChange = this.handleEmailChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 
+	}
+
+	handleEmailChange(event) {
+		this.setState({ email: event.target.value });
 	}
 
 	handleUsernameChange(event) {
@@ -26,17 +32,29 @@ class LogIn extends Component {
 	handleSubmit(e) {
 		e.preventDefault();
 		console.log("submit");
-		this.props.onHandleLogInSubmit({
+		this.props.onHandleSignUpSubmit({
 			username: this.state.username,
-			password: this.state.password
+			password: this.state.password,
+			email: this.state.email
 		});
 	}
 
 	render() {
 		return (
-			<div>
 			<form onSubmit={this.handleSubmit}>
 			  <div className="form-group row">
+			    <label className="col-sm-2 col-form-label">Email</label>
+			    <div className="col-sm-10">
+			      <input
+							required
+							type="email"
+							className="form-control"
+							placeholder="Email"
+							value={this.state.email}
+							onChange={this.handleEmailChange} />
+			    </div>
+			  </div>
+				<div className="form-group row">
 			    <label className="col-sm-2 col-form-label">Username</label>
 			    <div className="col-sm-10">
 			      <input
@@ -66,10 +84,8 @@ class LogIn extends Component {
 					</div>
 			 	</div>
 			</form>
-			{this.props.children}
-			</div>
 		);
 	}
 }
 
-export default LogIn;
+export default SignUp;

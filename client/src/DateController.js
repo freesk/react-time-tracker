@@ -81,9 +81,6 @@ class DateController extends Component {
   }
 
 	render() {
-
-		// do not render if there are no records
-		if (!this.props.tasks.length) return null;
 		// a reference
 		const currentDate = this.state.currentDate;
 		// collect
@@ -126,6 +123,7 @@ class DateController extends Component {
 					date={this.state.currentDate}
 					projects={this.props.projects}
 					onHandleNewTask={this.handleNewTask} />
+				{this.props.children}
 			</div>
 		);
 	}

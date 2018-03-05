@@ -11,6 +11,7 @@ import collectjs from '../node_modules/collect.js';
 import DateController from './DateController';
 import Modal from './Modal';
 import LogIn from './LogIn';
+import SignUp from './SignUp';
 
 class App extends Component {
   constructor(props) {
@@ -19,7 +20,8 @@ class App extends Component {
     this.state = {
       tasks: [],
       token: null,
-      error: ""
+      error: "",
+      signup: false
     };
 
     this.syncTimeSpan = 1000 * 10;
@@ -34,6 +36,48 @@ class App extends Component {
     this.startSyncTimer = this.startSyncTimer.bind(this);
     this.handleModalClose = this.handleModalClose.bind(this);
     this.handleLogInSubmit = this.handleLogInSubmit.bind(this);
+    this.handleLogOut = this.handleLogOut.bind(this);
+    this.handleSignUp = this.handleSignUp.bind(this);
+    this.handleSignUpSubmit = this.handleSignUpSubmit.bind(this);
+    this.handleInfoModalClose = this.handleInfoModalClose.bind(this);
+  }
+
+  handleSignUpSubmit(obj) {
+    const data = {
+      email: obj.email,
+      username: obj.username,
+      password: obj.password
+    };
+
+    const url = 'http://localhost:8000/user/register';
+
+    fetch(url, {
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then((responseJson) => {
+      if(responseJson.error)
+        return this.setState({ error: responseJson.error });
+      // update the state
+      this.setState({ signup: false, info: "Welcome! Please, log in to preoceed" });
+    })
+    .catch(() => {
+      // critical error
+      // ...
+    });
+  }
+
+  handleLogOut(e) {
+    e.preventDefault();
+    localStorage.setItem('token', null);
+    this.setState({ token: null });
+  }
+
+  handleSignUp(e) {
+    e.preventDefault();
+    this.setState({ signup: true });
   }
 
   getTheRecords() {
@@ -81,12 +125,13 @@ class App extends Component {
     // else, do nothing and proceed
   }
 
+
   // most of it can be moved to the LogIn component
   handleLogInSubmit(credentials) {
     const username = credentials.username;
     const password = credentials.password;
 
-    console.log(username + ":" + password);
+    // console.log(username + ":" + password);
 
     // get token and user id
     fetch('http://localhost:8000/user/login?username=' + username + '&password=' + password + '')
@@ -251,35 +296,61 @@ class App extends Component {
     this.setState({ error: "" });
   }
 
+  handleInfoModalClose() {
+    this.setState({ info: "" });
+  }
+
   render() {
     // collect all projects for autofill
     const collection = collectjs(this.state.tasks);
     const grouped = collection.groupBy("project").keys();
     const projects = grouped.items;
     const errorMessage = this.state.error;
+    const infoMessage = this.state.info;
 
     // debug
     console.log(this.state);
 
     const authorized = this.state.token ? true : false;
 
+
+
     let body;
 
     if (authorized) {
+      console.log(this.state.tasks);
+      console.log(projects);
       body = <DateController
         tasks={this.state.tasks}
         projects={projects}
         onHandleNewTask={this.handleNewTask}
         onHandleTimeUpdate={this.handleTimeUpdate}
-        onHandleDeleteClick={this.handleDeleteClick} />
+        onHandleDeleteClick={this.handleDeleteClick}>
+        <div className="text-center">
+          <a href="" onClick={this.handleLogOut}>Log Out</a>
+        </div>
+      </DateController>
     } else {
-      body = <LogIn onHandleLogInSubmit={this.handleLogInSubmit} />
+      if(this.state.signup) {
+        body = <SignUp onHandleSignUpSubmit={this.handleSignUpSubmit} />
+      } else {
+        body = <LogIn onHandleLogInSubmit={this.handleLogInSubmit}>
+          <div className="text-center">
+            <a href="" onClick={this.handleSignUp}>Sign Up</a>
+          </div>
+        </LogIn>
+      }
     }
 
-    const modal = <Modal
+    const errorModal = <Modal
       message={errorMessage}
       title={"Error"}
       onHandleClose={this.handleModalClose} />;
+
+    const infoModal = <Modal
+      message={infoMessage}
+      title={"Info"}
+      onHandleClose={this.handleInfoModalClose} />;
 
     return (
       <div className="container">
@@ -293,7 +364,8 @@ class App extends Component {
             {body}
           </div>
         </div>
-        {errorMessage ? modal : null}
+        {errorMessage ? errorModal : null}
+        {infoMessage ? infoModal : null}
       </div>
     );
   }
