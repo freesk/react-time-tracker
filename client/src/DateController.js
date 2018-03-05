@@ -4,6 +4,7 @@ import collectjs from '../node_modules/collect.js';
 
 import SearchableTaskTable from './SearchableTaskTable';
 import NewRecordForm from './NewRecordForm';
+import DateNavigation from './DateNavigation';
 
 import * as moment from 'moment';
 
@@ -27,9 +28,7 @@ class DateController extends Component {
 		this.handleTimeEdit = this.handleTimeEdit.bind(this);
 		this.handleNewTask = this.handleNewTask.bind(this);
 		this.handleDeleteClick = this.handleDeleteClick.bind(this);
-		this.handleControlClick = this.handleControlClick.bind(this);
-		this.onClickPrev = this.onClickPrev.bind(this);
-		this.onClickNext = this.onClickNext.bind(this);
+		this.handleCurrentDateChnage = this.handleCurrentDateChnage.bind(this);
 		this.tick = this.tick.bind(this);
 		this.handleToggleId = this.handleToggleId.bind(this);
 	}
@@ -73,142 +72,61 @@ class DateController extends Component {
 		clearInterval(this.timerID);
 	}
 
-	// get to the prev week
-	onClickPrev(e) {
-		e.preventDefault();
-		const currentDate = this.state.currentDate;
-		const startOfWeek = moment(currentDate, "MM-DD-YYYY").startOf('week');
-		const prevDay = startOfWeek.day(-1).toObject();
-		const prevDayStr = dateObjectToString(prevDay);
-		this.setState({currentDate: prevDayStr});
-	}
-
-	// get to the next week
-	onClickNext(e) {
-		e.preventDefault();
-		const currentDate = this.state.currentDate;
-		const startOfWeek = moment(currentDate, "MM-DD-YYYY").startOf('week');
-		const nextDay = startOfWeek.day(7).toObject();
-		const nextDayStr = dateObjectToString(nextDay);
-		this.setState({currentDate: nextDayStr});
+	handleCurrentDateChnage(date) {
+		this.setState({currentDate: date});
 	}
 
   handleNewTask(task) {
     this.props.onHandleNewTask(task);
   }
 
-	// when one of the days in the top nav gets clicked
-	handleControlClick(date) {
-		this.setState({ currentDate: date });
-	}
-
 	render() {
 
+		// do not render if there are no records
+		if (!this.props.tasks.length) return null;
+		// a reference
+		const currentDate = this.state.currentDate;
+		// collect
 		const collection = collectjs(this.props.tasks);
-		const grouped = collection.groupBy("date").all();
-		const controls = [];
+		// sorty by date
+		const grouped = collection.groupBy("date");
+		// define an array
+		const tasks = [];
+		// get the week of the current day
+		const daysOfWeek = getWeekArray(currentDate);
+		// if the collecton has a valid key
+		if(grouped.has(currentDate)) {
+			const items = grouped.all()[currentDate].items;
+			items.forEach(task => tasks.push(task));
+		}
 
-		let table = null;
-		let form = null;
+		let body;
 
-		const daysOfWeek = getWeekArray(this.state.currentDate);
-
-		daysOfWeek.forEach((date, index) => {
-
-			const isOn = this.state.currentDate === date;
-
-			if(isOn) {
-
-				if(grouped[date]) {
-					const tasks = grouped[date].items;
-
-					table = <SearchableTaskTable
+		if(tasks.length)
+			body = <SearchableTaskTable
 								currentId={this.state.currentId}
-				        tasks={tasks}
-				        onHandleTimeEdit={this.handleTimeEdit}
-				        onHandleNewTask={this.handleNewTask}
+								tasks={tasks}
+								onHandleTimeEdit={this.handleTimeEdit}
+								onHandleNewTask={this.handleNewTask}
 								onHandleToggleId={this.handleToggleId}
 								onHandleDeleteClick={this.handleDeleteClick} />;
-				} else {
-					table = <div className="text-center no-records">
-						<hr />
-						<h2>No Records</h2>
-						<hr />
-					</div>;
-				}
-
-				form =
-					<NewRecordForm
-						date={date}
-						projects={this.props.projects}
-						onHandleNewTask={this.handleNewTask} />
-			}
-
-			controls.push(
-				<Control
-					isOn={isOn}
-					key={index}
-					date={date}
-					index={index}
-					onHandleControlClick={this.handleControlClick} />
-			);
-		});
+		else
+			body = getNoRecords();
 
 		return (
 			<div className="DateController">
-
-				<table className="top-control">
-					<tbody>
-					<tr>
-						<td className="prev-td">
-							<a href="" onClick={this.onClickPrev}>Prev</a>
-						</td>
-						<td>
-							<div className="flex-container">
-								<div className="flex-item">{controls[0]}</div>
-								<div className="flex-item">{controls[2]}</div>
-								<div className="flex-item">{controls[4]}</div>
-								<div className="flex-item">{controls[6]}</div>
-								<div className="flex-item">{controls[1]}</div>
-								<div className="flex-item">{controls[3]}</div>
-								<div className="flex-item">{controls[5]}</div>
-							</div>
-						</td>
-						<td className="next-td">
-							<a href="" onClick={this.onClickNext}>Next</a>
-						</td>
-					</tr>
-					</tbody>
-				</table>
+				<DateNavigation
+					currentDate={this.state.currentDate}
+				 	daysOfWeek={daysOfWeek}
+					onHandleCurrentDateChnage={this.handleCurrentDateChnage} />
 				<div>
-					{table}
+				{body}
 				</div>
-				<div>
-					{form}
-				</div>
+				<NewRecordForm
+					date={this.state.currentDate}
+					projects={this.props.projects}
+					onHandleNewTask={this.handleNewTask} />
 			</div>
-		);
-	}
-}
-
-class Control extends Component {
-	constructor(props) {
-		super(props);
-		this.handleControlClick = this.handleControlClick.bind(this);
-	}
-
-	handleControlClick(e) {
-		e.preventDefault();
-		this.props.onHandleControlClick(this.props.date);
-	}
-
-	render() {
-		const className = this.props.isOn ? "active" : "";
-		const date = this.props.date;
-		return (
-			<a href="" onClick={this.handleControlClick} className={className}>
-				{date}
-			</a>
 		);
 	}
 }
@@ -226,6 +144,16 @@ function getWeekArray(date) {
 		daysOfWeek.push(startOfWeek.day(i).toObject());
 	// return an array of formatted dates
 	return daysOfWeek.map(day => dateObjectToString(day));
+}
+
+function getNoRecords() {
+	return (
+		<div className="text-center no-records">
+			<hr />
+			<h2>No Records</h2>
+			<hr />
+		</div>
+	);
 }
 
 function dateObjectToString(obj) {
