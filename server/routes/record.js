@@ -1,8 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
+const Json2csvParser = require('json2csv').Parser;
 
 const Asem = require('../misc/asem');
+
+const moment = require('moment');
 
 const User = require('../models/user');
 const Record = require('../models/record');
@@ -26,11 +29,6 @@ router.get('/', (req, res, next) => {
   // filter by user id
   Record.find({ "user" : userId }, { "user": 0 })
 	 .exec(function(err, doc) {
-
-		 // return res.status(500).json({
-			//  error: "user could not be found"
-		 // });
-
 	   if(err) return res.status(500).json({
 	     error: err.message
 	   });
@@ -134,6 +132,76 @@ router.post('/', (req, res, next) => {
 			doc: doc
 		});
 	});
+
+});
+
+router.post('/export', (req, res, next) => {
+	const decoded = jwt.verify(req.query.token, 'secret');
+	const userId = decoded.user._id;
+
+	const from = req.body.from;
+	const to = req.body.to;
+
+	console.log("DEBUG");
+
+	console.log(from);
+	console.log(to);
+
+	// filter by user id
+	Record.find({ "user" : userId }, { "user": 0 })
+	 .exec(function(err, doc) {
+		 if(err) return res.status(500).json({
+			 error: err.message
+		 });
+
+		 const records = doc;
+
+		 records.sort((a, b) => {
+			 if (a.date < b.date)
+			   return -1;
+			 if (a.date > b.date)
+			   return 1;
+			 return 0;
+		 });
+
+		 const filtered = records.filter(record => {
+			 return (record.date >= from) && (record.date <= to);
+		 });
+
+		 const formatted = filtered.map(record => {
+
+			 const time = moment.utc(record.seconds*1000).format('HH:mm:ss');
+
+			 return {
+				 project: record.project,
+				 activity: record.activity,
+				 details: record.details,
+				 time: time,
+				 date: record.date
+			 };
+
+		 });
+
+		 const fields = [
+			 "project",
+			 "activity",
+			 "details",
+			 "time",
+			 "date"
+		 ];
+
+		 const json2csvParser = new Json2csvParser({ fields });
+
+		 const csv = json2csvParser.parse(formatted);
+
+		 console.log(csv);
+
+		 res.status(200).json({
+ 		 	 error: null,
+ 		 	 doc: csv
+ 		 });
+
+	 });
 
 });
 

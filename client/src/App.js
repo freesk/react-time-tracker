@@ -9,6 +9,9 @@ import DateController from './DateController';
 import Modal from './Modal';
 import LogIn from './LogIn';
 import SignUp from './SignUp';
+import ExportModal from './ExportModal';
+
+import FileSaver from 'file-saver';
 
 class App extends Component {
   constructor(props) {
@@ -18,7 +21,8 @@ class App extends Component {
       tasks: [],
       token: null,
       error: "",
-      signup: false
+      signup: false,
+      export: false
     };
 
     this.syncTimeSpan = 1000 * 10;
@@ -37,6 +41,49 @@ class App extends Component {
     this.handleSignUp = this.handleSignUp.bind(this);
     this.handleSignUpSubmit = this.handleSignUpSubmit.bind(this);
     this.handleInfoModalClose = this.handleInfoModalClose.bind(this);
+    this.handleExport = this.handleExport.bind(this);
+
+    this.handleExportModalClose = this.handleExportModalClose.bind(this);
+    this.handleCsvDownload = this.handleCsvDownload.bind(this);
+  }
+
+  handleExportModalClose() {
+    this.setState({ export: false });
+  }
+
+  handleCsvDownload(fromTo) {
+    const data = {
+      from: fromTo.from,
+      to: fromTo.to
+    };
+
+    const token = this.state.token;
+    const url = 'http://localhost:8000/record/export?token=' + token;
+
+    fetch(url, {
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then((responseJson) => {
+      if(responseJson.error)
+        return this.setState({ error: responseJson.error, export: false });
+
+      const blob = new Blob([responseJson.doc], {type: "text/plain;charset=utf-8"});
+      const fileName = "export.csv";
+      this.setState({ export: false });
+      FileSaver.saveAs(blob, fileName);
+    })
+    .catch(() => {
+      // critical error
+      // ...
+    });
+  }
+
+  handleExport(e) {
+    e.preventDefault();
+    this.setState({ export: true });
   }
 
   handleSignUpSubmit(obj) {
@@ -313,6 +360,7 @@ class App extends Component {
         onHandleDeleteClick={this.handleDeleteClick}>
         <hr />
         <div className="text-center mb-2">
+          <a href="" className="mr-3" onClick={this.handleExport}>Export</a>
           <a href="" onClick={this.handleLogOut}>Log Out</a>
         </div>
       </DateController>
@@ -338,6 +386,10 @@ class App extends Component {
       title={"Info"}
       onHandleClose={this.handleInfoModalClose} />;
 
+    const exportModal = <ExportModal
+      onHandleExportModalClose={this.handleExportModalClose}
+      onHandleDownloadCsv={this.handleCsvDownload} />
+
     return (
       <div className="container">
         <div className="row">
@@ -352,6 +404,7 @@ class App extends Component {
         </div>
         {errorMessage ? errorModal : null}
         {infoMessage ? infoModal : null}
+        {this.state.export ? exportModal : null}
       </div>
     );
   }
