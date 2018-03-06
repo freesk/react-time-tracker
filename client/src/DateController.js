@@ -85,17 +85,15 @@ class DateController extends Component {
 		const currentDate = this.state.currentDate;
 		// collect
 		const collection = collectjs(this.props.tasks);
-		// sorty by date
-		const grouped = collection.groupBy("date");
-		// define an array
-		const tasks = [];
+		// get current tasks
+		const tasks = getCurentTasks(collection, currentDate);
+		// get 10 newest
+		const projects = getItemsSortedByDate(collection, "project", 10);
+		const activities = getItemsSortedByDate(collection, "activity", 10);
+		const details = getItemsSortedByDate(collection, "details", 10);
+
 		// get the week of the current day
 		const daysOfWeek = getWeekArray(currentDate);
-		// if the collecton has a valid key
-		if(grouped.has(currentDate)) {
-			const items = grouped.all()[currentDate].items;
-			items.forEach(task => tasks.push(task));
-		}
 
 		let body;
 
@@ -111,6 +109,7 @@ class DateController extends Component {
 			body = getNoRecords();
 
 		return (
+
 			<div className="DateController">
 				<DateNavigation
 					currentDate={this.state.currentDate}
@@ -121,12 +120,60 @@ class DateController extends Component {
 				</div>
 				<NewRecordForm
 					date={this.state.currentDate}
-					projects={this.props.projects}
+					projects={projects}
+					activities={activities}
+					details={details}
 					onHandleNewTask={this.handleNewTask} />
 				{this.props.children}
 			</div>
 		);
 	}
+}
+
+function getItemsSortedByDate(collection, key, max) {
+	// group by key
+	const grouped = collection.groupBy(key);
+	const items = [];
+
+	// each group
+	grouped.each(group => {
+		// sort children by date
+		const sorted = group.sortByDesc(product => product.date);
+		// convert to array
+		const arr = sorted.toArray();
+		// assing project of the first element
+		const item = arr[0][key];
+		// assing date of the first element
+		const date = arr[0].date;
+		// push into an array
+		items.push({ item: item, date: date });
+	});
+
+	// sort the result one more time by date
+	const sorted = collectjs(items).sortByDesc(product => product.date);
+
+	// convert the result into an array
+	const sortedItems = sorted.toArray();
+
+	const sortedSlicedItems = sortedItems.slice(0, max);
+
+	// console.log(sortedSlicedItems);
+
+	// map back as an array of items
+	return sortedSlicedItems.map(obj => obj.item);
+}
+
+function getCurentTasks(collection, currentDate) {
+	// sorty by date
+	const grouped = collection.groupBy("date");
+	// define an array
+	const tasks = [];
+	// if the collecton has a valid key
+	if(grouped.has(currentDate)) {
+		const items = grouped.all()[currentDate].items;
+		items.forEach(task => tasks.push(task));
+	}
+	return tasks;
 }
 
 function getWeekArray(date) {

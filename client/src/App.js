@@ -3,9 +3,6 @@ import React, { Component } from 'react';
 
 // style
 import './App.css';
-// import 'bootstrap/dist/css/bootstrap.css';
-
-import collectjs from '../node_modules/collect.js';
 
 // my components
 import DateController from './DateController';
@@ -298,10 +295,6 @@ class App extends Component {
   }
 
   render() {
-    // collect all projects for autofill
-    const collection = collectjs(this.state.tasks);
-    const grouped = collection.groupBy("project").keys();
-    const projects = grouped.items;
     const errorMessage = this.state.error;
     const infoMessage = this.state.info;
 
@@ -310,21 +303,16 @@ class App extends Component {
 
     const authorized = this.state.token ? true : false;
 
-
-
     let body;
 
     if (authorized) {
-      console.log(this.state.tasks);
-      console.log(projects);
       body = <DateController
         tasks={this.state.tasks}
-        projects={projects}
         onHandleNewTask={this.handleNewTask}
         onHandleTimeUpdate={this.handleTimeUpdate}
         onHandleDeleteClick={this.handleDeleteClick}>
         <hr />
-        <div className="text-center">
+        <div className="text-center mb-2">
           <a href="" onClick={this.handleLogOut}>Log Out</a>
         </div>
       </DateController>

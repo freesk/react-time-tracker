@@ -131,7 +131,7 @@ fieldset > div:nth-child(2) {
 }
 
 .dropdown-toggle.btn {
-	padding: .5rem 0.6rem !important;
+	padding: .5rem 0.5rem !important;
 }
 
 .react-icon {

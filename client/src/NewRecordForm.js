@@ -8,14 +8,56 @@ class DropDownItem extends Component {
   }
 
   handleClick() {
-    this.props.onHandleDropDownClick(this.props.project);
+    this.props.onHandleDropDownClick(this.props.item);
   }
 
   render() {
     return(
       <a className="dropdown-item" onClick={this.handleClick}>
-        {this.props.project}
+        {this.props.item}
       </a>
+    );
+  }
+}
+
+class InputWithDropDown extends Component {
+  constructor(props) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleDropDownClick = this.handleDropDownClick.bind(this);
+  }
+
+  handleChange(event) {
+    this.props.onHandleChange(event.target.value);
+  }
+
+  handleDropDownClick(item) {
+    this.props.onHandleChange(item);
+  }
+
+  render() {
+
+    const dropDownItems = this.props.items.map(item =>
+      <DropDownItem key={item} item={item} onHandleDropDownClick={this.handleDropDownClick} />
+    );
+
+    return(
+      <div className="input-group">
+        <div className="input-group-btn">
+          <button type="button" className="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span className="sr-only">Toggle Dropdown</span>
+          </button>
+          <div className="dropdown-menu">
+            {dropDownItems}
+          </div>
+        </div>
+        <input
+          required={true}
+          className="form-control"
+          placeholder={this.props.placeholder}
+          onChange={this.handleChange}
+          value={this.props.value} />
+      </div>
     );
   }
 }
@@ -37,7 +79,6 @@ class NewRecordForm extends Component {
     this.handleActivityChange = this.handleActivityChange.bind(this);
     this.handleDetailsChange = this.handleDetailsChange.bind(this);
     this.handleNewTask = this.handleNewTask.bind(this);
-    this.handleDropDownClick = this.handleDropDownClick.bind(this);
   }
 
   handleNewTask(event) {
@@ -54,60 +95,47 @@ class NewRecordForm extends Component {
     this.props.onHandleNewTask(task);
   }
 
-  handleDropDownClick(project) {
+  handleProjectChange(project) {
     this.setState({ project: project });
   }
 
-  handleProjectChange(event) {
-    this.setState({ project: event.target.value });
+  handleActivityChange(activity) {
+    this.setState({ activity: activity });
   }
 
-  handleActivityChange(event) {
-    this.setState({ activity: event.target.value });
-  }
-
-  handleDetailsChange(event) {
-    this.setState({ details: event.target.value });
+  handleDetailsChange(details) {
+    this.setState({ details: details });
   }
 
   render() {
 
-    // add projects
-    const dropDownItems = this.props.projects.map(project =>
-      <DropDownItem key={project} project={project} onHandleDropDownClick={this.handleDropDownClick} />
-    );
-
     return (
       <form className="NewRecordForm" onSubmit={this.handleNewTask}>
-        <div className="input-group">
-          <div className="input-group-btn">
-            <button type="button" className="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <span className="sr-only">Toggle Dropdown</span>
-            </button>
-            <div className="dropdown-menu">
-              {dropDownItems}
-            </div>
+
+        <div className="row no-gutters">
+          <div className="col-12 col-md-3 mb-3 mb-md-0 pr-md-2">
+            <InputWithDropDown
+              items={this.props.projects}
+              placeholder={"Project"}
+              onHandleChange={this.handleProjectChange}
+              value={this.state.project} />
           </div>
-          <input
-            required={true}
-            className="form-control"
-            placeholder={"Project"}
-            onChange={this.handleProjectChange}
-            value={this.state.project} />
-          <input
-            required={true}
-            className="form-control"
-            placeholder={"Activity"}
-            onChange={this.handleActivityChange}
-            value={this.state.activity} />
-          <input
-            required={true}
-            className="form-control"
-            placeholder={"Details"}
-            onChange={this.handleDetailsChange}
-            value={this.state.details} />
-          <div className="input-group-btn">
-            <button className="btn btn-secondary" type="submit">Submit</button>
+          <div className="col-12 col-md-3 mb-3 mb-md-0 pr-md-2">
+            <InputWithDropDown
+              items={this.props.activities}
+              placeholder={"Activity"}
+              onHandleChange={this.handleActivityChange}
+              value={this.state.activity} />
+          </div>
+          <div className="col-12 col-md-3 mb-3 mb-md-0 pr-md-2">
+            <InputWithDropDown
+              items={this.props.details}
+              placeholder={"Details"}
+              onHandleChange={this.handleDetailsChange}
+              value={this.state.details} />
+          </div>
+          <div className="col-12 col-md-3">
+            <button className="btn btn-secondary btn-block" type="submit">Submit</button>
           </div>
         </div>
       </form>
