@@ -34,39 +34,42 @@ class LogIn extends Component {
 
 	render() {
 		return (
-			<div>
-			<form onSubmit={this.handleSubmit}>
-			  <div className="form-group row">
-			    <label className="col-sm-2 col-form-label">Username</label>
-			    <div className="col-sm-10">
-			      <input
-							required
-							type="text"
-							className="form-control"
-							placeholder="Username"
-							value={this.state.username}
-							onChange={this.handleUsernameChange} />
-			    </div>
-			  </div>
-			  <div className="form-group row">
-			    <label className="col-sm-2 col-form-label">Password</label>
-			    <div className="col-sm-10">
-			      <input
-							required
-							type="password"
-							className="form-control"
-							placeholder="Password"
-							value={this.state.password}
-							onChange={this.handlePasswordChange} />
-			    </div>
-			  </div>
-				<div className="form-group row">
-				 	<div className="col-12">
-						<button type="submit" className="btn btn-primary btn-lg btn-block">Submit</button>
-					</div>
-			 	</div>
-			</form>
-			{this.props.children}
+			<div className="row justify-content-center">
+				<div className="col-12 col-md-8 col-lg-6 mt-3">
+					<form onSubmit={this.handleSubmit}>
+					  <div className="form-group row">
+					    <label className="col-sm-2 col-form-label">Username</label>
+					    <div className="col-sm-10">
+					      <input
+									required
+									type="text"
+									className="form-control"
+									placeholder="Username"
+									value={this.state.username}
+									onChange={this.handleUsernameChange} />
+					    </div>
+					  </div>
+					  <div className="form-group row">
+					    <label className="col-sm-2 col-form-label">Password</label>
+					    <div className="col-sm-10">
+					      <input
+									required
+									type="password"
+									className="form-control"
+									placeholder="Password"
+									value={this.state.password}
+									onChange={this.handlePasswordChange} />
+					    </div>
+					  </div>
+						<div className="form-group row">
+						 	<div className="col-12 mt-3">
+								<button type="submit" className="btn btn-primary btn-lg btn-block">Submit</button>
+							</div>
+					 	</div>
+					</form>
+					<hr />
+					{this.props.children}
+				</div>
 			</div>
 		);
 	}

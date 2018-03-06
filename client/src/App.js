@@ -71,7 +71,7 @@ class App extends Component {
 
   handleLogOut(e) {
     e.preventDefault();
-    localStorage.setItem('token', null);
+    localStorage.clear();
     this.setState({ token: null });
   }
 
@@ -122,7 +122,6 @@ class App extends Component {
         // once it is set, get the records
         this.getTheRecords();
       });
-    // else, do nothing and proceed
   }
 
 
@@ -130,8 +129,6 @@ class App extends Component {
   handleLogInSubmit(credentials) {
     const username = credentials.username;
     const password = credentials.password;
-
-    // console.log(username + ":" + password);
 
     // get token and user id
     fetch('http://localhost:8000/user/login?username=' + username + '&password=' + password + '')
@@ -145,7 +142,7 @@ class App extends Component {
         localStorage.setItem('token', token);
         // update the state
         this.setState({ token: token }, () => {
-          // must be withing a callback
+          // must be within a callback
           this.getTheRecords();
         });
       })
@@ -326,6 +323,7 @@ class App extends Component {
         onHandleNewTask={this.handleNewTask}
         onHandleTimeUpdate={this.handleTimeUpdate}
         onHandleDeleteClick={this.handleDeleteClick}>
+        <hr />
         <div className="text-center">
           <a href="" onClick={this.handleLogOut}>Log Out</a>
         </div>
@@ -356,7 +354,7 @@ class App extends Component {
       <div className="container">
         <div className="row">
           <div className="col">
-            <h1 className="title">React Time Tracker</h1>
+            <h1 className="title">React <img alt="react icon" className="react-icon ml-1" src="https://i.imgur.com/9drncR1.png"></img> Time Tracker</h1>
           </div>
         </div>
         <div className="row">

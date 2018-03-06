@@ -133,3 +133,11 @@ fieldset > div:nth-child(2) {
 .dropdown-toggle.btn {
 	padding: .5rem 0.6rem !important;
 }
+
+.react-icon {
+	display: inline-block;
+	width: auto;
+	height: auto;
+	max-width: 60px;
+	max-height: 60px;
+}
