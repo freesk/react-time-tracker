@@ -6,12 +6,15 @@ const app = express();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
+const PORT = process.env.PORT || 5000;
+
 mongoose.set('debug', true);
 
 const userRoutes = require('./routes/user');
 const recordRoutes = require('./routes/record');
 
-const mongodbUri = 'mongodb://localhost:27017/react-time-tracker';
+// const mongodbUri = 'mongodb://localhost:27017/react-time-tracker';
+const mongodbUri = 'mongodb://admin:1379513795@ds157528.mlab.com:57528/react-time-tracker';
 
 mongoose.connect(mongodbUri);
 
@@ -33,6 +36,6 @@ app.use((req, res, next) => {
 app.use('/user', userRoutes);
 app.use('/record', recordRoutes);
 
-app.listen(8000, () => {
-	console.log('The app listening on port 8000');
+app.listen(PORT, () => {
+	console.log(`The app listening on port ${ PORT }`);
 });

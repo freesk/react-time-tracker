@@ -46,7 +46,7 @@ class App extends Component {
       password: obj.password
     };
 
-    const url = 'http://localhost:8000/user/register';
+    const url = 'https://radiant-temple-88637.herokuapp.com/user/register';
 
     fetch(url, {
       method: 'POST',
@@ -80,7 +80,7 @@ class App extends Component {
   getTheRecords() {
     const token = this.state.token;
     // form a url string
-    const url = 'http://localhost:8000/record?token=' + token;
+    const url = 'https://radiant-temple-88637.herokuapp.com/record?token=' + token;
     // fetch
     fetch(url, { method: 'GET' })
       .then((response) => response.json())
@@ -128,7 +128,7 @@ class App extends Component {
     const password = credentials.password;
 
     // get token and user id
-    fetch('http://localhost:8000/user/login?username=' + username + '&password=' + password + '')
+    fetch('https://radiant-temple-88637.herokuapp.com/user/login?username=' + username + '&password=' + password + '')
       .then((response) => response.json())
       .then((responseJson) => {
         if(responseJson.error)
@@ -167,12 +167,12 @@ class App extends Component {
       return this.startSyncTimer();
     // form a url
     const token = this.state.token;
-    const url = 'http://localhost:8000/record?token=' + token;
+    const url = 'https://radiant-temple-88637.herokuapp.com/record/update?token=' + token;
     // form an object
     const data = { data: this.toSync };
     // post data
     fetch(url, {
-        method: 'PATCH',
+        method: 'POST',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
       })
@@ -217,7 +217,7 @@ class App extends Component {
   handleDeleteClick(id) {
     const data = { recordId: id };
     const token = this.state.token;
-    const url = 'http://localhost:8000/record?token=' + token;
+    const url = 'https://radiant-temple-88637.herokuapp.com/record?token=' + token;
 
     fetch(url, {
       method: 'DELETE',
@@ -259,7 +259,7 @@ class App extends Component {
     };
 
     const token = this.state.token;
-    const url = 'http://localhost:8000/record?token=' + token;
+    const url = 'https://radiant-temple-88637.herokuapp.com/record?token=' + token;
 
     fetch(url, {
       method: 'POST',

@@ -2,6 +2,9 @@
   "name": "react-time-tracker-server",
   "version": "1.0.0",
   "description": "",
+  "engines": {
+    "node": "8.9.1"
+  },
   "main": "index.js",
   "scripts": {
     "start": "node index"
