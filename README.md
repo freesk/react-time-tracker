@@ -16,7 +16,6 @@ $ npm run postinstall
 $ npm start
 ```
 ## Development
-- The server is missing a json-to-csv conversion tool
 - The server is missing email verification on a new signup request
 - The server is missing data validation
 - The client needs a menu
