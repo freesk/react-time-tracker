@@ -106,7 +106,7 @@ class DateController extends Component {
 
 		let body;
 
-		if(tasks.length)
+		if(currentTasks.length)
 			body = <SearchableTaskTable
 								currentId={this.state.currentId}
 								tasks={currentTasks}
