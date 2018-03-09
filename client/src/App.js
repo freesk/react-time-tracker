@@ -1,6 +1,9 @@
 // react
 import React, { Component } from 'react';
 
+// dependencies
+import FileSaver from 'file-saver';
+
 // style
 import './App.css';
 
@@ -11,7 +14,7 @@ import LogIn from './LogIn';
 import SignUp from './SignUp';
 import ExportModal from './ExportModal';
 
-import FileSaver from 'file-saver';
+const serverUrl = "http://localhost:8000";
 
 class App extends Component {
   constructor(props) {
@@ -30,19 +33,19 @@ class App extends Component {
     // to store ids of updated records
     this.toSync = [];
 
-    this.syncTime = this.syncTime.bind(this);
+    // this.syncTime = this.syncTime.bind(this);
     this.handleNewTask = this.handleNewTask.bind(this);
     this.handleTimeUpdate = this.handleTimeUpdate.bind(this);
     this.handleDeleteClick = this.handleDeleteClick.bind(this);
-    this.startSyncTimer = this.startSyncTimer.bind(this);
+    // this.startSyncTimer = this.startSyncTimer.bind(this);
     this.handleModalClose = this.handleModalClose.bind(this);
     this.handleLogInSubmit = this.handleLogInSubmit.bind(this);
     this.handleLogOut = this.handleLogOut.bind(this);
     this.handleSignUp = this.handleSignUp.bind(this);
     this.handleSignUpSubmit = this.handleSignUpSubmit.bind(this);
     this.handleInfoModalClose = this.handleInfoModalClose.bind(this);
-    this.handleExport = this.handleExport.bind(this);
 
+    this.handleExport = this.handleExport.bind(this);
     this.handleExportModalClose = this.handleExportModalClose.bind(this);
     this.handleCsvDownload = this.handleCsvDownload.bind(this);
   }
@@ -52,13 +55,18 @@ class App extends Component {
   }
 
   handleCsvDownload(fromTo) {
+
+    this.handleExportModalClose();
+
     const data = {
       from: fromTo.from,
       to: fromTo.to
     };
 
+    console.log(data);
+
     const token = this.state.token;
-    const url = 'http://localhost:8000/record/export?token=' + token;
+    const url = serverUrl + '/record/export?token=' + token;
 
     fetch(url, {
       method: 'POST',
@@ -93,7 +101,7 @@ class App extends Component {
       password: obj.password
     };
 
-    const url = 'http://localhost:8000/user/register';
+    const url = serverUrl + '/user/register';
 
     fetch(url, {
       method: 'POST',
@@ -127,7 +135,7 @@ class App extends Component {
   getTheRecords() {
     const token = this.state.token;
     // form a url string
-    const url = 'http://localhost:8000/record?token=' + token;
+    const url = serverUrl + '/record/get?token=' + token;
     // fetch
     fetch(url, { method: 'GET' })
       .then((response) => response.json())
@@ -156,9 +164,6 @@ class App extends Component {
     // get a token from the local storage
     const token = localStorage.getItem("token");
 
-    // debug
-    // const token = null;
-
     // try to use an available token
     if(token)
       // update the state with the token form the local storage
@@ -174,8 +179,13 @@ class App extends Component {
     const username = credentials.username;
     const password = credentials.password;
 
+    const url = serverUrl + '/user/login?username=' + username + '&password=' + password + '';
+
     // get token and user id
-    fetch('http://localhost:8000/user/login?username=' + username + '&password=' + password + '')
+    fetch(url, {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" }
+      })
       .then((response) => response.json())
       .then((responseJson) => {
         if(responseJson.error)
@@ -214,12 +224,12 @@ class App extends Component {
       return this.startSyncTimer();
     // form a url
     const token = this.state.token;
-    const url = 'http://localhost:8000/record?token=' + token;
+    const url = serverUrl + '/record/update?token=' + token;
     // form an object
     const data = { data: this.toSync };
     // post data
     fetch(url, {
-        method: 'PATCH',
+        method: 'POST',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
       })
@@ -240,9 +250,7 @@ class App extends Component {
 
   handleTimeUpdate(id, seconds) {
     const tasks = this.state.tasks.slice();
-    const found = tasks.find(task => {
-      return task._id === id;
-    });
+    const found = tasks.find(task => task._id === id);
     const index = tasks.indexOf(found);
     const task = tasks[index];
     // seconds is not defined for a timer event
@@ -264,10 +272,10 @@ class App extends Component {
   handleDeleteClick(id) {
     const data = { recordId: id };
     const token = this.state.token;
-    const url = 'http://localhost:8000/record?token=' + token;
+    const url = serverUrl + '/record/delete?token=' + token;
 
     fetch(url, {
-      method: 'DELETE',
+      method: 'POST',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data)
     })
@@ -306,7 +314,7 @@ class App extends Component {
     };
 
     const token = this.state.token;
-    const url = 'http://localhost:8000/record?token=' + token;
+    const url = serverUrl + '/record/post?token=' + token;
 
     fetch(url, {
       method: 'POST',

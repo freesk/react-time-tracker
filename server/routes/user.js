@@ -18,11 +18,9 @@ router.post('/register', function (req, res) {
 	});
 
 	user.save((err, doc) => {
-		// status 500 - server error
     if (err) return res.status(500).json({
       error: err.message
     });
-		// status 201 - new resourse created
 		res.status(201).json({
 			error: null
 		});
@@ -30,7 +28,7 @@ router.post('/register', function (req, res) {
 
 });
 
-router.get('/login', (req, res) => {
+router.post('/login', (req, res) => {
 
 	const username = req.query.username;
 	const password = req.query.password;
@@ -40,7 +38,6 @@ router.get('/login', (req, res) => {
       error: err.message
     });
 
-		// status 401 - not authorized
 		if(!doc) return res.status(401).json({
 			error: "user not found"
 		});

@@ -6,6 +6,8 @@ const app = express();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
+const PORT = process.env.PORT || 8000;
+
 mongoose.set('debug', true);
 
 const userRoutes = require('./routes/user');
@@ -33,6 +35,6 @@ app.use((req, res, next) => {
 app.use('/user', userRoutes);
 app.use('/record', recordRoutes);
 
-app.listen(8000, () => {
-	console.log('The app listening on port 8000');
+app.listen(PORT, () => {
+	console.log(`The app listening on port ${ PORT }`);
 });

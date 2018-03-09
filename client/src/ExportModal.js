@@ -1,15 +1,19 @@
 import React, { Component } from 'react';
 
+import DatePicker from 'react-datepicker';
 import * as moment from 'moment';
 
-class Modal extends Component {
+// styles
+import 'react-datepicker/dist/react-datepicker.css';
+
+class ExportModal extends Component {
 
 	constructor(props) {
 		super(props);
 
 		this.state = {
-			from: "",
-			to: "",
+			from: moment(),
+			to: moment(),
 			error: ""
 		};
 
@@ -20,36 +24,39 @@ class Modal extends Component {
 	}
 
 	handleClose() {
-		this.setState({ error: "", from: "", to: "" });
 		this.props.onHandleExportModalClose();
 	}
 
 	handleDownload() {
 
-		const from = moment(this.state.from, "MM/DD/YYYY");
-		const to = moment(this.state.to, "MM/DD/YYYY");
+		const from = this.state.from;
+		const to = this.state.to;
 
 		if(!(from.isValid() && to.isValid())) return this.setState({
 			error: "Invalid data format"
 		});
 
-		this.setState({ error: "", from: "", to: "" });
+		// reset
+		this.setState({ error: "", from: moment(), to: moment()});
 
 		this.props.onHandleDownloadCsv({
-			from: dateObjectToString(from.toObject()),
-			to: dateObjectToString(to.toObject())
+			from: from.unix(),
+			to: to.unix()
 		});
 	}
 
-	handleFromChange(e) {
-		this.setState({ from: e.target.value });
+	handleFromChange(date) {
+		this.setState({ from: date });
 	}
 
-	handleToChange(e) {
-		this.setState({ to: e.target.value });
+	handleToChange(date) {
+		this.setState({ to: date });
 	}
 
 	render() {
+
+		const error = this.state.error;
+
 		return (
 			<div className="modal">
 			  <div className="modal-dialog" role="document">
@@ -63,36 +70,23 @@ class Modal extends Component {
 			      <div className="modal-body">
 							<div className="row">
 								<div className="col-12">
-									{
-										this.state.error ?
-											<div class="alert alert-danger" role="alert">
-												{this.state.error}
-											</div> : null
-									}
+									{error ? getErrorMessage(error) : null}
 								</div>
 							</div>
-			        <div className="row">
+							<div className="row">
 								<label className="col-2 col-form-label">From</label>
 								<div className="col-10">
-									<input
-										type="text"
-										required={true}
-										className="form-control"
-										placeholder={"mm/dd/yyyy"}
-										onChange={this.handleFromChange}
-										value={this.state.from} />
+									<DatePicker
+										selected={this.state.from}
+										onChange={this.handleFromChange} />
 								</div>
 							</div>
 							<div className="row mt-3">
 								<label className="col-2 col-form-label">To</label>
 								<div className="col-10">
-									<input
-										type="text"
-										required={true}
-										className="form-control"
-										placeholder={"mm/dd/yyyy"}
-										onChange={this.handleToChange}
-										value={this.state.to} />
+									<DatePicker
+										selected={this.state.to}
+										onChange={this.handleToChange} />
 								</div>
 							</div>
 			      </div>
@@ -107,8 +101,12 @@ class Modal extends Component {
 	}
 }
 
-function dateObjectToString(obj) {
-	return (obj.months + 1) + "-" + obj.date + "-" + obj.years;
+function getErrorMessage(message) {
+	return (
+		<div class="alert alert-danger" role="alert">
+			{message}
+		</div> : null
+	);
 }
 
-export default Modal;
+export default ExportModal;

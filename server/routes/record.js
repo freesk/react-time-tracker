@@ -22,7 +22,8 @@ router.use('/', (req, res, next) => {
   });
 });
 
-router.get('/', (req, res, next) => {
+// get all records
+router.get('/get', (req, res, next) => {
 	const decoded = jwt.verify(req.query.token, 'secret');
 	const userId = decoded.user._id;
 
@@ -40,13 +41,13 @@ router.get('/', (req, res, next) => {
 	 });
 });
 
-router.patch('/', (req, res, next) => {
+// update time
+router.post('/update', (req, res, next) => {
 
 	const decoded = jwt.verify(req.query.token, 'secret');
 	const userId = decoded.user._id;
 	const data   = req.body.data;
-
-	let errors = [];
+	const errors = [];
 
 	const asem = new Asem(() => {
 		if(errors.length) return res.status(500).json({
@@ -77,12 +78,12 @@ router.patch('/', (req, res, next) => {
 					asem.p();
 				});
 			});
-
 	});
 
 })
 
-router.delete('/', (req, res, next) => {
+// delete a record
+router.post('/delete', (req, res, next) => {
 	const decoded = jwt.verify(req.query.token, 'secret');
 	const userId = decoded.user._id;
 	const recordId = req.body.recordId;
@@ -102,7 +103,8 @@ router.delete('/', (req, res, next) => {
 
 });
 
-router.post('/', (req, res, next) => {
+// create a record
+router.post('/post', (req, res, next) => {
 	const decoded = jwt.verify(req.query.token, 'secret');
 	const userId = decoded.user._id;
 
@@ -122,11 +124,9 @@ router.post('/', (req, res, next) => {
 	});
 
 	record.save((err, doc) => {
-		// status 500 - server error
     if (err) return res.status(500).json({
       error: err.message
     });
-		// status 201 - new resourse created
 		res.status(201).json({
 			error: null,
 			doc: doc
@@ -142,10 +142,12 @@ router.post('/export', (req, res, next) => {
 	const from = req.body.from;
 	const to = req.body.to;
 
-	console.log("DEBUG");
+	const fromMoment = moment.unix(from);
+	const toMoment = moment.unix(to);
 
-	console.log(from);
-	console.log(to);
+	function getUnixTimestamp(string) {
+		return moment(string, "MM-DD-YYYY").unix();
+	}
 
 	// filter by user id
 	Record.find({ "user" : userId }, { "user": 0 })
@@ -157,20 +159,30 @@ router.post('/export', (req, res, next) => {
 		 const records = doc;
 
 		 records.sort((a, b) => {
-			 if (a.date < b.date)
+			 if (getUnixTimestamp(a.date) < getUnixTimestamp(b.date))
 			   return -1;
-			 if (a.date > b.date)
+			 if (getUnixTimestamp(a.date) > getUnixTimestamp(b.date))
 			   return 1;
 			 return 0;
 		 });
 
-		 const filtered = records.filter(record => {
-			 return (record.date >= from) && (record.date <= to);
-		 });
+		 console.log("");
+		 console.log(records);
+
+		 console.log("");
+		 console.log("from " + fromMoment.format('MM-DD-YYYY'));
+		 console.log("to " + toMoment.format('MM-DD-YYYY'));
+
+		 const filtered = records.filter(record =>
+			 moment(record.date, "MM-DD-YYYY").isBetween(fromMoment, toMoment)
+		 );
+
+		 console.log("");
+		 console.log(filtered);
 
 		 const formatted = filtered.map(record => {
 
-			 const time = moment.utc(record.seconds*1000).format('HH:mm:ss');
+			 const time = moment(record.seconds*1000).format('HH:mm:ss');
 
 			 return {
 				 project: record.project,
