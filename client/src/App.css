@@ -141,3 +141,7 @@ fieldset > div:nth-child(2) {
 	max-width: 60px;
 	max-height: 60px;
 }
+
+.react-datepicker-popper {
+	z-index: 99 !important;
+}
