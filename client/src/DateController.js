@@ -93,6 +93,7 @@ class DateController extends Component {
 		const currentTasks = getCurentTasks(tasks, currentDate);
 		// get 10 newest
 
+		const clients = getItemsSortedByDate(tasks, "client", 10);
 		const projects = getItemsSortedByDate(tasks, "project", 10);
 		const activities = getItemsSortedByDate(tasks, "activity", 10);
 		const details = getItemsSortedByDate(tasks, "details", 10);
@@ -128,6 +129,7 @@ class DateController extends Component {
 				</div>
 				<NewRecordForm
 					currentDate={currentDate}
+					clients={clients}
 					projects={projects}
 					activities={activities}
 					details={details}

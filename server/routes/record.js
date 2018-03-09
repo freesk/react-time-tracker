@@ -111,6 +111,7 @@ router.post('/post', (req, res, next) => {
 	const project   = req.body.project;
 	const activity  = req.body.activity;
 	const details   = req.body.details;
+	const client    = req.body.client;
 	const seconds   = 0;
 	const timestamp	= req.body.timestamp;
 
@@ -119,6 +120,7 @@ router.post('/post', (req, res, next) => {
 		activity: activity,
 		details: details,
 		seconds: seconds,
+		client: client,
 		timestamp: timestamp,
 		user: userId
 	});

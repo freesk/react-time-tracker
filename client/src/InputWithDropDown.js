@@ -52,7 +52,7 @@ class InputWithDropDown extends Component {
           </div>
         </div>
         <input
-          required={true}
+          required={this.props.required}
           className="form-control"
           placeholder={this.props.placeholder}
           onChange={this.handleChange}

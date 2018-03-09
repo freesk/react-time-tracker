@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import collectjs from '../node_modules/collect.js';
+import clone from '../node_modules/clone';
 
 // my components
 import Project from './Project';
@@ -29,9 +30,18 @@ class TaskTable extends Component {
 
   render() {
     const filterText = this.props.filterText;
-    const collection = collectjs(this.props.tasks);
-    const grouped = collection.groupBy('project');
+    const tasks = this.props.tasks;
+
+    const formatted = this.props.tasks.map(task => {
+      const obj = clone(task);
+      obj.title = (task.client ? (task.client + " – ") : "") + task.project;
+      return obj;
+    });
+
+    const collection = collectjs(formatted);
+    const grouped = collection.groupBy('title');
     const projects = grouped.all();
+
     const projectRows = [];
     const matchCase = this.props.matchCase;
 
@@ -46,10 +56,6 @@ class TaskTable extends Component {
 
           // form a search string
           const searchString = [task.project, task.activity, task.details].join(" ");
-
-          // console.log(matchCase);
-          // console.log(searchString);
-          // console.log(filterText);
 
           if (matchCase) {
             if (searchString.indexOf(filterText) === -1) continue;
@@ -75,6 +81,8 @@ class TaskTable extends Component {
           );
 
         }
+
+        const client = "CN";
 
         if(taskRows.length)
           projectRows.push(

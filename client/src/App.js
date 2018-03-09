@@ -310,7 +310,8 @@ class App extends Component {
       project: task.project,
       activity: task.activity,
       details: task.details,
-      timestamp: task.timestamp
+      timestamp: task.timestamp,
+      client: task.client
     };
 
     const token = this.state.token;

@@ -15,6 +15,10 @@ var schema = new Schema({
 		type: Number,
 		required: true
 	},
+  client: {
+    type: String,
+		required: false
+  },
 	project: {
 		type: String,
 		required: true
