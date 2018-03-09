@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 
-import * as moment from 'moment';
-
 import DateLink from './DateLink';
 
 class DateNavigation extends Component {
@@ -17,22 +15,18 @@ class DateNavigation extends Component {
 	onClickPrev(e) {
 		e.preventDefault();
 		const currentDate = this.props.currentDate;
-		const startOfWeek = moment(currentDate, "MM-DD-YYYY").startOf('week');
-		const prevDay = startOfWeek.day(-1).toObject();
-		const prevDayStr = dateObjectToString(prevDay);
-
-		this.props.onHandleCurrentDateChnage(prevDayStr);
+		const startOfWeek = currentDate.startOf('week');
+		const prevDay = startOfWeek.day(-1);
+		this.props.onHandleCurrentDateChnage(prevDay);
 	}
 
 	// get to the next week
 	onClickNext(e) {
 		e.preventDefault();
 		const currentDate = this.props.currentDate;
-		const startOfWeek = moment(currentDate, "MM-DD-YYYY").startOf('week');
-		const nextDay = startOfWeek.day(7).toObject();
-		const nextDayStr = dateObjectToString(nextDay);
-
-		this.props.onHandleCurrentDateChnage(nextDayStr);
+		const startOfWeek = currentDate.startOf('week');
+		const nextDay = startOfWeek.day(7);
+		this.props.onHandleCurrentDateChnage(nextDay);
 	}
 
 	handleDateLinkClick(date) {
@@ -41,11 +35,22 @@ class DateNavigation extends Component {
 
 	render() {
 
+		// console.log("");
+		const currentDate = this.props.currentDate;
+
+		// console.log(currentDate);
+
 		const daysOfWeek = this.props.daysOfWeek;
 		const controls = daysOfWeek.map((date) => {
+
+
+			// console.log(date);
+
+			const isOn = date.isSame(currentDate, 'day');
+
 			return (
 				<DateLink
-					isOn={date === this.props.currentDate}
+					isOn={isOn}
 					date={date}
 					onHandleDateLinkClick={this.handleDateLinkClick} />
 			);
@@ -77,10 +82,6 @@ class DateNavigation extends Component {
 			</table>
 		);
 	}
-}
-
-function dateObjectToString(obj) {
-	return (obj.months + 1) + "-" + obj.date + "-" + obj.years;
 }
 
 export default DateNavigation;

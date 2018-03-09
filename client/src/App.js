@@ -63,7 +63,7 @@ class App extends Component {
       to: fromTo.to
     };
 
-    console.log(data);
+    // console.log(data);
 
     const token = this.state.token;
     const url = serverUrl + '/record/export?token=' + token;
@@ -310,7 +310,7 @@ class App extends Component {
       project: task.project,
       activity: task.activity,
       details: task.details,
-      date: task.date
+      timestamp: task.timestamp
     };
 
     const token = this.state.token;
@@ -354,7 +354,7 @@ class App extends Component {
     const infoMessage = this.state.info;
 
     // debug
-    console.log(this.state);
+    // console.log(this.state);
 
     const authorized = this.state.token ? true : false;
 

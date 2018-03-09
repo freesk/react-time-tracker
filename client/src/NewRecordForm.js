@@ -29,7 +29,7 @@ class NewRecordForm extends Component {
       project: this.state.project,
       activity: this.state.activity,
       details: this.state.details,
-      date: this.props.date
+      timestamp: this.props.currentDate.unix()
     }
     // clear the state
     this.setState({
@@ -57,7 +57,6 @@ class NewRecordForm extends Component {
 
     return (
       <form className="NewRecordForm" onSubmit={this.handleNewTask}>
-
         <div className="row no-gutters">
           <div className="col-12 col-md-3 mb-3 mb-md-0 pr-md-2">
             <InputWithDropDown

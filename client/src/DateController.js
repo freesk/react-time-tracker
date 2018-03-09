@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import collectjs from '../node_modules/collect.js';
+import clone from '../node_modules/clone';
 
 import SearchableTaskTable from './SearchableTaskTable';
 import NewRecordForm from './NewRecordForm';
@@ -13,12 +14,9 @@ class DateController extends Component {
 	constructor(props) {
 		super(props);
 
-		// get now
-		const currentDate = moment();
-
 		// set now for initialization
 		this.state = {
-			currentDate: dateObjectToString(currentDate.toObject()),
+			currentDate: moment(),
 			currentId: null
 		}
 
@@ -73,7 +71,12 @@ class DateController extends Component {
 	}
 
 	handleCurrentDateChnage(date) {
-		this.setState({currentDate: date});
+
+		console.log(date);
+
+		this.setState({currentDate: date}, () => {
+			console.log(this.state.currentDate);
+		});
 	}
 
   handleNewTask(task) {
@@ -84,23 +87,31 @@ class DateController extends Component {
 		// a reference
 		const currentDate = this.state.currentDate;
 		// collect
-		const collection = collectjs(this.props.tasks);
+		// const collection = collectjs(this.props.tasks);
+		const tasks = this.props.tasks;
 		// get current tasks
-		const tasks = getCurentTasks(collection, currentDate);
+		const currentTasks = getCurentTasks(tasks, currentDate);
 		// get 10 newest
-		const projects = getItemsSortedByDate(collection, "project", 10);
-		const activities = getItemsSortedByDate(collection, "activity", 10);
-		const details = getItemsSortedByDate(collection, "details", 10);
+
+		const projects = getItemsSortedByDate(tasks, "project", 10);
+		console.log("");
+		const activities = getItemsSortedByDate(tasks, "activity", 10);
+		console.log("");
+		const details = getItemsSortedByDate(tasks, "details", 10);
+		console.log("");
 
 		// get the week of the current day
 		const daysOfWeek = getWeekArray(currentDate);
+
+		// console.log(currentDate);
+		// console.log(daysOfWeek);
 
 		let body;
 
 		if(tasks.length)
 			body = <SearchableTaskTable
 								currentId={this.state.currentId}
-								tasks={tasks}
+								tasks={currentTasks}
 								onHandleTimeEdit={this.handleTimeEdit}
 								onHandleNewTask={this.handleNewTask}
 								onHandleToggleId={this.handleToggleId}
@@ -112,14 +123,14 @@ class DateController extends Component {
 
 			<div className="DateController">
 				<DateNavigation
-					currentDate={this.state.currentDate}
+					currentDate={currentDate}
 				 	daysOfWeek={daysOfWeek}
 					onHandleCurrentDateChnage={this.handleCurrentDateChnage} />
 				<div>
 				{body}
 				</div>
 				<NewRecordForm
-					date={this.state.currentDate}
+					currentDate={currentDate}
 					projects={projects}
 					activities={activities}
 					details={details}
@@ -130,65 +141,61 @@ class DateController extends Component {
 	}
 }
 
-function getItemsSortedByDate(collection, key, max) {
+function getItemsSortedByDate(tasks, key, max) {
+	// collect
+	const collection = collectjs(tasks);
 	// group by key
 	const grouped = collection.groupBy(key);
 	const items = [];
-
 	// each group
 	grouped.each(group => {
 		// sort children by date
-		const sorted = group.sortByDesc(product => product.date);
+		const sorted = group.sortBy(product => product.timestamp);
 		// convert to array
 		const arr = sorted.toArray();
 		// assing project of the first element
 		const item = arr[0][key];
-		// assing date of the first element
-		const date = arr[0].date;
+		// assing date of the first/newest element
+		const timestamp = arr[0].timestamp;
 		// push into an array
-		items.push({ item: item, date: date });
+		items.push({ item: item, timestamp: timestamp });
 	});
-
 	// sort the result one more time by date
-	const sorted = collectjs(items).sortByDesc(product => product.date);
-
+	const sorted = collectjs(items).sortBy(product => product.timestamp);
 	// convert the result into an array
 	const sortedItems = sorted.toArray();
-
+	// slice
 	const sortedSlicedItems = sortedItems.slice(0, max);
-
-	// console.log(sortedSlicedItems);
-
 	// map back as an array of items
 	return sortedSlicedItems.map(obj => obj.item);
 }
 
-function getCurentTasks(collection, currentDate) {
-	// sorty by date
-	const grouped = collection.groupBy("date");
-	// define an array
-	const tasks = [];
-	// if the collecton has a valid key
-	if(grouped.has(currentDate)) {
-		const items = grouped.all()[currentDate].items;
-		items.forEach(task => tasks.push(task));
-	}
+function getCurentTasks(currentTasks, currentDate) {
+	const tasks = currentTasks.filter(task => {
+		const timestamp = task.timestamp;
+		// parse as moment object
+		const date = moment.unix(timestamp);
+		// is the same day
+		return date.isSame(currentDate, 'day');
+	});
 	return tasks;
 }
 
 function getWeekArray(date) {
+	// days in a week
 	const NUMBER_OF_DAYS = 7;
+	// create a copy
+	const currentDate = clone(date);
 	// get the first day of the week where the give day sits
-	const startOfWeek = moment(date, "MM-DD-YYYY").startOf('week');
+	const startOfWeek = currentDate.startOf('week');
 	// define an array
 	const daysOfWeek = [];
-	// push the first day of the week
-	daysOfWeek.push(startOfWeek.toObject());
-	// push the rest of the 6 days
-	for (var i = 1; i < NUMBER_OF_DAYS; i++)
-		daysOfWeek.push(startOfWeek.day(i).toObject());
-	// return an array of formatted dates
-	return daysOfWeek.map(day => dateObjectToString(day));
+	// push the days of the week into an array
+	for (let i = 0; i < NUMBER_OF_DAYS; i++) {
+		const nextDay = clone(startOfWeek.day(i));
+		daysOfWeek.push(nextDay);
+	}
+	return daysOfWeek;
 }
 
 function getNoRecords() {
@@ -199,10 +206,6 @@ function getNoRecords() {
 			<hr />
 		</div>
 	);
-}
-
-function dateObjectToString(obj) {
-	return (obj.months + 1) + "-" + obj.date + "-" + obj.years;
 }
 
 export default DateController;
