@@ -396,6 +396,7 @@ class App extends Component {
       onHandleClose={this.handleInfoModalClose} />;
 
     const exportModal = <ExportModal
+      tasks={this.state.tasks}
       onHandleExportModalClose={this.handleExportModalClose}
       onHandleDownloadCsv={this.handleCsvDownload} />
 
