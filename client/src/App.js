@@ -1,6 +1,9 @@
 // react
 import React, { Component } from 'react';
 
+// dependencies
+import FileSaver from 'file-saver';
+
 // style
 import './App.css';
 
@@ -9,6 +12,9 @@ import DateController from './DateController';
 import Modal from './Modal';
 import LogIn from './LogIn';
 import SignUp from './SignUp';
+import ExportModal from './ExportModal';
+
+const serverUrl = "http://localhost:8000";
 
 class App extends Component {
   constructor(props) {
@@ -18,7 +24,8 @@ class App extends Component {
       tasks: [],
       token: null,
       error: "",
-      signup: false
+      signup: false,
+      export: null
     };
 
     this.syncTimeSpan = 1000 * 10;
@@ -26,17 +33,60 @@ class App extends Component {
     // to store ids of updated records
     this.toSync = [];
 
-    this.syncTime = this.syncTime.bind(this);
+    // this.syncTime = this.syncTime.bind(this);
     this.handleNewTask = this.handleNewTask.bind(this);
     this.handleTimeUpdate = this.handleTimeUpdate.bind(this);
     this.handleDeleteClick = this.handleDeleteClick.bind(this);
-    this.startSyncTimer = this.startSyncTimer.bind(this);
+    // this.startSyncTimer = this.startSyncTimer.bind(this);
     this.handleModalClose = this.handleModalClose.bind(this);
     this.handleLogInSubmit = this.handleLogInSubmit.bind(this);
     this.handleLogOut = this.handleLogOut.bind(this);
     this.handleSignUp = this.handleSignUp.bind(this);
     this.handleSignUpSubmit = this.handleSignUpSubmit.bind(this);
     this.handleInfoModalClose = this.handleInfoModalClose.bind(this);
+
+    this.handleExport = this.handleExport.bind(this);
+    this.handleExportModalClose = this.handleExportModalClose.bind(this);
+    this.handleCsvDownload = this.handleCsvDownload.bind(this);
+  }
+
+  handleExportModalClose() {
+    this.setState({ export: false });
+  }
+
+  handleCsvDownload(fromTo) {
+    const data = {
+      from: fromTo.from,
+      to: fromTo.to
+    };
+
+    const token = this.state.token;
+    const url = serverUrl + '/record/export?token=' + token;
+
+    fetch(url, {
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then((responseJson) => {
+      if(responseJson.error)
+        return this.setState({ error: responseJson.error, export: false });
+
+      const blob = new Blob([responseJson.doc], {type: "text/plain;charset=utf-8"});
+      const fileName = "export.csv";
+      this.setState({ export: false });
+      FileSaver.saveAs(blob, fileName);
+    })
+    .catch(() => {
+      // critical error
+      // ...
+    });
+  }
+
+  handleExport(e) {
+    e.preventDefault();
+    this.setState({ export: true });
   }
 
   handleSignUpSubmit(obj) {
@@ -46,7 +96,7 @@ class App extends Component {
       password: obj.password
     };
 
-    const url = 'https://radiant-temple-88637.herokuapp.com/user/register';
+    const url = serverUrl + '/user/register';
 
     fetch(url, {
       method: 'POST',
@@ -80,7 +130,7 @@ class App extends Component {
   getTheRecords() {
     const token = this.state.token;
     // form a url string
-    const url = 'https://radiant-temple-88637.herokuapp.com/record?token=' + token;
+    const url = serverUrl + '/record/get?token=' + token;
     // fetch
     fetch(url, { method: 'GET' })
       .then((response) => response.json())
@@ -109,9 +159,6 @@ class App extends Component {
     // get a token from the local storage
     const token = localStorage.getItem("token");
 
-    // debug
-    // const token = null;
-
     // try to use an available token
     if(token)
       // update the state with the token form the local storage
@@ -127,8 +174,13 @@ class App extends Component {
     const username = credentials.username;
     const password = credentials.password;
 
+    const url = serverUrl + '/user/login?username=' + username + '&password=' + password + '';
+
     // get token and user id
-    fetch('https://radiant-temple-88637.herokuapp.com/user/login?username=' + username + '&password=' + password + '')
+    fetch(url, {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" }
+      })
       .then((response) => response.json())
       .then((responseJson) => {
         if(responseJson.error)
@@ -167,7 +219,7 @@ class App extends Component {
       return this.startSyncTimer();
     // form a url
     const token = this.state.token;
-    const url = 'https://radiant-temple-88637.herokuapp.com/record/update?token=' + token;
+    const url = serverUrl + '/record/update?token=' + token;
     // form an object
     const data = { data: this.toSync };
     // post data
@@ -193,9 +245,7 @@ class App extends Component {
 
   handleTimeUpdate(id, seconds) {
     const tasks = this.state.tasks.slice();
-    const found = tasks.find(task => {
-      return task._id === id;
-    });
+    const found = tasks.find(task => task._id === id);
     const index = tasks.indexOf(found);
     const task = tasks[index];
     // seconds is not defined for a timer event
@@ -217,10 +267,10 @@ class App extends Component {
   handleDeleteClick(id) {
     const data = { recordId: id };
     const token = this.state.token;
-    const url = 'https://radiant-temple-88637.herokuapp.com/record?token=' + token;
+    const url = serverUrl + '/record/delete?token=' + token;
 
     fetch(url, {
-      method: 'DELETE',
+      method: 'POST',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data)
     })
@@ -259,7 +309,7 @@ class App extends Component {
     };
 
     const token = this.state.token;
-    const url = 'https://radiant-temple-88637.herokuapp.com/record?token=' + token;
+    const url = serverUrl + '/record/post?token=' + token;
 
     fetch(url, {
       method: 'POST',
@@ -313,6 +363,7 @@ class App extends Component {
         onHandleDeleteClick={this.handleDeleteClick}>
         <hr />
         <div className="text-center mb-2">
+          <a href="" className="mr-3" onClick={this.handleExport}>Export</a>
           <a href="" onClick={this.handleLogOut}>Log Out</a>
         </div>
       </DateController>
@@ -338,6 +389,10 @@ class App extends Component {
       title={"Info"}
       onHandleClose={this.handleInfoModalClose} />;
 
+    const exportModal = <ExportModal
+      onHandleExportModalClose={this.handleExportModalClose}
+      onHandleDownloadCsv={this.handleCsvDownload} />
+
     return (
       <div className="container">
         <div className="row">
@@ -352,6 +407,7 @@ class App extends Component {
         </div>
         {errorMessage ? errorModal : null}
         {infoMessage ? infoModal : null}
+        {this.state.export ? exportModal : null}
       </div>
     );
   }
