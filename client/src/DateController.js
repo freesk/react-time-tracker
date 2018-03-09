@@ -94,11 +94,8 @@ class DateController extends Component {
 		// get 10 newest
 
 		const projects = getItemsSortedByDate(tasks, "project", 10);
-		console.log("");
 		const activities = getItemsSortedByDate(tasks, "activity", 10);
-		console.log("");
 		const details = getItemsSortedByDate(tasks, "details", 10);
-		console.log("");
 
 		// get the week of the current day
 		const daysOfWeek = getWeekArray(currentDate);

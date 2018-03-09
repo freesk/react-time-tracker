@@ -7,8 +7,8 @@ const Asem = require('../misc/asem');
 
 const moment = require('moment');
 
-const User = require('../models/user');
-const Record = require('../models/record');
+const User = require('../models/User');
+const Record = require('../models/Record');
 
 // middleware that is specific to this router
 router.use('/', (req, res, next) => {
@@ -108,18 +108,18 @@ router.post('/post', (req, res, next) => {
 	const decoded = jwt.verify(req.query.token, 'secret');
 	const userId = decoded.user._id;
 
-	const project  = req.body.project;
-	const activity = req.body.activity;
-	const details  = req.body.details;
-	const seconds  = 0;
-	const date		 = req.body.date;
+	const project   = req.body.project;
+	const activity  = req.body.activity;
+	const details   = req.body.details;
+	const seconds   = 0;
+	const timestamp	= req.body.timestamp;
 
 	const record = new Record({
 		project: project,
 		activity: activity,
 		details: details,
 		seconds: seconds,
-		date: date,
+		timestamp: timestamp,
 		user: userId
 	});
 
@@ -159,9 +159,9 @@ router.post('/export', (req, res, next) => {
 		 const records = doc;
 
 		 records.sort((a, b) => {
-			 if (getUnixTimestamp(a.date) < getUnixTimestamp(b.date))
+			 if (getUnixTimestamp(a.timestamp) < getUnixTimestamp(b.timestamp))
 			   return -1;
-			 if (getUnixTimestamp(a.date) > getUnixTimestamp(b.date))
+			 if (getUnixTimestamp(a.timestamp) > getUnixTimestamp(b.timestamp))
 			   return 1;
 			 return 0;
 		 });

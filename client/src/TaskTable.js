@@ -33,6 +33,7 @@ class TaskTable extends Component {
     const grouped = collection.groupBy('project');
     const projects = grouped.all();
     const projectRows = [];
+    const matchCase = this.props.matchCase;
 
     for (var project in projects) {
       if (projects.hasOwnProperty(project)) {
@@ -43,11 +44,18 @@ class TaskTable extends Component {
         for (let i = 0; i < tasks.length; i++) {
           const task = tasks[i];
 
-          if (
-            task.activity.indexOf(filterText) === -1 &&
-            task.project.indexOf(filterText) === -1 &&
-            task.details.indexOf(filterText) === -1
-          ) continue;
+          // form a search string
+          const searchString = [task.project, task.activity, task.details].join(" ");
+
+          console.log(matchCase);
+          console.log(searchString);
+          console.log(filterText);
+
+          if (matchCase) {
+            if (searchString.indexOf(filterText) === -1) continue;
+          } else {
+            if (searchString.toLowerCase().indexOf(filterText.toLowerCase()) === -1) continue;
+          }
 
           const id = task._id;
           const currentId = this.props.currentId;
