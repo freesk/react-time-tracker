@@ -171,13 +171,6 @@ router.post('/export', (req, res, next) => {
 			 return 0;
 		 });
 
-		 console.log("");
-		 console.log(records);
-
-		 console.log("");
-		 console.log("from " + fromMoment.format('MM-DD-YYYY'));
-		 console.log("to " + toMoment.format('MM-DD-YYYY'));
-
 		 const filtered = records.filter(record => {
 			 const date = moment.unix(record.timestamp);
 			 return date.isBetween(fromMoment, toMoment) || date.isSame(fromMoment, 'day');
@@ -185,8 +178,9 @@ router.post('/export', (req, res, next) => {
 
 		 const formatted = filtered.map(record => {
 			 const time = precisionRound(record.seconds / 3600, 3);
-			 const date = moment.unix(record.timestamp).format('MM-DD-YYYY');
+			 const date = moment.unix(record.timestamp).format('MM/DD/YYYY');
 			 return {
+				 client: record.client || "n/a",
 				 project: record.project,
 				 activity: record.activity,
 				 details: record.details,
@@ -196,6 +190,7 @@ router.post('/export', (req, res, next) => {
 		 });
 
 		 const fields = [
+			 "client",
 			 "project",
 			 "activity",
 			 "details",
