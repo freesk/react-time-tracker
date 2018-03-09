@@ -355,7 +355,7 @@ class App extends Component {
     const infoMessage = this.state.info;
 
     // debug
-    // console.log(this.state);
+    console.log(this.state);
 
     const authorized = this.state.token ? true : false;
 

@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 
-import clone from '../node_modules/clone';
-
 function createToken() {
     let text = "";
     const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";

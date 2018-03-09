@@ -33,6 +33,7 @@ class ExportModal extends Component {
 		this.handleClientsSelection = this.handleClientsSelection.bind(this);
 		this.handleActivitiesSelection = this.handleActivitiesSelection.bind(this);
 		this.handleDetailsSelection = this.handleDetailsSelection.bind(this);
+		this.handleDownloadError = this.handleDownloadError.bind(this);
 
 	}
 
@@ -40,8 +41,8 @@ class ExportModal extends Component {
 		this.props.onHandleExportModalClose();
 	}
 
-	handleProjectsSelection(projects) {
-		this.setState({ projects: projects });
+	handleDownloadError() {
+		this.setState({ error: "You must have at least one record to export it" });
 	}
 
 	handleActivitiesSelection(activities) {
@@ -60,6 +61,7 @@ class ExportModal extends Component {
 		this.setState({ clients: clients });
 	}
 
+	// must be updated with an arayy of ids instead of from-to variables
 	handleDownload() {
 
 		const from = this.state.from;
@@ -89,39 +91,78 @@ class ExportModal extends Component {
 	render() {
 
 		const error = this.state.error;
-		const tasks = this.props.tasks;
 		const from = this.state.from;
 		const to = this.state.to;
 
-		const collection = collectjs(tasks);
+		// join all values that must be excluded into a single array
+		const filterOf = this.state.clients.concat(this.state.projects).concat(this.state.activities).concat(this.state.details);
 
+		// get data from from the props
+		const tasks = this.props.tasks;
+
+		// filter by date range and props to exclude
+		const filtered = tasks.filter(task => {
+			const date = moment.unix(task.timestamp);
+			// check if the record belongs to a given range of dates
+			if (!(date.isBetween(from, to) || date.isSame(from, 'day'))) return false;
+			// define props names
+			const props = ['client', 'activity', 'details', 'project'];
+			// okay bt default
+			let isOkay = true;
+			// check if any of props hold an excluded value and
+			// if so skip this record
+			for (let i = 0; i < props.length; i++)
+				if(filterOf.indexOf(task[props[i]]) > -1)
+					isOkay = false;
+
+			return isOkay;
+		});
+
+		const collection = collectjs(filtered);
+
+		// get unique values from the list after filtering
 		const clients = collection.unique('client').all().map(task => task.client);
 		const projects = collection.unique('project').all().map(task => task.project);
 		const activities = collection.unique('activity').all().map(task => task.activity);
 		const details = collection.unique('details').all().map(task => task.details);
 
-		const filterOf = this.state.clients.concat(this.state.projects).concat(this.state.activities).concat(this.state.details);
+		// add excluded props so they can be displayed as unchecked
+		this.state.clients.forEach(client => clients.push(client));
+		this.state.projects.forEach(project => projects.push(project));
+		this.state.activities.forEach(activity => activities.push(activity));
+		this.state.details.forEach(detail => details.push(detail));
 
-		console.log("filter of ", filterOf);
+		// sort by name
+		clients.sort();
+		projects.sort();
+		activities.sort();
+		details.sort();
 
-		const filtered = tasks.filter(task => {
-			const date = moment.unix(task.timestamp);
-			if (!(date.isBetween(from, to) || date.isSame(from, 'day'))) return false;
+		const clientCheckList = clients.length ?
+			<CheckList
+				items={clients}
+				onHandleItemsSelection={this.handleClientsSelection} /> :
+			null;
 
-			const props = ['client', 'activity', 'details', 'project'];
+		const projectCheckList = projects.length ?
+			<CheckList
+				items={projects}
+				onHandleItemsSelection={this.handleProjectsSelection} /> :
+			null;
 
-			let isOkay = true;
+		const activityCheckList = activities.length ?
+			<CheckList
+				items={activities}
+				onHandleItemsSelection={this.handleActivitiesSelection} /> :
+			null;
 
-			for (let i = 0; i < props.length; i++) {
-				if(filterOf.indexOf(task[props[i]]) > -1) {
-					isOkay = false;
-				}
-			}
+		const detailsCheckList = details.length ?
+			<CheckList
+				items={details}
+				onHandleItemsSelection={this.handleDetailsSelection} /> :
+			null;
 
-			return isOkay;
-		});
-
-		console.log("filtered", filtered);
+		console.log(filtered);
 
 		return (
 			<div className="modal">
@@ -173,33 +214,25 @@ class ExportModal extends Component {
 											<a className="nav-link" id="details-tab" data-toggle="tab" href="#details" role="tab" aria-controls="details" aria-selected="false">Details</a>
 										</li>
 									</ul>
-									<div class="tab-content" id="myTabContent">
+									<div className="tab-content" id="myTabContent">
 									  <div className="tab-pane fade show active" id="client" role="tabpanel" aria-labelledby="client-tab">
-											<CheckList
-												items={clients}
-												onHandleItemsSelection={this.handleClientsSelection} />
+											{clientCheckList}
 										</div>
 									  <div className="tab-pane fade" id="project" role="tabpanel" aria-labelledby="project-tab">
-											<CheckList
-												items={projects}
-												onHandleItemsSelection={this.handleProjectsSelection} />
+											{projectCheckList}
 										</div>
 									  <div className="tab-pane fade" id="activity" role="tabpanel" aria-labelledby="activity-tab">
-											<CheckList
-												items={activities}
-												onHandleItemsSelection={this.handleActivitiesSelection} />
+											{activityCheckList}
 										</div>
 										<div className="tab-pane fade" id="details" role="tabpanel" aria-labelledby="details-tab">
-											<CheckList
-												items={details}
-												onHandleItemsSelection={this.handleDetailsSelection} />
+											{detailsCheckList}
 										</div>
 									</div>
 								</div>
 							</div>
 			      </div>
 			      <div className="modal-footer">
-							<button type="button" className="btn btn-primary" onClick={this.handleDownload}>Download</button>
+							<button type="button" className="btn btn-primary" onClick={filtered.length ? this.handleDownload : this.handleDownloadError}>Download</button>
 			        <button type="button" className="btn btn-secondary" onClick={this.handleClose}>Close</button>
 			      </div>
 			    </div>
@@ -211,7 +244,7 @@ class ExportModal extends Component {
 
 function getErrorMessage(message) {
 	return (
-		<div class="alert alert-danger" role="alert">
+		<div className="alert alert-danger" role="alert">
 			{message}
 		</div> : null
 	);
