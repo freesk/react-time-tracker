@@ -32,7 +32,7 @@ class TaskTable extends Component {
     const filterText = this.props.filterText;
     const tasks = this.props.tasks;
 
-    const formatted = this.props.tasks.map(task => {
+    const formatted = tasks.map(task => {
       const obj = clone(task);
       obj.title = (task.client ? (task.client + " – ") : "") + task.project;
       return obj;
@@ -81,8 +81,6 @@ class TaskTable extends Component {
           );
 
         }
-
-        const client = "CN";
 
         if(taskRows.length)
           projectRows.push(

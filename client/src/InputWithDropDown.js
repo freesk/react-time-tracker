@@ -37,9 +37,10 @@ class InputWithDropDown extends Component {
 
   render() {
 
-    const dropDownItems = this.props.items.map(item =>
-      <DropDownItem key={item} item={item} onHandleDropDownClick={this.handleDropDownClick} />
-    );
+    const dropDownItems = this.props.items.map(item => {
+      if(!item) return null;
+      return <DropDownItem key={item} item={item} onHandleDropDownClick={this.handleDropDownClick} />
+    });
 
     return(
       <div className="input-group">
