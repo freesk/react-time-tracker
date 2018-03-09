@@ -77,6 +77,7 @@ class ExportModal extends Component {
 								<label className="col-2 col-form-label">From</label>
 								<div className="col-10">
 									<DatePicker
+										className={"form-control"}
 										selected={this.state.from}
 										onChange={this.handleFromChange} />
 								</div>
@@ -85,6 +86,7 @@ class ExportModal extends Component {
 								<label className="col-2 col-form-label">To</label>
 								<div className="col-10">
 									<DatePicker
+										className={"form-control"}
 										selected={this.state.to}
 										onChange={this.handleToChange} />
 								</div>

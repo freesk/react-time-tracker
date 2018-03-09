@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import DatePicker from 'react-datepicker';
+
 import DateLink from './DateLink';
 
 class DateNavigation extends Component {
@@ -9,6 +11,7 @@ class DateNavigation extends Component {
 		this.onClickPrev = this.onClickPrev.bind(this);
 		this.onClickNext = this.onClickNext.bind(this);
 		this.handleDateLinkClick = this.handleDateLinkClick.bind(this);
+		this.handleDatePicker = this.handleDatePicker.bind(this);
 	}
 
 	// get to the prev week
@@ -29,6 +32,10 @@ class DateNavigation extends Component {
 		this.props.onHandleCurrentDateChnage(nextDay);
 	}
 
+	handleDatePicker(date) {
+		this.props.onHandleCurrentDateChnage(date);
+	}
+
 	handleDateLinkClick(date) {
 		this.props.onHandleCurrentDateChnage(date);
 	}
@@ -43,9 +50,6 @@ class DateNavigation extends Component {
 		const daysOfWeek = this.props.daysOfWeek;
 		const controls = daysOfWeek.map((date) => {
 
-
-			// console.log(date);
-
 			const isOn = date.isSame(currentDate, 'day');
 
 			return (
@@ -57,29 +61,41 @@ class DateNavigation extends Component {
 		});
 
 		return(
-			<table className="top-control">
-				<tbody>
-					<tr>
-						<td className="prev-td">
-							<a href="" onClick={this.onClickPrev}>Prev</a>
-						</td>
-						<td>
-							<div className="flex-container">
-								<div className="flex-item">{controls[0]}</div>
-								<div className="flex-item">{controls[2]}</div>
-								<div className="flex-item">{controls[4]}</div>
-								<div className="flex-item">{controls[6]}</div>
-								<div className="flex-item">{controls[1]}</div>
-								<div className="flex-item">{controls[3]}</div>
-								<div className="flex-item">{controls[5]}</div>
-							</div>
-						</td>
-						<td className="next-td">
-							<a href="" onClick={this.onClickNext}>Next</a>
-						</td>
-					</tr>
-				</tbody>
-			</table>
+			<div>
+				<div className="row justify-content-md-end justify-content-center mt-3 mt-md-2 mb-4">
+					<label className="col-auto col-form-label text-right mr-2">Select Date</label>
+					<div className="col-auto mr-md-3">
+						<DatePicker
+							className={"form-control"}
+							selected={currentDate}
+							onChange={this.handleDatePicker} />
+					</div>
+				</div>
+
+				<table className="top-control">
+					<tbody>
+						<tr>
+							<td className="prev-td">
+								<a href="" onClick={this.onClickPrev}>Prev</a>
+							</td>
+							<td>
+								<div className="flex-container">
+									<div className="flex-item">{controls[0]}</div>
+									<div className="flex-item">{controls[2]}</div>
+									<div className="flex-item">{controls[4]}</div>
+									<div className="flex-item">{controls[6]}</div>
+									<div className="flex-item">{controls[1]}</div>
+									<div className="flex-item">{controls[3]}</div>
+									<div className="flex-item">{controls[5]}</div>
+								</div>
+							</td>
+							<td className="next-td">
+								<a href="" onClick={this.onClickNext}>Next</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		);
 	}
 }

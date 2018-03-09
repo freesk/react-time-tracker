@@ -158,10 +158,13 @@ router.post('/export', (req, res, next) => {
 
 		 const records = doc;
 
+		 console.log("");
+		 console.log(records);
+
 		 records.sort((a, b) => {
-			 if (getUnixTimestamp(a.timestamp) < getUnixTimestamp(b.timestamp))
+			 if (a.timestamp > b.timestamp)
 			   return -1;
-			 if (getUnixTimestamp(a.timestamp) > getUnixTimestamp(b.timestamp))
+			 if (a.timestamp < b.timestamp)
 			   return 1;
 			 return 0;
 		 });
@@ -173,25 +176,21 @@ router.post('/export', (req, res, next) => {
 		 console.log("from " + fromMoment.format('MM-DD-YYYY'));
 		 console.log("to " + toMoment.format('MM-DD-YYYY'));
 
-		 const filtered = records.filter(record =>
-			 moment(record.date, "MM-DD-YYYY").isBetween(fromMoment, toMoment)
-		 );
-
-		 console.log("");
-		 console.log(filtered);
+		 const filtered = records.filter(record => {
+			 const date = moment.unix(record.timestamp);
+			 return date.isBetween(fromMoment, toMoment) || date.isSame(fromMoment, 'day');
+		 });
 
 		 const formatted = filtered.map(record => {
-
-			 const time = moment(record.seconds*1000).format('HH:mm:ss');
-
+			 const time = precisionRound(record.seconds / 3600, 3);
+			 const date = moment.unix(record.timestamp).format('MM-DD-YYYY');
 			 return {
 				 project: record.project,
 				 activity: record.activity,
 				 details: record.details,
 				 time: time,
-				 date: record.date
+				 date: date
 			 };
-
 		 });
 
 		 const fields = [
@@ -203,10 +202,7 @@ router.post('/export', (req, res, next) => {
 		 ];
 
 		 const json2csvParser = new Json2csvParser({ fields });
-
 		 const csv = json2csvParser.parse(formatted);
-
-		 console.log(csv);
 
 		 res.status(200).json({
  		 	 error: null,
@@ -216,5 +212,10 @@ router.post('/export', (req, res, next) => {
 	 });
 
 });
+
+function precisionRound(number, precision) {
+  var factor = Math.pow(10, precision);
+  return Math.round(number * factor) / factor;
+}
 
 module.exports = router;

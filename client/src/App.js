@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 
 // dependencies
 import FileSaver from 'file-saver';
+import * as moment from 'moment';
 
 // style
 import './App.css';
@@ -63,8 +64,6 @@ class App extends Component {
       to: fromTo.to
     };
 
-    // console.log(data);
-
     const token = this.state.token;
     const url = serverUrl + '/record/export?token=' + token;
 
@@ -79,7 +78,8 @@ class App extends Component {
         return this.setState({ error: responseJson.error, export: false });
 
       const blob = new Blob([responseJson.doc], {type: "text/plain;charset=utf-8"});
-      const fileName = "export.csv";
+      const timestamp = moment().format();
+      const fileName = timestamp + ".csv";
       this.setState({ export: false });
       FileSaver.saveAs(blob, fileName);
     })
