@@ -16,7 +16,7 @@ class DateLink extends Component {
 		const date = this.props.date;
 		return (
 			<a href="" onClick={this.handleDateLinkClick} className={className}>
-				{date.format("DD/MM/YYYY")}
+				{date.format("ddd D")}
 			</a>
 		);
 	}
