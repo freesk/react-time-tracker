@@ -42,7 +42,7 @@ class ExportModal extends Component {
 	}
 
 	handleDownloadError() {
-		this.setState({ error: "You must have at least one record to export it" });
+		this.setState({ error: "You must have at least one record to export" });
 	}
 
 	handleActivitiesSelection(activities) {
@@ -68,7 +68,7 @@ class ExportModal extends Component {
 		const to = this.state.to;
 
 		if(!(from.isValid() && to.isValid())) return this.setState({
-			error: "Invalid data format"
+			error: "Invalid date format"
 		});
 
 		// reset
@@ -165,7 +165,7 @@ class ExportModal extends Component {
 		console.log(filtered);
 
 		return (
-			<div className="modal">
+			<div className="ExportModal modal">
 			  <div className="modal-dialog" role="document">
 			    <div className="modal-content">
 			      <div className="modal-header">
@@ -202,16 +202,16 @@ class ExportModal extends Component {
 								<div className="col-12 mt-4">
 									<ul className="nav nav-tabs" id="myTab" role="tablist">
 									  <li className="nav-item">
-									    <a className="nav-link active" id="client-tab" data-toggle="tab" href="#client" role="tab" aria-controls="client" aria-selected="true">Client</a>
+									    <a className={"nav-link active" + (clients.length ? "" : " disabled")} id="client-tab" data-toggle="tab" href="" role="tab" aria-controls="client" aria-selected="true">Client</a>
 									  </li>
 									  <li className="nav-item">
-									    <a className="nav-link" id="project-tab" data-toggle="tab" href="#project" role="tab" aria-controls="project" aria-selected="false">Project</a>
+									    <a className={"nav-link" + (projects.length ? "" : " disabled")} id="project-tab" data-toggle="tab" href="" role="tab" aria-controls="project" aria-selected="false">Project</a>
 									  </li>
 									  <li className="nav-item">
-									    <a className="nav-link" id="activity-tab" data-toggle="tab" href="#activity" role="tab" aria-controls="activity" aria-selected="false">Activity</a>
+									    <a className={"nav-link" + (activities.length ? "" : " disabled")} id="activity-tab" data-toggle="tab" href="" role="tab" aria-controls="activity" aria-selected="false">Activity</a>
 									  </li>
 										<li className="nav-item">
-											<a className="nav-link" id="details-tab" data-toggle="tab" href="#details" role="tab" aria-controls="details" aria-selected="false">Details</a>
+											<a className={"nav-link" + (details.length ? "" : " disabled")} id="details-tab" data-toggle="tab" href="" role="tab" aria-controls="details" aria-selected="false">Details</a>
 										</li>
 									</ul>
 									<div className="tab-content" id="myTabContent">
@@ -228,6 +228,12 @@ class ExportModal extends Component {
 											{detailsCheckList}
 										</div>
 									</div>
+									{
+										filtered.length ? "" :
+										<div className="mt-4 text-center no-records">
+											<h4>No Records</h4>
+										</div>
+									}
 								</div>
 							</div>
 			      </div>
