@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import TimeForm from './TimeForm';
+
 class EditModal extends Component {
 
 	constructor(props) {
@@ -29,6 +31,7 @@ class EditModal extends Component {
 		this.handleClose = this.handleClose.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleChange = this.handleChange.bind(this);
+		this.handleTimeEdit = this.handleTimeEdit.bind(this);
 	}
 
 	handleChange(e) {
@@ -36,18 +39,16 @@ class EditModal extends Component {
 		const id = e.target.id;
 		const value = e.target.value;
 
-		if(id === "seconds") {
-			const seconds = parseInt(value, 10);
-			if (isNaN(seconds))
-				return this.setState({ error: "enter a number for seconds" });
-			obj[id] = seconds;
-		} else {
-			obj[id] = value;
-		}
+		obj[id] = value;
 
 		this.setState(obj, () => {
-			console.log(this.state);
+			// console.log(this.state);
 		});
+	}
+
+	handleTimeEdit(seconds) {
+		console.log("Time update: " + seconds);
+		this.setState({ seconds: seconds })
 	}
 
 	handleSubmit() {
@@ -74,16 +75,15 @@ class EditModal extends Component {
 	render() {
 
 		const props = [
-			"activity",
 			"client",
-			"details",
 			"project",
-			"seconds"
+			"activity",
+			"details"
 		];
 
 		const inputs = props.map(prop => {
 			return (
-				<div className="row mt-2" key={prop}>
+				<div className="row mt-3" key={prop}>
 					<label className="col-2 col-form-label">{prop}</label>
 					<div className="col-10">
 						<input
@@ -100,8 +100,10 @@ class EditModal extends Component {
 
 		const error = this.state.error;
 
+		console.log(inputs);
+
 		return (
-			<div className="modal">
+			<div className="EditModal modal">
 			  <div className="modal-dialog" role="document">
 			    <div className="modal-content">
 			      <div className="modal-header">
@@ -113,11 +115,19 @@ class EditModal extends Component {
 							<div className="mt-4 ml-4 mr-4">
 								{error ? getErrorMessage(error) : null}
 								{inputs}
+								<div className="row mt-3">
+									<label className="col-2 col-form-label">Time</label>
+									<div className="col-10">
+										<TimeForm
+											onHandleTimeEdit={this.handleTimeEdit}
+											seconds={this.state.seconds} />
+									</div>
+								</div>
 							</div>
 			      <div className="modal-body">
 			      </div>
 			      <div className="modal-footer">
-							<button type="button" className="btn btn-secondary" onClick={this.handleSubmit}>Submit</button>
+							<button type="button" className="btn btn-primary" onClick={this.handleSubmit}>Submit</button>
 			        <button type="button" className="btn btn-secondary" onClick={this.handleClose}>Close</button>
 			      </div>
 			    </div>

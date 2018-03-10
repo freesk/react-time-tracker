@@ -153,3 +153,7 @@ fieldset > div:nth-child(2) {
 .TimeFormEditOff .form-control {
 	background-color: transparent !important;
 }
+
+.EditModal label {
+	text-transform: capitalize;
+}
