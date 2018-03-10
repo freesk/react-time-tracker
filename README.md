@@ -22,4 +22,3 @@ $ npm start
 - Get rid of time synchronization and rather count seconds in the client and in [mongoDB](https://www.mongodb.com) simultaneously
 - Calculating of earning is needed
 - Billable vs non billable records
-- Complete editing of records is needed (not just time)
