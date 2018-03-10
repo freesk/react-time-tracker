@@ -29,6 +29,7 @@ class DateController extends Component {
 		this.handleCurrentDateChnage = this.handleCurrentDateChnage.bind(this);
 		this.tick = this.tick.bind(this);
 		this.handleToggleId = this.handleToggleId.bind(this);
+		this.handleRecordEdit = this.handleRecordEdit.bind(this);
 	}
 
 	handleTimeEdit(id, seconds) {
@@ -70,12 +71,16 @@ class DateController extends Component {
 		clearInterval(this.timerID);
 	}
 
+	handleRecordEdit(id) {
+		this.props.onHandleRecordEdit(id)
+	}
+
 	handleCurrentDateChnage(date) {
 
-		console.log(date);
+		// console.log(date);
 
 		this.setState({currentDate: date}, () => {
-			console.log(this.state.currentDate);
+			// console.log(this.state.currentDate);
 		});
 	}
 
@@ -110,6 +115,7 @@ class DateController extends Component {
 			body = <SearchableTaskTable
 								currentId={this.state.currentId}
 								tasks={currentTasks}
+								onHandleRecordEdit={this.handleRecordEdit}
 								onHandleTimeEdit={this.handleTimeEdit}
 								onHandleNewTask={this.handleNewTask}
 								onHandleToggleId={this.handleToggleId}

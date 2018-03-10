@@ -14,6 +14,7 @@ import Modal from './Modal';
 import LogIn from './LogIn';
 import SignUp from './SignUp';
 import ExportModal from './ExportModal';
+import EditModal from './EditModal';
 
 const serverUrl = "http://localhost:8000";
 
@@ -26,7 +27,8 @@ class App extends Component {
       token: null,
       error: "",
       signup: false,
-      export: false
+      export: false,
+      editId: null
     };
 
     this.syncTimeSpan = 1000 * 10;
@@ -49,6 +51,60 @@ class App extends Component {
     this.handleExport = this.handleExport.bind(this);
     this.handleExportModalClose = this.handleExportModalClose.bind(this);
     this.handleCsvDownload = this.handleCsvDownload.bind(this);
+
+    this.handleRecordEdit = this.handleRecordEdit.bind(this);
+    this.handleRecordUpdate = this.handleRecordUpdate.bind(this);
+    this.handleRecordUpdateClose = this.handleRecordUpdateClose.bind(this);
+  }
+
+  handleRecordUpdateClose() {
+    this.setState({ editId: null });
+  }
+
+  handleRecordEdit(id) {
+    this.setState({ editId: id }, () => {
+      // console.log(this.state);
+    });
+  }
+
+  handleRecordUpdate(record) {
+    const tasks = this.state.tasks.slice();
+    const found = tasks.find(task => task._id === record._id);
+
+    // update found here
+    for (var key in record) {
+      if (record.hasOwnProperty(key)) {
+        found[key] = record[key];
+      }
+    }
+
+    this.setState({ editId: null }, () => {
+      // console.log(this.state);
+    });
+
+    // form a url
+    const token = this.state.token;
+    const url = serverUrl + '/record/updateOne?token=' + token;
+    // form an object
+    const data = { data: found };
+    // post data
+    fetch(url, {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then((responseJson) => {
+        if(responseJson.error)
+          return this.setState({ error: responseJson.error });
+
+        // update the state
+        this.setState({ tasks: tasks });
+      })
+      .catch(() => {
+        // critical error
+        // ...
+      });
   }
 
   handleExportModalClose() {
@@ -356,7 +412,7 @@ class App extends Component {
     const infoMessage = this.state.info;
 
     // debug
-    console.log(this.state);
+    // console.log(this.state);
 
     const authorized = this.state.token ? true : false;
 
@@ -365,6 +421,7 @@ class App extends Component {
     if (authorized) {
       body = <DateController
         tasks={this.state.tasks}
+        onHandleRecordEdit={this.handleRecordEdit}
         onHandleNewTask={this.handleNewTask}
         onHandleTimeUpdate={this.handleTimeUpdate}
         onHandleDeleteClick={this.handleDeleteClick}>
@@ -401,6 +458,12 @@ class App extends Component {
       onHandleExportModalClose={this.handleExportModalClose}
       onHandleDownloadCsv={this.handleCsvDownload} />
 
+    const editModal = <EditModal
+      editId={this.state.editId}
+      tasks={this.state.tasks}
+      onHandleClose={this.handleRecordUpdateClose}
+      onHandleRecordUpdate={this.handleRecordUpdate} />
+
     return (
       <div className="container">
         <div className="row">
@@ -416,6 +479,7 @@ class App extends Component {
         {errorMessage ? errorModal : null}
         {infoMessage ? infoModal : null}
         {this.state.export ? exportModal : null}
+        {this.state.editId ? editModal : null}
       </div>
     );
   }

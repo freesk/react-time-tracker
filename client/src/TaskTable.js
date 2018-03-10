@@ -14,6 +14,7 @@ class TaskTable extends Component {
 		this.handleToggleId = this.handleToggleId.bind(this);
     this.handleTimeEdit = this.handleTimeEdit.bind(this);
     this.handleDeleteClick = this.handleDeleteClick.bind(this);
+    this.handleRecordEdit = this.handleRecordEdit.bind(this);
   }
 
   handleTimeEdit(id, seconds) {
@@ -26,6 +27,10 @@ class TaskTable extends Component {
 
   handleDeleteClick(id) {
     this.props.onHandleDeleteClick(id);
+  }
+
+  handleRecordEdit(id) {
+    this.props.onHandleRecordEdit(id)
   }
 
   render() {
@@ -73,6 +78,7 @@ class TaskTable extends Component {
               isToggleOn={isToggleOn}
               onHandleToggleId={this.handleToggleId}
               onHandleTimeEdit={this.handleTimeEdit}
+              onHandleRecordEdit={this.handleRecordEdit}
               onHandleDeleteClick={this.handleDeleteClick}
               activity={task.activity}
               seconds={task.seconds}

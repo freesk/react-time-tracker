@@ -41,6 +41,40 @@ router.get('/get', (req, res, next) => {
 	 });
 });
 
+router.post('/updateOne', (req, res, next) => {
+	const decoded = jwt.verify(req.query.token, 'secret');
+	const userId = decoded.user._id;
+	const data   = req.body.data;
+
+	// filter by user id and recrd id
+	Record.findOne({ "user" : userId, "_id" : data._id })
+		.exec(function(err, doc) {
+			if(err) return res.status(500).json({
+ 	     error: err.message
+ 	   });
+
+			for (var key in data) {
+				if (data.hasOwnProperty(key)) {
+					if(key === "_id") continue;
+					// update with a new value if it is available
+					doc[key] = data[key] || doc[key];
+				}
+			}
+
+			// save the update
+			doc.save((err) => {
+				if(err) return res.status(500).json({
+	 	     error: err.message
+	 	   	});
+				res.status(500).json({
+					error: null
+			 	});
+			});
+
+		});
+
+});
+
 // update time
 router.post('/update', (req, res, next) => {
 

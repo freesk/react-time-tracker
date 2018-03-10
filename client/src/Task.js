@@ -22,7 +22,7 @@ class Task extends Component {
   }
 
   handleEditClick() {
-    console.log("edit the record");
+    this.props.onHandleRecordEdit(this.props._id)
   }
 
   handleTimeEditIsOff() {

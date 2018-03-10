@@ -15,6 +15,8 @@ class SearchableTaskTable extends Component {
     this.handleDeleteClick = this.handleDeleteClick.bind(this);
     this.handleToggleId = this.handleToggleId.bind(this);
     this.handleMatchCaseChange = this.handleMatchCaseChange.bind(this);
+    this.handleRecordEdit = this.handleRecordEdit.bind(this);
+    this.handleRecordEdit = this.handleRecordEdit.bind(this);
   }
 
   handleFilterTextChange(filterText) {
@@ -37,6 +39,10 @@ class SearchableTaskTable extends Component {
     this.props.onHandleDeleteClick(id);
   }
 
+  handleRecordEdit(id) {
+    this.props.onHandleRecordEdit(id)
+  }
+
   render() {
     return (
       <div>
@@ -50,6 +56,7 @@ class SearchableTaskTable extends Component {
           tasks={this.props.tasks}
           filterText={this.state.filterText}
           matchCase={this.state.matchCase}
+          onHandleRecordEdit={this.handleRecordEdit}
           onHandleDeleteClick={this.handleDeleteClick}
           onHandleToggleId={this.handleToggleId} />
       </div>
