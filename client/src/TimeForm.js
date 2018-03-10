@@ -32,7 +32,8 @@ class TimeForm extends Component {
 
 	handleTimeEdit(seconds) {
 		this.setState({ isEditModeOn: false }, () => {
-			this.props.onHandleTimeEdit(seconds);
+      if (seconds !== this.props.seconds)
+			   this.props.onHandleTimeEdit(seconds);
 		});
 	}
 

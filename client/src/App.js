@@ -310,8 +310,13 @@ class App extends Component {
     const found = tasks.find(task => task._id === id);
     const index = tasks.indexOf(found);
     const task = tasks[index];
+
     // seconds is not defined for a timer event
-    task.seconds = seconds ? seconds : task.seconds + 1;
+    if ((typeof seconds === "undefined") || (seconds === null)) {
+      task.seconds = task.seconds + 1;
+    } else {
+      task.seconds = seconds;
+    }
 
     if(this.toSync.indexOf(task) < 0)
       this.toSync.push(task);
