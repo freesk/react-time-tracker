@@ -30,3 +30,4 @@ $ npm run server
 - Calculating of earning is needed
 - Billable vs non billable records
 - Bootstrap cannot handle the export modal tabs without bugs on its own, therefore a component that handles them must be created
+- Update the repo so the the client and server are treated as submodules
