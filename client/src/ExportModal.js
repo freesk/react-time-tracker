@@ -147,26 +147,34 @@ class ExportModal extends Component {
 			<CheckList
 				items={clients}
 				onHandleItemsSelection={this.handleClientsSelection} /> :
-			null;
+			<div className="mt-4 text-center no-records">
+				<h4>No Records</h4>
+			</div>;
 
 		const projectCheckList = projects.length ?
 			<CheckList
 				items={projects}
 				onHandleItemsSelection={this.handleProjectsSelection} /> :
-			null;
+			<div className="mt-4 text-center no-records">
+				<h4>No Records</h4>
+			</div>;
 
 		const activityCheckList = activities.length ?
 			<CheckList
 				items={activities}
 				onHandleItemsSelection={this.handleActivitiesSelection} /> :
-			null;
+			<div className="mt-4 text-center no-records">
+				<h4>No Records</h4>
+			</div>;
 
 		const detailsCheckList = details.length ?
 			<CheckList
 				items={details}
 				onHandleItemsSelection={this.handleDetailsSelection} /> :
-			null;
-
+			<div className="mt-4 text-center no-records">
+				<h4>No Records</h4>
+			</div>;
+			
 		console.log(filtered);
 
 		return (
@@ -233,12 +241,6 @@ class ExportModal extends Component {
 											{detailsCheckList}
 										</div>
 									</div>
-									{
-										filtered.length ? "" :
-										<div className="mt-4 text-center no-records">
-											<h4>No Records</h4>
-										</div>
-									}
 								</div>
 							</div>
 			      </div>
