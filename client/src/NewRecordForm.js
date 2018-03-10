@@ -68,7 +68,7 @@ class NewRecordForm extends Component {
         <div className="row no-gutters">
           <div className="col-12 col-md-2 mb-3 mb-md-0 pr-md-2">
             <InputWithDropDown
-              required={false}
+              required={true}
               items={this.props.clients}
               placeholder={"Client"}
               onHandleChange={this.handleClientChange}

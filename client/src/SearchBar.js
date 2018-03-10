@@ -33,6 +33,7 @@ class SearchBar extends Component {
           </label>
         </div>
         <input
+          autoComplete="off"
           className="form-control"
           placeholder="Search..."
           value={filterText}

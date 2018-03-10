@@ -53,6 +53,7 @@ class InputWithDropDown extends Component {
           </div>
         </div>
         <input
+          autoComplete="off"
           required={this.props.required}
           className="form-control"
           placeholder={this.props.placeholder}

@@ -87,6 +87,7 @@ class EditModal extends Component {
 					<label className="col-2 col-form-label">{prop}</label>
 					<div className="col-10">
 						<input
+							autoComplete="off"
 							type="text"
 		          required
 							id={prop}

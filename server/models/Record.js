@@ -17,7 +17,7 @@ var schema = new Schema({
 	},
   client: {
     type: String,
-		required: false
+		required: true
   },
 	project: {
 		type: String,

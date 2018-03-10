@@ -78,10 +78,6 @@ class App extends Component {
       }
     }
 
-    this.setState({ editId: null }, () => {
-      // console.log(this.state);
-    });
-
     // form a url
     const token = this.state.token;
     const url = serverUrl + '/record/updateOne?token=' + token;
@@ -98,8 +94,12 @@ class App extends Component {
         if(responseJson.error)
           return this.setState({ error: responseJson.error });
 
-        // update the state
-        this.setState({ tasks: tasks });
+        this.setState({
+          editId: null,
+          tasks: tasks }, () => {
+          // console.log(this.state);
+        });
+
       })
       .catch(() => {
         // critical error
