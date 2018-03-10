@@ -15,6 +15,7 @@ import LogIn from './LogIn';
 import SignUp from './SignUp';
 import ExportModal from './ExportModal';
 import EditModal from './EditModal';
+import SettingsModal from './SettingsModal';
 
 const serverUrl = "http://localhost:8000";
 
@@ -28,7 +29,8 @@ class App extends Component {
       error: "",
       signup: false,
       export: false,
-      editId: null
+      editId: null,
+      settings: false
     };
 
     this.syncTimeSpan = 1000 * 10;
@@ -55,6 +57,31 @@ class App extends Component {
     this.handleRecordEdit = this.handleRecordEdit.bind(this);
     this.handleRecordUpdate = this.handleRecordUpdate.bind(this);
     this.handleRecordUpdateClose = this.handleRecordUpdateClose.bind(this);
+
+    this.criticalError = this.criticalError.bind(this);
+
+    this.handleSettings = this.handleSettings.bind(this);
+    this.handleCloseSettings = this.handleCloseSettings.bind(this);
+    this.handleUpdateSettings = this.handleUpdateSettings.bind(this);
+  }
+
+  handleSettings(e) {
+    e.preventDefault();
+    this.setState({ settings: true });
+  }
+
+  handleCloseSettings() {
+    this.setState({ settings: false });
+  }
+
+  handleUpdateSettings() {
+    // this.setState({ settings: false });
+
+    this.handleCloseSettings();
+  }
+
+  criticalError() {
+    this.setState({ error: "Cannot connect to the server" });
   }
 
   handleRecordUpdateClose() {
@@ -103,7 +130,7 @@ class App extends Component {
       })
       .catch(() => {
         // critical error
-        // ...
+        this.criticalError();
       });
   }
 
@@ -142,7 +169,7 @@ class App extends Component {
     })
     .catch(() => {
       // critical error
-      // ...
+      this.criticalError();
     });
   }
 
@@ -174,7 +201,7 @@ class App extends Component {
     })
     .catch(() => {
       // critical error
-      // ...
+      this.criticalError();
     });
   }
 
@@ -213,7 +240,7 @@ class App extends Component {
       })
       .catch(() => {
         // critical error
-        // ...
+        this.criticalError();
       });
   }
 
@@ -259,7 +286,7 @@ class App extends Component {
       })
       .catch((error) => {
         // critical error
-        // ...
+        this.criticalError();
       });
   }
 
@@ -301,7 +328,7 @@ class App extends Component {
       })
       .catch(() => {
         // critical error
-        // ...
+        this.criticalError();
       });
   }
 
@@ -360,7 +387,7 @@ class App extends Component {
     })
     .catch(() => {
       // critical error
-      // ...
+      this.criticalError();
     });
 
   }
@@ -399,7 +426,7 @@ class App extends Component {
     })
     .catch(() => {
       // critical error
-      // ...
+      this.criticalError();
     });
 
   }
@@ -432,6 +459,7 @@ class App extends Component {
         onHandleDeleteClick={this.handleDeleteClick}>
         <hr />
         <div className="text-center mb-2">
+          <a href="" className="mr-3" onClick={this.handleSettings}>Settings</a>
           <a href="" className="mr-3" onClick={this.handleExport}>Export</a>
           <a href="" onClick={this.handleLogOut}>Log Out</a>
         </div>
@@ -469,6 +497,10 @@ class App extends Component {
       onHandleClose={this.handleRecordUpdateClose}
       onHandleRecordUpdate={this.handleRecordUpdate} />
 
+    const settingsModal = <SettingsModal
+      onHandleSettingsClose={this.handleCloseSettings}
+      onHandleSettingsUpdate={this.handleUpdateSettings} />
+
     return (
       <div className="container">
         <div className="row">
@@ -485,6 +517,7 @@ class App extends Component {
         {infoMessage ? infoModal : null}
         {this.state.export ? exportModal : null}
         {this.state.editId ? editModal : null}
+        {this.state.settings ? settingsModal : null}
       </div>
     );
   }

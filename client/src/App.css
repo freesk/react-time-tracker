@@ -48,6 +48,7 @@ fieldset > div:nth-child(2) {
 
 .DateController .top-control {
 	width: 100%;
+	font-size: 17px;
 }
 
 .DateController .prev-td,
@@ -116,7 +117,9 @@ fieldset > div:nth-child(2) {
 	.DateController .flex-item:nth-child(7) {
 	  margin-right: 0 !important;
 	}
-
+	.DateController .top-control {
+		font-size: 18px;
+	}
 	.DateController .flex-item:nth-child(1) { order: 1; }
   .DateController .flex-item:nth-child(2) { order: 3; }
   .DateController .flex-item:nth-child(3) { order: 5; }
