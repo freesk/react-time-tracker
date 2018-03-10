@@ -55,13 +55,14 @@ class App extends Component {
     this.setState({ export: false });
   }
 
-  handleCsvDownload(fromTo) {
+  handleCsvDownload(obj) {
 
     this.handleExportModalClose();
 
     const data = {
-      from: fromTo.from,
-      to: fromTo.to
+      from: obj.from,
+      to: obj.to,
+      filterOf: obj.filterOf
     };
 
     const token = this.state.token;

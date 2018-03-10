@@ -143,6 +143,7 @@ router.post('/export', (req, res, next) => {
 
 	const from = req.body.from;
 	const to = req.body.to;
+	const filterOf = req.body.filterOf;
 
 	const fromMoment = moment.unix(from);
 	const toMoment = moment.unix(to);
@@ -173,8 +174,25 @@ router.post('/export', (req, res, next) => {
 
 		 const filtered = records.filter(record => {
 			 const date = moment.unix(record.timestamp);
-			 return date.isBetween(fromMoment, toMoment) || date.isSame(fromMoment, 'day');
+			 // check if the record belongs to a given range of dates
+			 if (!(date.isBetween(fromMoment, toMoment) || fromMoment.isSame(from, 'day'))) return false;
+			 // define props names
+			 const props = ['client', 'activity', 'details', 'project'];
+			 // okay bt default
+			 let isOkay = true;
+			 // check if any of props hold an excluded value and
+			 // if so skip this record
+			 for (let i = 0; i < props.length; i++)
+				 if(filterOf.indexOf(record[props[i]]) > -1)
+					 isOkay = false;
+
+			 return isOkay;
 		 });
+
+		 // just in case
+		 if(!filtered.length) return res.status(500).json({
+ 		 	 error: "no records to export"
+ 		 });
 
 		 const formatted = filtered.map(record => {
 			 const time = precisionRound(record.seconds / 3600, 3);

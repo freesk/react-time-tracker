@@ -63,9 +63,13 @@ class ExportModal extends Component {
 
 	// must be updated with an arayy of ids instead of from-to variables
 	handleDownload() {
-
+		// an identic filtering procedure must happen on the server, since
+		// the way the data gets loaded my changed in the future
 		const from = this.state.from;
 		const to = this.state.to;
+		// join all values that must be excluded into a single array
+		const filterOf = this.state.clients.concat(this.state.projects).concat(this.state.activities).concat(this.state.details);
+
 
 		if(!(from.isValid() && to.isValid())) return this.setState({
 			error: "Invalid date format"
@@ -76,7 +80,8 @@ class ExportModal extends Component {
 
 		this.props.onHandleDownloadCsv({
 			from: from.unix(),
-			to: to.unix()
+			to: to.unix(),
+			filterOf: filterOf
 		});
 	}
 
@@ -202,16 +207,16 @@ class ExportModal extends Component {
 								<div className="col-12 mt-4">
 									<ul className="nav nav-tabs" id="myTab" role="tablist">
 									  <li className="nav-item">
-									    <a className={"nav-link active" + (clients.length ? "" : " disabled")} id="client-tab" data-toggle="tab" href="" role="tab" aria-controls="client" aria-selected="true">Client</a>
+									    <a className={"nav-link active" + (clients.length ? "" : " disabled")} id="client-tab" data-toggle="tab" href="#client" role="tab" aria-controls="client" aria-selected="true">Client</a>
 									  </li>
 									  <li className="nav-item">
-									    <a className={"nav-link" + (projects.length ? "" : " disabled")} id="project-tab" data-toggle="tab" href="" role="tab" aria-controls="project" aria-selected="false">Project</a>
+									    <a className={"nav-link" + (projects.length ? "" : " disabled")} id="project-tab" data-toggle="tab" href="#project" role="tab" aria-controls="project" aria-selected="false">Project</a>
 									  </li>
 									  <li className="nav-item">
-									    <a className={"nav-link" + (activities.length ? "" : " disabled")} id="activity-tab" data-toggle="tab" href="" role="tab" aria-controls="activity" aria-selected="false">Activity</a>
+									    <a className={"nav-link" + (activities.length ? "" : " disabled")} id="activity-tab" data-toggle="tab" href="#activity" role="tab" aria-controls="activity" aria-selected="false">Activity</a>
 									  </li>
 										<li className="nav-item">
-											<a className={"nav-link" + (details.length ? "" : " disabled")} id="details-tab" data-toggle="tab" href="" role="tab" aria-controls="details" aria-selected="false">Details</a>
+											<a className={"nav-link" + (details.length ? "" : " disabled")} id="details-tab" data-toggle="tab" href="#details" role="tab" aria-controls="details" aria-selected="false">Details</a>
 										</li>
 									</ul>
 									<div className="tab-content" id="myTabContent">
