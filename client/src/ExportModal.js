@@ -207,7 +207,7 @@ class ExportModal extends Component {
 								<div className="col-12 mt-4">
 									<ul className="nav nav-tabs" id="myTab" role="tablist">
 									  <li className="nav-item">
-									    <a className={"nav-link active" + (clients.length ? "" : " disabled")} id="client-tab" data-toggle="tab" href="#client" role="tab" aria-controls="client" aria-selected="true">Client</a>
+									    <a className={"nav-link active" + (clients.length ? "" : " disabled")} id="client-tab" data-toggle="tab" href="#client" role="tab" aria-controls="client" aria-selected="false">Client</a>
 									  </li>
 									  <li className="nav-item">
 									    <a className={"nav-link" + (projects.length ? "" : " disabled")} id="project-tab" data-toggle="tab" href="#project" role="tab" aria-controls="project" aria-selected="false">Project</a>
