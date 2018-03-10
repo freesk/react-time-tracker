@@ -195,8 +195,8 @@ router.post('/export', (req, res, next) => {
 
 		 const records = doc;
 
-		 console.log("");
-		 console.log(records);
+		 // console.log("");
+		 // console.log(records);
 
 		 records.sort((a, b) => {
 			 if (a.timestamp > b.timestamp)
@@ -206,10 +206,13 @@ router.post('/export', (req, res, next) => {
 			 return 0;
 		 });
 
+		 // console.log("");
+		 // console.log(records);
+
 		 const filtered = records.filter(record => {
 			 const date = moment.unix(record.timestamp);
 			 // check if the record belongs to a given range of dates
-			 if (!(date.isBetween(fromMoment, toMoment) || fromMoment.isSame(from, 'day'))) return false;
+			 if (!(date.isBetween(fromMoment, toMoment) || fromMoment.isSame(date, 'day'))) return false;
 			 // define props names
 			 const props = ['client', 'activity', 'details', 'project'];
 			 // okay bt default
@@ -222,6 +225,9 @@ router.post('/export', (req, res, next) => {
 
 			 return isOkay;
 		 });
+
+		 // console.log("");
+		 // console.log(filtered);
 
 		 // just in case
 		 if(!filtered.length) return res.status(500).json({
