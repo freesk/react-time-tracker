@@ -60,7 +60,7 @@ class TaskTable extends Component {
           const task = tasks[i];
 
           // form a search string
-          const searchString = [task.project, task.activity, task.details].join(" ");
+          const searchString = [task.project, task.activity, task.details, task.client].join(" ");
 
           if (matchCase) {
             if (searchString.indexOf(filterText) === -1) continue;

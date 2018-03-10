@@ -32,21 +32,12 @@ class EditModal extends Component {
 	}
 
 	handleChange(e) {
-
-		const props = [
-			"activity",
-			"client",
-			"details",
-			"project",
-			"seconds"
-		];
-
 		const obj = {};
 		const id = e.target.id;
 		const value = e.target.value;
 
 		if(id === "seconds") {
-			const seconds = parseInt(value);
+			const seconds = parseInt(value, 10);
 			if (isNaN(seconds))
 				return this.setState({ error: "enter a number for seconds" });
 			obj[id] = seconds;
@@ -57,7 +48,6 @@ class EditModal extends Component {
 		this.setState(obj, () => {
 			console.log(this.state);
 		});
-
 	}
 
 	handleSubmit() {
