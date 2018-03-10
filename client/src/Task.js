@@ -8,16 +8,24 @@ class Task extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { isEditMode: false };
+    this.state = {
+      isEditMode: false,
+      focusId: null
+    };
 
 		this.handleToggleId = this.handleToggleId.bind(this);
 		this.handleTimeEdit = this.handleTimeEdit.bind(this);
-    this.handleEditOn = this.handleEditOn.bind(this);
+    this.handleTimeEditIsOn = this.handleTimeEditIsOn.bind(this);
     this.handleDeleteClick = this.handleDeleteClick.bind(this);
-    this.handleEditClose = this.handleEditClose.bind(this);
+    this.handleTimeEditIsOff = this.handleTimeEditIsOff.bind(this);
+    this.handleEditClick = this.handleEditClick.bind(this);
   }
 
-  handleEditClose() {
+  handleEditClick() {
+    console.log("edit the record");
+  }
+
+  handleTimeEditIsOff() {
     this.setState({ isEditMode: false });
   }
 
@@ -26,8 +34,11 @@ class Task extends Component {
     this.props.onHandleTimeEdit(this.props._id, seconds);
 	}
 
-  handleEditOn() {
-    this.setState({ isEditMode: true });
+  handleTimeEditIsOn(id) {
+    this.setState({
+      isEditMode: true,
+      focusId: id
+    });
   }
 
   handleToggleId() {
@@ -45,13 +56,13 @@ class Task extends Component {
     if(this.state.isEditMode) {
       timeField = <TimeFormEditOn
         seconds={this.props.seconds}
+        focusId={this.state.focusId}
         onHandleTimeEdit={this.handleTimeEdit}
-        onHandleEditClose={this.handleEditClose}  />
+        onHandleTimeEditIsOff={this.handleTimeEditIsOff}  />
     } else {
       timeField = <TimeFormEditOff
         seconds={this.props.seconds}
-        onHandleClick={this.handleEditOn}
-        onHandleDeleteClick={this.handleDeleteClick} />
+        onHandleTimeEditIsOn={this.handleTimeEditIsOn} />
     }
 
     const isToggleOn = this.props.isToggleOn;
@@ -65,7 +76,17 @@ class Task extends Component {
               <small>{this.props.details}</small>
             </div>
             <div className="col-sm-12 col-md-6">
-              {timeField}
+              <div className="row">
+                <div className="col-6 col-xs-8">
+                  {timeField}
+                </div>
+                <div className="col-6 col-xs-4">
+                  <div className="btn-group">
+                    <button className="btn btn-secondary" type="button"  onClick={this.handleEditClick}>Edit</button>
+                    <button className="btn btn-secondary" type="button"  onClick={this.handleDeleteClick}>Delete</button>
+                  </div>
+                </div>
+              </div>
             </div>
             <div className="col-sm-12 col-md-2">
               <button

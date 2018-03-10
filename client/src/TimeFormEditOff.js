@@ -4,17 +4,11 @@ class TimeFormEditOff extends Component {
 	constructor(props) {
     super(props);
 
-		this.handleClick = this.handleClick.bind(this);
-		this.handleDeleteClick = this.handleDeleteClick.bind(this);
+		this.handleFocus = this.handleFocus.bind(this);
   }
 
-	handleDeleteClick() {
-		this.props.onHandleDeleteClick();
-	}
-
-	handleClick(e) {
-		e.preventDefault();
-		this.props.onHandleClick();
+	handleFocus(e) {
+		this.props.onHandleTimeEditIsOn(e.target.id);
 	}
 
 	render() {
@@ -26,30 +20,23 @@ class TimeFormEditOff extends Component {
 		const ss = formatedTime.ss;
 
 		return (
-			<form>
-				<div className="row">
-					<div className="col-6 col-xs-8">
-						<div className="input-group">
-							<input
-								disabled
-								className="form-control"
-								value={hh} />
-							<input
-								disabled
-								className="form-control"
-								value={mm} />
-							<input
-								disabled
-								className="form-control"
-								value={ss} />
-						</div>
-					</div>
-					<div className="col-6 col-xs-4">
-						<div className="btn-group">
-							<button className="btn btn-secondary" type="button"  onClick={this.handleClick}>Edit</button>
-							<button className="btn btn-secondary" type="button"  onClick={this.handleDeleteClick}>Delete</button>
-						</div>
-					</div>
+			<form onFocus={this.handleFocus} className="TimeFormEditOff">
+				<div className="input-group">
+					<input
+						readOnly
+						id="hh"
+						className="form-control"
+						value={hh} />
+					<input
+						readOnly
+						id="mm"
+						className="form-control"
+						value={mm} />
+					<input
+						readOnly
+						id="ss"
+						className="form-control"
+						value={ss} />
 				</div>
 			</form>
 		);

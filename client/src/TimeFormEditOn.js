@@ -9,45 +9,62 @@ class TimeFormEditOnor extends Component {
 		this.state = {
 			hh: formatedTime.hh,
 			mm: formatedTime.mm,
-			ss: formatedTime.ss
+			ss: formatedTime.ss,
+			changed: false
 		};
 
 		this.handleHoursChange = this.handleHoursChange.bind(this);
 		this.handleMinutesChange = this.handleMinutesChange.bind(this);
 		this.handleSecondsChange = this.handleSecondsChange.bind(this);
-		this.handleTimeEdit = this.handleTimeEdit.bind(this);
-		this.handleEditCancel = this.handleEditCancel.bind(this);
+		this.focusTextInput = this.focusTextInput.bind(this);
+		this.handleBlur = this.handleBlur.bind(this);
   }
 
-	handleEditCancel() {
-		this.props.onHandleEditClose();
-	}
-
-	handleTimeEdit(e) {
-		e.preventDefault();
-
+	handleBlur() {
 		let seconds = parseInt(this.state.hh, 10) * 3600 +
 									parseInt(this.state.mm, 10) * 60 +
 									parseInt(this.state.ss, 10);
 
-		if (isNaN(seconds)) {
-			console.log("NaN");
-			seconds = this.props.seconds;
-		}
+		// if error, exit without changes
+		if (isNaN(seconds))
+			return this.setState({ changed: false }, () => {
+				this.props.onHandleTimeEditIsOff();
+			})
+		// if the state has been changed, update the time
+		if (this.state.changed)
+			this.setState({ changed: false }, () => {
+				this.props.onHandleTimeEdit(seconds);
+			});
+		// if it hasn't been changed, exit
+		else
+			this.props.onHandleTimeEditIsOff();
 
-		this.props.onHandleTimeEdit(seconds);
 	}
 
 	handleHoursChange(event) {
-		this.setState({ hh: event.target.value });
+		this.setState({ hh: event.target.value, changed: true });
 	}
 
 	handleMinutesChange(event) {
-		this.setState({ mm: event.target.value });
+		this.setState({ mm: event.target.value, changed: true });
 	}
 
 	handleSecondsChange(event) {
-		this.setState({ ss: event.target.value });
+		this.setState({ ss: event.target.value, changed: true });
+	}
+
+	focusTextInput(id) {
+		if (id === "hh") {
+			this.hhInput.focus();
+		} else if (id === "mm") {
+			this.mmInput.focus();
+		} else if (id === "ss") {
+			this.ssInput.focus();
+		}
+  }
+
+	componentDidMount() {
+		this.focusTextInput(this.props.focusId);
 	}
 
 	render() {
@@ -57,30 +74,26 @@ class TimeFormEditOnor extends Component {
 		const ss = this.state.ss;
 
 		return (
-			<form onSubmit={this.handleTimeEdit}>
-				<div className="row">
-					<div className="col-6 col-xs-8">
-						<div className="input-group">
-							<input
-								className="form-control"
-								onChange={this.handleHoursChange}
-								value={hh} />
-							<input
-								className="form-control"
-								onChange={this.handleMinutesChange}
-								value={mm} />
-							<input
-								className="form-control"
-								onChange={this.handleSecondsChange}
-								value={ss} />
-						</div>
-					</div>
-					<div className="col-6 col-xs-4">
-						<div className="btn-group">
-							<button className="btn btn-secondary" type="submit">Save</button>
-							<button className="btn btn-secondary" type="button" onClick={this.handleEditCancel}>Cancel</button>
-						</div>
-					</div>
+			<form onBlur={this.handleBlur}>
+				<div className="input-group">
+					<input
+						type="text"
+						ref={(input) => { this.hhInput = input }}
+						className="form-control"
+						onChange={this.handleHoursChange}
+						value={hh} />
+					<input
+						type="text"
+						ref={(input) => { this.mmInput = input }}
+						className="form-control"
+						onChange={this.handleMinutesChange}
+						value={mm} />
+					<input
+						type="text"
+						ref={(input) => { this.ssInput = input }}
+						className="form-control"
+						onChange={this.handleSecondsChange}
+						value={ss} />
 				</div>
 			</form>
 		);

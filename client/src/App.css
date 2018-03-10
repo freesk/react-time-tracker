@@ -149,3 +149,7 @@ fieldset > div:nth-child(2) {
 .react-datepicker-popper {
 	z-index: 99 !important;
 }
+
+.TimeFormEditOff .form-control {
+	background-color: transparent !important;
+}
