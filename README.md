@@ -18,7 +18,7 @@ $ npm start
 ## Development
 - The server is missing email verification on a new signup request
 - The server is missing data validation
-- The client needs a menu
+- The client is missing critical errors handling
 - Get rid of time synchronization and rather count seconds in the client and in [mongoDB](https://www.mongodb.com) simultaneously
 - Calculating of earning is needed
 - Billable vs non billable records
