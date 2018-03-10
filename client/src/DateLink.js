@@ -16,7 +16,8 @@ class DateLink extends Component {
 		const date = this.props.date;
 		return (
 			<a href="" onClick={this.handleDateLinkClick} className={className}>
-				{date.format("ddd D")}
+				<span className="d-lg-none d-xl-none">{date.format("ddd D")}</span>
+				<span className="d-none d-lg-inline d-xl-inline">{date.format("dddd D")}</span>
 			</a>
 		);
 	}
