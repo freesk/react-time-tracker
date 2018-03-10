@@ -15,6 +15,13 @@ $ npm run postinstall
 ```
 $ npm start
 ```
+or   
+```
+$ npm run client
+```
+```
+$ npm run server
+```
 ## Development
 - The server is missing email verification on a new signup request
 - The server is missing data validation
