@@ -38,17 +38,23 @@ class TimeForm extends Component {
 	}
 
 	render() {
-		if(this.state.isEditModeOn)
-      return <TimeFormEditOn
-        seconds={this.props.seconds}
-        focusId={this.state.focusId}
-        onHandleTimeEdit={this.handleTimeEdit}
-        onHandleTimeEditIsOff={this.handleTimeEditIsOff} />;
-    else
-      return <TimeFormEditOff
-        seconds={this.props.seconds}
-        onHandleTimeEditIsOn={this.handleTimeEditIsOn} />;
-	}
+    return (
+      <div className="TimeField">
+        {
+          this.state.isEditModeOn ?
+            <TimeFormEditOn
+              seconds={this.props.seconds}
+              focusId={this.state.focusId}
+              onHandleTimeEdit={this.handleTimeEdit}
+              onHandleTimeEditIsOff={this.handleTimeEditIsOff} /> :
+            <TimeFormEditOff
+              seconds={this.props.seconds}
+              onHandleTimeEditIsOn={this.handleTimeEditIsOn} />
+        }
+      </div>
+    );
+  }
+
 
 }
 

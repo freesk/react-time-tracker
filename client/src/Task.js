@@ -42,13 +42,13 @@ class Task extends Component {
               <small>{this.props.details}</small>
             </div>
             <div className="col-sm-12 col-md-6">
-              <div className="row">
-                <div className="col-6 col-xs-8">
+              <div className="row justify-content-md-end">
+                <div className="col-md-auto ml-3 ml-md-0">
                   <TimeForm
                     seconds={this.props.seconds}
                     onHandleTimeEdit={this.handleTimeEdit} />
                 </div>
-                <div className="col-6 col-xs-4">
+                <div className="col-md-auto ml-2 mr-md-3">
                   <div className="btn-group">
                     <button className="btn btn-secondary" type="button"  onClick={this.handleEditClick}>Edit</button>
                     <button className="btn btn-secondary" type="button"  onClick={this.handleDeleteClick}>Delete</button>
@@ -56,7 +56,7 @@ class Task extends Component {
                 </div>
               </div>
             </div>
-            <div className="col-sm-12 col-md-2">
+            <div className="col-sm-12 col-md-2 mt-3 mt-md-0">
               <button
                 className={"btn " + (isToggleOn ? "btn-danger" : "btn-success")}
                 onClick={this.handleToggleId}>

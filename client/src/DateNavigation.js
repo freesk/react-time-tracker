@@ -61,7 +61,7 @@ class DateNavigation extends Component {
 		});
 
 		return(
-			<div>
+			<div className="ml-1 mr-1">
 				<div className="row justify-content-md-end justify-content-center mt-3 mt-md-2 mb-4">
 					<label className="col-auto col-form-label text-right mr-2">Select Date</label>
 					<div className="col-auto mr-md-3">

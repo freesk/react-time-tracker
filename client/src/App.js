@@ -477,7 +477,7 @@ class App extends Component {
           </div>
         </div>
         <div className="row">
-          <div className="col">
+          <div className="col pl-1 pr-1 pr-sm-2 pl-sm-2">
             {body}
           </div>
         </div>
