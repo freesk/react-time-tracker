@@ -29,5 +29,4 @@ $ npm run server
 - Get rid of time synchronization and rather count seconds in the client and in [mongoDB](https://www.mongodb.com) simultaneously
 - Calculating of earning is needed
 - Billable vs non billable records
-- Bootstrap cannot handle the export modal tabs without bugs on its own, therefore a component that handles them must be created
 - Update the repo so the the client and server are treated as submodules
