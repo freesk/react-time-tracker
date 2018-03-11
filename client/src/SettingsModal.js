@@ -77,7 +77,6 @@ class PasswordComfirmation extends Component {
 			</div>
 		);
 	}
-
 }
 
 class SettingsModal extends Component {
@@ -87,8 +86,8 @@ class SettingsModal extends Component {
 
 		this.state = {
 			password: "",
-			email: "",
-			rate: 0
+			email: this.props.email,
+			rate: this.props.rate
 		};
 
 		this.handleClose = this.handleClose.bind(this);
@@ -117,7 +116,11 @@ class SettingsModal extends Component {
 	}
 
 	handleSubmit() {
-		console.log(this.state);
+		this.props.onHandleSettingsUpdate({
+			email: this.props.email === this.state.email ? null : this.state.email,
+			rate: this.props.rate === this.state.rate ? null : this.state.rate,
+			password: this.state.password
+		});
 	}
 
 	handleClose() {

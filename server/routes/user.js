@@ -14,7 +14,8 @@ router.post('/register', function (req, res) {
 	var user = new User({
 		username: username,
 		email: email,
-		password: bcrypt.hashSync(password)
+		password: bcrypt.hashSync(password),
+		rate: 0
 	});
 
 	user.save((err, doc) => {
@@ -27,6 +28,58 @@ router.post('/register', function (req, res) {
 	});
 
 });
+
+router.get('/update', (req, res) => {
+	const decoded = jwt.verify(req.query.token, 'secret');
+	const userId = decoded.user._id;
+
+  // filter by user id
+  User.findOne({ "_id" : userId }, { "password": 0 })
+	 .exec(function(err, doc) {
+	   if(err) return res.status(500).json({
+	     error: err.message
+	   });
+	   res.status(200).json({
+	     error: null,
+			 doc: doc
+	   });
+	 });
+})
+
+router.post('/update', (req, res) => {
+	const decoded = jwt.verify(req.query.token, 'secret');
+	const userId = decoded.user._id;
+
+	const email    = req.body.email;
+	const password = req.body.password;
+	const rate     = req.body.rate;
+
+  // filter by user id
+  User.findOne({ "_id" : userId })
+	 .exec(function(err, doc) {
+	   if(err) return res.status(500).json({
+	     error: err.message
+	   });
+
+		 console.log();
+
+		 doc.password = password ? bcrypt.hashSync(password) : doc.password;
+		 doc.email = email || doc.email;
+		 doc.rate = rate || doc.rate;
+
+		 doc.save((err) => {
+			 if (err) return res.status(500).json({
+		     error: err.message
+		   });
+			 res.status(200).json({
+		     error: null
+		   });
+		 });
+
+	 });
+
+})
+
 
 router.post('/login', (req, res) => {
 

@@ -20,6 +20,11 @@ var schema = new Schema({
     required: true,
     unique: true,
     trim: true
+  },
+  rate: {
+    type: Number,
+    required: true,
+    trim: true
   }
 });
 

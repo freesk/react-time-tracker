@@ -30,7 +30,10 @@ class App extends Component {
       signup: false,
       export: false,
       editId: null,
-      settings: false
+      settings: false,
+      rate: 0,
+      email: "",
+      info: ""
     };
 
     this.syncTimeSpan = 1000 * 10;
@@ -67,17 +70,62 @@ class App extends Component {
 
   handleSettings(e) {
     e.preventDefault();
-    this.setState({ settings: true });
+    // a reference
+    const token = this.state.token;
+    // form a url string
+    const url = serverUrl + '/user/update?token=' + token;
+    // fetch
+    fetch(url, { method: 'GET' })
+      .then((response) => response.json())
+      .then((responseJson) => {
+        if(responseJson.error)
+          // update the state with an error message and reset
+          // the token if this request returns an error
+          return this.setState({
+            error: responseJson.error,
+            token: ""
+          });
+        // a reference
+        const doc = responseJson.doc;
+        // update the state
+        this.setState({
+          settings: true,
+          email: doc.email,
+          rate: doc.rate
+        });
+      })
+      .catch(() => {
+        // critical error
+        this.criticalError();
+      });
   }
 
   handleCloseSettings() {
     this.setState({ settings: false });
   }
 
-  handleUpdateSettings() {
-    // send date to server
+  handleUpdateSettings(data) {
+    // form a url
+    const token = this.state.token;
+    const url = serverUrl + '/user/update?token=' + token;
+    // post data
+    fetch(url, {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then((responseJson) => {
+        if(responseJson.error)
+          return this.setState({ error: responseJson.error });
 
-    this.handleCloseSettings();
+        this.setState({ settings: false, info: "User settings have been changed successfully" });
+      })
+      .catch(() => {
+        // critical error
+        this.criticalError();
+      });
+
   }
 
   criticalError() {
@@ -89,9 +137,7 @@ class App extends Component {
   }
 
   handleRecordEdit(id) {
-    this.setState({ editId: id }, () => {
-      // console.log(this.state);
-    });
+    this.setState({ editId: id });
   }
 
   handleRecordUpdate(record) {
@@ -123,8 +169,7 @@ class App extends Component {
 
         this.setState({
           editId: null,
-          tasks: tasks }, () => {
-          // console.log(this.state);
+          tasks: tasks
         });
 
       })
@@ -498,6 +543,8 @@ class App extends Component {
       onHandleRecordUpdate={this.handleRecordUpdate} />
 
     const settingsModal = <SettingsModal
+      email={this.state.email}
+      rate={this.state.rate}
       onHandleSettingsClose={this.handleCloseSettings}
       onHandleSettingsUpdate={this.handleUpdateSettings} />
 
