@@ -61,7 +61,7 @@ class App extends Component {
     this.handleRecordUpdate = this.handleRecordUpdate.bind(this);
     this.handleRecordUpdateClose = this.handleRecordUpdateClose.bind(this);
 
-    this.criticalError = this.criticalError.bind(this);
+    this.connectionError = this.connectionError.bind(this);
 
     this.handleSettings = this.handleSettings.bind(this);
     this.handleCloseSettings = this.handleCloseSettings.bind(this);
@@ -95,8 +95,7 @@ class App extends Component {
         });
       })
       .catch(() => {
-        // critical error
-        this.criticalError();
+        this.connectionError();
       });
   }
 
@@ -122,13 +121,12 @@ class App extends Component {
         this.setState({ settings: false, info: "User settings have been changed successfully" });
       })
       .catch(() => {
-        // critical error
-        this.criticalError();
+        this.connectionError();
       });
 
   }
 
-  criticalError() {
+  connectionError() {
     this.setState({ error: "Cannot connect to the server" });
   }
 
@@ -174,8 +172,7 @@ class App extends Component {
 
       })
       .catch(() => {
-        // critical error
-        this.criticalError();
+        this.connectionError();
       });
   }
 
@@ -213,8 +210,7 @@ class App extends Component {
       FileSaver.saveAs(blob, fileName);
     })
     .catch(() => {
-      // critical error
-      this.criticalError();
+      this.connectionError();
     });
   }
 
@@ -245,8 +241,7 @@ class App extends Component {
       this.setState({ signup: false, info: "Welcome! Please, log in to preoceed" });
     })
     .catch(() => {
-      // critical error
-      this.criticalError();
+      this.connectionError();
     });
   }
 
@@ -284,15 +279,13 @@ class App extends Component {
         });
       })
       .catch(() => {
-        // critical error
-        this.criticalError();
+        this.connectionError();
       });
   }
 
   componentDidMount() {
     // get a token from the local storage
     const token = localStorage.getItem("token");
-
     // try to use an available token
     if(token)
       // update the state with the token form the local storage
@@ -301,7 +294,6 @@ class App extends Component {
         this.getTheRecords();
       });
   }
-
 
   // most of it can be moved to the LogIn component
   handleLogInSubmit(credentials) {
@@ -330,8 +322,7 @@ class App extends Component {
         });
       })
       .catch((error) => {
-        // critical error
-        this.criticalError();
+        this.connectionError();
       });
   }
 
@@ -372,8 +363,7 @@ class App extends Component {
         this.startSyncTimer();
       })
       .catch(() => {
-        // critical error
-        this.criticalError();
+        this.connectionError();
       });
   }
 
@@ -431,8 +421,7 @@ class App extends Component {
       this.setState({ tasks: tasks });
     })
     .catch(() => {
-      // critical error
-      this.criticalError();
+      this.connectionError();
     });
 
   }
@@ -470,8 +459,7 @@ class App extends Component {
       this.setState({ tasks: tasks });
     })
     .catch(() => {
-      // critical error
-      this.criticalError();
+      this.connectionError();
     });
 
   }
@@ -485,11 +473,6 @@ class App extends Component {
   }
 
   render() {
-    const errorMessage = this.state.error;
-    const infoMessage = this.state.info;
-
-    // debug
-    // console.log(this.state);
 
     const authorized = this.state.token ? true : false;
 
@@ -522,31 +505,44 @@ class App extends Component {
     }
 
     const errorModal = <Modal
-      message={errorMessage}
+      message={this.state.error}
       title={"Error"}
       onHandleClose={this.handleModalClose} />;
 
     const infoModal = <Modal
-      message={infoMessage}
+      message={this.state.info}
       title={"Info"}
       onHandleClose={this.handleInfoModalClose} />;
 
     const exportModal = <ExportModal
       tasks={this.state.tasks}
       onHandleExportModalClose={this.handleExportModalClose}
-      onHandleDownloadCsv={this.handleCsvDownload} />
+      onHandleDownloadCsv={this.handleCsvDownload} />;
 
     const editModal = <EditModal
       editId={this.state.editId}
       tasks={this.state.tasks}
       onHandleClose={this.handleRecordUpdateClose}
-      onHandleRecordUpdate={this.handleRecordUpdate} />
+      onHandleRecordUpdate={this.handleRecordUpdate} />;
 
     const settingsModal = <SettingsModal
       email={this.state.email}
       rate={this.state.rate}
       onHandleSettingsClose={this.handleCloseSettings}
-      onHandleSettingsUpdate={this.handleUpdateSettings} />
+      onHandleSettingsUpdate={this.handleUpdateSettings} />;
+
+    let modal = null;
+
+    if(this.state.error)
+      modal = errorModal;
+    else if (this.state.info)
+      modal = infoModal;
+    else if (this.state.export)
+      modal = exportModal;
+    else if (this.state.editId)
+      modal = editModal;
+    else if (this.state.settings)
+      modal = settingsModal;
 
     return (
       <div className="container">
@@ -560,11 +556,7 @@ class App extends Component {
             {body}
           </div>
         </div>
-        {errorMessage ? errorModal : null}
-        {infoMessage ? infoModal : null}
-        {this.state.export ? exportModal : null}
-        {this.state.editId ? editModal : null}
-        {this.state.settings ? settingsModal : null}
+        {modal}
       </div>
     );
   }

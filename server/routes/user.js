@@ -61,8 +61,6 @@ router.post('/update', (req, res) => {
 	     error: err.message
 	   });
 
-		 console.log();
-
 		 doc.password = password ? bcrypt.hashSync(password) : doc.password;
 		 doc.email = email || doc.email;
 		 doc.rate = rate || doc.rate;
@@ -74,6 +72,7 @@ router.post('/update', (req, res) => {
 			 res.status(200).json({
 		     error: null
 		   });
+			 
 		 });
 
 	 });

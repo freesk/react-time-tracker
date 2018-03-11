@@ -101,17 +101,18 @@ router.post('/update', (req, res, next) => {
 
 	data.forEach((obj) => {
 		// filter by user id and recrd id
-		Record.findOne({ "user" : userId, "_id" : obj._id })
-			.exec(function(err, doc) {
+		Record.findOne({ "user" : userId, "_id" : obj._id }).exec((err, doc) => {
+			if(err) return onError(err.message);
+			// update the number of seconds
+			doc.seconds = obj.seconds;
+			// save the update
+			doc.save((err) => {
 				if(err) return onError(err.message);
-				// update the number of seconds
-				doc.seconds = obj.seconds;
-				// save the update
-				doc.save((err) => {
-					if(err) return onError(err.message);
-					asem.p();
-				});
+				asem.p();
 			});
+
+		});
+
 	});
 
 })
@@ -187,82 +188,82 @@ router.post('/export', (req, res, next) => {
 	}
 
 	// filter by user id
-	Record.find({ "user" : userId }, { "user": 0 })
-	 .exec(function(err, doc) {
-		 if(err) return res.status(500).json({
-			 error: err.message
-		 });
+  User.findOne({ "_id" : userId }, { "password": 0 }).exec((err, doc) => {
+		if(err) return res.status(500).json({
+	  	error: err.message
+	  });
 
-		 const records = doc;
+		const rate = doc.rate;
 
-		 // console.log("");
-		 // console.log(records);
+		// filter by user id
+	 	Record.find({ "user" : userId }, { "user": 0 }).exec((err, doc) => {
+			if(err) return res.status(500).json({
+				error: err.message
+			});
 
-		 records.sort((a, b) => {
-			 if (a.timestamp > b.timestamp)
-			   return -1;
-			 if (a.timestamp < b.timestamp)
-			   return 1;
-			 return 0;
-		 });
+			const records = doc;
 
-		 // console.log("");
-		 // console.log(records);
+			records.sort((a, b) => {
+				if (a.timestamp > b.timestamp)
+					return -1;
+				if (a.timestamp < b.timestamp)
+					return 1;
+				return 0;
+			});
 
-		 const filtered = records.filter(record => {
-			 const date = moment.unix(record.timestamp);
-			 // check if the record belongs to a given range of dates
-			 if (!(date.isBetween(fromMoment, toMoment) || fromMoment.isSame(date, 'day'))) return false;
-			 // define props names
-			 const props = ['client', 'activity', 'details', 'project'];
-			 // okay bt default
-			 let isOkay = true;
-			 // check if any of props hold an excluded value and
-			 // if so skip this record
-			 for (let i = 0; i < props.length; i++)
-				 if(filterOf.indexOf(record[props[i]]) > -1)
-					 isOkay = false;
+			const filtered = records.filter(record => {
+				const date = moment.unix(record.timestamp);
+				// check if the record belongs to a given range of dates
+				if (!(date.isBetween(fromMoment, toMoment) || fromMoment.isSame(date, 'day'))) return false;
+				// define props names
+				const props = ['client', 'activity', 'details', 'project'];
+				// okay bt default
+				let isOkay = true;
+				// check if any of props hold an excluded value and
+				// if so skip this record
+				for (let i = 0; i < props.length; i++)
+					if(filterOf.indexOf(record[props[i]]) > -1)
+						isOkay = false;
 
-			 return isOkay;
-		 });
+				return isOkay;
+			});
 
-		 // console.log("");
-		 // console.log(filtered);
+			// just in case
+			if(!filtered.length) return res.status(500).json({
+				 error: "no records to export"
+			});
 
-		 // just in case
-		 if(!filtered.length) return res.status(500).json({
- 		 	 error: "no records to export"
- 		 });
+			const formatted = filtered.map(record => {
+				const time = precisionRound(record.seconds / 3600, 3);
+				const date = moment.unix(record.timestamp).format('MM/DD/YYYY');
+				return {
+					client: record.client || "n/a",
+					project: record.project,
+					activity: record.activity,
+					details: record.details,
+					time: time,
+					date: date,
+					billed: precisionRound(time * rate, 2)
+				};
+			});
 
-		 const formatted = filtered.map(record => {
-			 const time = precisionRound(record.seconds / 3600, 3);
-			 const date = moment.unix(record.timestamp).format('MM/DD/YYYY');
-			 return {
-				 client: record.client || "n/a",
-				 project: record.project,
-				 activity: record.activity,
-				 details: record.details,
-				 time: time,
-				 date: date
-			 };
-		 });
+			const fields = [];
+			const template = formatted[0];
 
-		 const fields = [
-			 "client",
-			 "project",
-			 "activity",
-			 "details",
-			 "time",
-			 "date"
-		 ];
+			for (var key in template)
+				if (template.hasOwnProperty(key))
+					fields.push(key);
 
-		 const json2csvParser = new Json2csvParser({ fields });
-		 const csv = json2csvParser.parse(formatted);
 
-		 res.status(200).json({
- 		 	 error: null,
- 		 	 doc: csv
- 		 });
+			const json2csvParser = new Json2csvParser({ fields });
+			const csv = json2csvParser.parse(formatted);
+
+			res.status(200).json({
+				error: null,
+				doc: csv
+			});
+
+	 	 });
 
 	 });
 
