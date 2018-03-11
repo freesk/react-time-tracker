@@ -19,6 +19,8 @@ import SettingsModal from './SettingsModal';
 
 const serverUrl = "http://localhost:8000";
 
+// const serverUrl = "https://my-react-time-tracker.herokuapp.com";
+
 class App extends Component {
   constructor(props) {
     super(props);
