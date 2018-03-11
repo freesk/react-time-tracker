@@ -1,10 +1,10 @@
 # React Time Tracker  
 This is a time tracking app powered by [React](https://reactjs.org), [Bootstrap](https://getbootstrap.com), [Express](https://expressjs.com) and [mongoDB](https://www.mongodb.com) (with [Mongoose ODM](http://mongoosejs.com)).  
 
-[Demo](https://my-react-time-tracker.herokuapp.com)  
-   
 The app is still in development.
 
+[Demo](https://my-react-time-tracker.herokuapp.com)  
+   
 ## Installation
 ```
 $ npm install
