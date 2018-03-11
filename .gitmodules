@@ -1,0 +1,6 @@
+[submodule "react-time-tracker-server"]
+	path = server
+	url = https://github.com/freesk/react-time-tracker-server.git
+[submodule "react-time-tracker-client"]
+	path = client
+	url = https://github.com/freesk/react-time-tracker-client.git
