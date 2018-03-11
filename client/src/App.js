@@ -75,7 +75,7 @@ class App extends Component {
   }
 
   handleUpdateSettings() {
-    // this.setState({ settings: false });
+    // send date to server
 
     this.handleCloseSettings();
   }

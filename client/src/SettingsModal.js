@@ -1,44 +1,123 @@
 import React, { Component } from 'react';
 
+class PasswordComfirmation extends Component {
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			password: "",
+			confirmation: "",
+			error: ""
+		};
+
+		this.handlePasswordChange = this.handlePasswordChange.bind(this);
+		this.handleConfirmationChange = this.handleConfirmationChange.bind(this);
+	}
+
+	handleResponse() {
+		if (!this.state.password)
+			return this.setState({ error: "The password is missing" });
+		else if (this.state.password.length < 6)
+			return this.setState({ error: "The password must contain at least 6 characters" });
+		else if (this.state.password !== this.state.confirmation)
+			return this.setState({ error: "The passwords must be the same" });
+
+		this.setState({ error: "" }, () => {
+			this.props.onPasswordChange(this.state.password);
+		});
+	}
+
+	handlePasswordChange(e) {
+		this.setState({ password: e.target.value }, () => {
+			this.handleResponse();
+		})
+	}
+
+	handleConfirmationChange(e) {
+		this.setState({ confirmation: e.target.value }, () => {
+			this.handleResponse();
+		})
+	}
+
+	render() {
+
+		const error = this.state.error;
+
+		return (
+			<div>
+				<div className="row">
+					<div className="col-12">
+						{error ? getErrorMessage(error) : null}
+					</div>
+				</div>
+				<div className="row mt-2">
+					<label className="col-3 col-form-label">Password</label>
+					<div className="col-9">
+						<input
+							autoComplete="off"
+							type="password"
+							required
+							className="form-control"
+							onChange={this.handlePasswordChange}
+							value={this.state.password} />
+					</div>
+				</div>
+				<div className="row mt-3">
+					<label className="col-3 col-form-label">Confirmation</label>
+					<div className="col-9">
+						<input
+							autoComplete="off"
+							type="password"
+							required
+							className="form-control"
+							onChange={this.handleConfirmationChange}
+							value={this.state.confirmation} />
+					</div>
+				</div>
+			</div>
+		);
+	}
+
+}
+
 class SettingsModal extends Component {
 
 	constructor(props) {
 		super(props);
 
-		const properties = [
-			"password",
-			"password2",
-			"email",
-			"rate"
-		];
-
-		const obj = {};
-
-		properties.forEach(prop => obj[prop] = "");
-
-		obj.error = "";
-
-		this.state = obj;
+		this.state = {
+			password: "",
+			email: "",
+			rate: 0
+		};
 
 		this.handleClose = this.handleClose.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
-		this.handleChange = this.handleChange.bind(this);
+		this.handlePasswordChange = this.handlePasswordChange.bind(this);
+		this.handleEmailChange = this.handleEmailChange.bind(this);
+		this.handleRateChange = this.handleRateChange.bind(this);
 	}
 
-	handleChange(e) {
-		// const obj = {};
-		// const id = e.target.id;
-		// const value = e.target.value;
-		//
-		// obj[id] = value;
+	handlePasswordChange(password) {
+		this.setState({ password: password });
+	}
 
-		// this.setState(obj, () => {
-		// 	// console.log(this.state);
-		// });
+	handleEmailChange(e) {
+		this.setState({ email: e.target.value });
+	}
+
+	handleRateChange(e) {
+		const value = e.target.value;
+		const num = parseFloat(value, 10);
+
+		if (num < 0)
+			return this.setState({ error: "The rate must be greater or equal to zero"});
+
+		this.setState({ rate: num });
 	}
 
 	handleSubmit() {
-		this.props.onHandleSettingsUpdate();
+		console.log(this.state);
 	}
 
 	handleClose() {
@@ -47,37 +126,10 @@ class SettingsModal extends Component {
 
 	render() {
 
-		// const props = [
-		// 	"client",
-		// 	"project",
-		// 	"activity",
-		// 	"details"
-		// ];
-
-		// const inputs = props.map(prop => {
-		// 	return (
-		// 		<div className="row mt-3" key={prop}>
-		// 			<label className="col-2 col-form-label">{prop}</label>
-		// 			<div className="col-10">
-		// 				<input
-		// 					autoComplete="off"
-		// 					type="text"
-		//           required
-		// 					id={prop}
-		//           className="form-control"
-		//           onChange={this.handleChange}
-		//           value={this.state[prop]} />
-		// 			</div>
-		// 		</div>
-		// 	);
-		// });
-
 		const error = this.state.error;
 
-		// console.log(inputs);
-
 		return (
-			<div className="EditModal modal">
+			<div className="SettingsModal modal">
 			  <div className="modal-dialog" role="document">
 			    <div className="modal-content">
 			      <div className="modal-header">
@@ -86,11 +138,40 @@ class SettingsModal extends Component {
 			          <span aria-hidden="true">&times;</span>
 			        </button>
 			      </div>
-							<div className="mt-4 ml-4 mr-4">
-								{error ? getErrorMessage(error) : null}
-
-							</div>
 			      <div className="modal-body">
+							<PasswordComfirmation
+								onPasswordChange={this.handlePasswordChange} />
+							<hr />
+							<div className="row mt-3">
+								<label className="col-3 col-form-label">Email</label>
+								<div className="col-9">
+									<input
+										autoComplete="off"
+										type="email"
+										required
+										className="form-control"
+										onChange={this.handleEmailChange}
+										value={this.state.email} />
+								</div>
+							</div>
+							<hr />
+							<div className="row">
+								<div className="col-12">
+									{error ? getErrorMessage(error) : null}
+								</div>
+							</div>
+							<div className="row mt-3">
+								<label className="col-3 col-form-label">Rate</label>
+								<div className="col-9">
+									<input
+										autoComplete="off"
+										type="number"
+										required
+										className="form-control"
+										onChange={this.handleRateChange}
+										value={this.state.rate} />
+								</div>
+							</div>
 			      </div>
 			      <div className="modal-footer">
 							<button type="button" className="btn btn-primary" onClick={this.handleSubmit}>Submit</button>
