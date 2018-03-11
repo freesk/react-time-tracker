@@ -4,13 +4,10 @@ This is a time tracking app powered by [React](https://reactjs.org), [Bootstrap]
 The app is still in development.
 
 [Demo](https://my-react-time-tracker.herokuapp.com)  
-   
+
 ## Installation
 ```
 $ npm install
-```
-```
-$ npm run postinstall
 ```
 ## Usage
 ```
@@ -28,4 +25,3 @@ $ npm run server
 - The server is missing data validation
 - Get rid of time synchronization and rather count seconds in the client and in [mongoDB](https://www.mongodb.com) simultaneously
 - Billable vs non billable records
-- Update the repo so the the client and server are treated as submodules
