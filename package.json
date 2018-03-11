@@ -5,11 +5,12 @@
   "main": "index.js",
   "scripts": {
     "server": "cd server && npm start",
-     "client": "cd client && npm start",
-     "start": "concurrently \"npm run server\" \"npm run client\"",
-     "postinstall": "npm run clientinstall && npm run serverinstall",
-     "clientinstall": "cd client && npm install",
-     "serverinstall": "cd server && npm install"
+    "client": "cd client && npm start",
+    "build": "cd client && npm run build && mv build ../server/public",
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "postinstall": "npm run clientinstall && npm run serverinstall",
+    "clientinstall": "cd client && npm install",
+    "serverinstall": "cd server && npm install"
   },
   "repository": {
     "type": "git",
