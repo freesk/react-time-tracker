@@ -16,6 +16,7 @@ $ git submodule update
 $ npm install
 ```
 ## Usage
+make sure the mongod process is running, then
 ```
 $ npm start
 ```
