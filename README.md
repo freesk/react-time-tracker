@@ -7,13 +7,19 @@ The app is still in development.
 
 ## Installation
 ```
+$ git submodule init
+```
+```
+$ git submodule update
+```
+```
 $ npm install
 ```
 ## Usage
 ```
 $ npm start
 ```
-or   
+or    
 ```
 $ npm run client
 ```
