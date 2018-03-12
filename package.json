@@ -16,7 +16,7 @@
     "type": "git",
     "url": "git+https://github.com/freesk/react-time-tracker.git"
   },
-  "author": "",
+  "author": "Dmitry Kurbatov",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/freesk/react-time-tracker/issues"
