@@ -3,6 +3,8 @@ This is a time tracking app powered by [React](https://reactjs.org), [Bootstrap]
 
 The app is still in development.
 
+Feel free to crete a new account to test it. It will not take long since it doesn't require email confirmation. 
+
 [Demo](https://my-react-time-tracker.herokuapp.com)  
 
 ## Installation
