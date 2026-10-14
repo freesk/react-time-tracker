@@ -52,10 +52,3 @@ To build the client into the server's `public` folder:
 ```
 npm run build
 ```
-
-## Roadmap
-
-- Email verification for new sign-ups
-- Server-side data validation
-- Replace periodic time syncing with counting seconds in both the client and MongoDB
-- Billable vs. non-billable records
